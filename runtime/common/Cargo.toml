@@ -1,0 +1,86 @@
+[package]
+name = "vflow-runtime-common"
+version = "1.0.0"
+description = "Constants and types used in VFlow runtimes"
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license = "GPL-3.0-only"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[lints]
+workspace = true
+
+[dependencies]
+sp-runtime = {workspace = true}
+frame-support = {workspace = true}
+frame-system = {workspace = true}
+frame-executive = {workspace = true}
+frame-metadata-hash-extension = {workspace = true}
+cumulus-primitives-core = {workspace = true}
+cumulus-pallet-aura-ext = {workspace = true}
+cumulus-primitives-storage-weight-reclaim = {workspace = true}
+sp-core = {workspace = true}
+sp-std = {workspace = true}
+
+# Frontier
+fp-account = {workspace = true}
+fp-evm = {workspace = true}
+fp-self-contained = {workspace = true, features = ["serde"]}
+precompile-utils = {workspace = true}
+pallet-evm = {workspace = true}
+pallet-xcm = {workspace = true}
+pallet-transaction-payment = {workspace = true}
+xcm = {workspace = true}
+
+[build-dependencies]
+substrate-wasm-builder = {workspace = true}
+
+[dev-dependencies]
+ethereum = {workspace = true}
+hex = {workspace = true, features = ["std"]}
+
+[features]
+default = [ "std" ]
+std = [
+	"fp-account/std",
+	"fp-evm/std",
+  "fp-self-contained/std",
+	"sp-runtime/std",
+	"frame-support/std",
+	"frame-system/std",
+  "frame-executive/std",
+  "frame-metadata-hash-extension/std",
+	"cumulus-primitives-core/std",
+  "cumulus-pallet-aura-ext/std",
+  "cumulus-primitives-storage-weight-reclaim/std",
+  "sp-core/std",
+	"sp-std/std",
+  "pallet-xcm/std",
+  "precompile-utils/std",
+	"xcm/std",
+	"pallet-evm/std",
+  "pallet-transaction-payment/std",
+]
+
+runtime-benchmarks = [
+	"sp-runtime/runtime-benchmarks",
+	"frame-support/runtime-benchmarks",
+	"cumulus-primitives-core/runtime-benchmarks",
+  "frame-system/runtime-benchmarks",
+  "pallet-evm/runtime-benchmarks",
+  "pallet-xcm/runtime-benchmarks",
+]
+
+try-runtime = [
+	"sp-runtime/try-runtime",
+	"frame-support/try-runtime",
+	"frame-system/try-runtime",
+  "pallet-evm/try-runtime",
+  "pallet-xcm/try-runtime",
+]
+
+metadata-hash = [ "substrate-wasm-builder/metadata-hash" ]

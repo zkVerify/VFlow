@@ -13,18 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::{configs::xcm::*, Runtime, RuntimeOrigin};
+use frame_support::dispatch::{DispatchInfo, PostDispatchInfo};
 use pallet_evm::AddressMapping;
 use precompile_utils::prelude::*;
 use sp_core::{H256, U256};
+use sp_runtime::traits::{Dispatchable, Get};
 use sp_std::{boxed::Box, marker::PhantomData, vec};
-use xcm::v5::{Asset, Assets, Fungibility, Junction, Location};
+use xcm::v5::{Asset, AssetId, Assets, Fungibility, Junction, Location};
 use xcm::{VersionedAssets, VersionedLocation};
 
-pub struct XcmTeleportPrecompile<Runtime>(PhantomData<Runtime>);
+pub struct XcmTeleportPrecompile<R, O, C, L, A>(PhantomData<(R, O, C, L, A)>);
 
 #[precompile_utils::precompile]
-impl XcmTeleportPrecompile<Runtime> {
+impl<R, O, C, L, A> XcmTeleportPrecompile<R, O, C, L, A>
+where
+    R: pallet_xcm::Config + pallet_evm::Config<RuntimeOrigin = O>,
+    C: Dispatchable<Info = DispatchInfo, PostInfo = PostDispatchInfo>
+        + core::convert::From<pallet_xcm::Call<R>>,
+    <R as frame_system::Config>::RuntimeCall:
+        Dispatchable<Info = DispatchInfo, PostInfo = PostDispatchInfo> + From<C>,
+    O: core::convert::From<
+        frame_system::RawOrigin<
+            <<R as pallet_evm::Config>::AccountProvider as fp_evm::AccountProvider>::AccountId,
+        >,
+    >,
+    L: Get<Location>,
+    A: Get<AssetId>,
+{
     #[precompile::public("teleportToRelayChain(bytes32,uint256)")]
     fn teleport_to_relay_chain(
         handle: &mut impl PrecompileHandle,
@@ -36,12 +51,11 @@ impl XcmTeleportPrecompile<Runtime> {
         handle.record_cost(1000)?;
 
         // We use IdentityAddressMapping, so no db access
-        let account_id = <Runtime as pallet_evm::Config>::AddressMapping::into_account_id(
-            handle.context().caller,
-        );
-        let origin: RuntimeOrigin = frame_system::RawOrigin::Signed(account_id).into();
+        let account_id =
+            <R as pallet_evm::Config>::AddressMapping::into_account_id(handle.context().caller);
+        let origin: O = frame_system::RawOrigin::Signed(account_id).into();
 
-        let destination = VersionedLocation::V5(RelayLocation::get());
+        let destination = VersionedLocation::V5(L::get());
 
         let beneficiary = VersionedLocation::V5(Location::new(
             0,
@@ -54,20 +68,21 @@ impl XcmTeleportPrecompile<Runtime> {
         let amount_u128: u128 = amount.try_into().map_err(|_| revert("Amount too large"))?;
 
         let assets = VersionedAssets::V5(Assets::from(vec![Asset {
-            id: NativeAssetId::get(),
+            id: A::get(),
             fun: Fungibility::Fungible(amount_u128),
         }]));
 
         let fee_asset_item = 0;
 
-        let call = pallet_xcm::Call::<Runtime>::teleport_assets {
+        let call: C = pallet_xcm::Call::<R>::teleport_assets {
             dest: Box::new(destination),
             beneficiary: Box::new(beneficiary),
             assets: Box::new(assets),
             fee_asset_item,
-        };
+        }
+        .into();
 
-        RuntimeHelper::<Runtime>::try_dispatch(handle, origin, call, 0)?;
+        RuntimeHelper::<R>::try_dispatch::<C>(handle, origin, call, 0)?;
 
         Ok(())
     }

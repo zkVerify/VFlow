@@ -26,7 +26,7 @@ use fc_rpc::EthTask;
 pub use fc_rpc_core::types::{FeeHistoryCache, FeeHistoryCacheLimit, FilterPool};
 use fc_storage::StorageOverride;
 use futures::{future, prelude::*};
-use vflow_runtime::opaque::Block;
+use vflow_volta_runtime::opaque::Block;
 // Substrate
 use sc_client_api::BlockchainEvents;
 use sc_network_sync::SyncingService;

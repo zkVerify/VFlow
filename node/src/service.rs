@@ -51,7 +51,7 @@ use sp_core::U256;
 use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Header;
 use substrate_prometheus_endpoint::Registry;
-use vflow_runtime::{
+use vflow_volta_runtime::{
     configs::evm::TransactionConverter,
     opaque::{Block, Hash},
     RuntimeApi,
@@ -714,7 +714,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
             inherent_data: &mut sp_inherents::InherentData,
         ) -> Result<(), sp_inherents::Error> {
             TIMESTAMP.with(|x| {
-                *x.borrow_mut() += vflow_runtime::constants::SLOT_DURATION;
+                *x.borrow_mut() += vflow_volta_runtime::constants::SLOT_DURATION;
                 inherent_data.put_data(sp_timestamp::INHERENT_IDENTIFIER, &*x.borrow())
             })
         }

@@ -23,7 +23,8 @@ serde = {workspace = true, features = ["derive"]}
 serde_json = {workspace = true, features = ["std"]}
 
 # Local
-vflow-runtime = {workspace = true}
+vflow-volta-runtime = {workspace = true}
+vflow-mainnet-runtime = {workspace = true}
 
 # Substrate
 frame-benchmarking = {workspace = true}
@@ -113,7 +114,8 @@ runtime-benchmarks = [
 	"polkadot-runtime-common/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"vflow-runtime/runtime-benchmarks",
+	"vflow-volta-runtime/runtime-benchmarks",
+	"vflow-mainnet-runtime/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-system/try-runtime",
@@ -121,7 +123,8 @@ try-runtime = [
 	"polkadot-cli/try-runtime",
 	"polkadot-runtime-common/try-runtime",
 	"sp-runtime/try-runtime",
-	"vflow-runtime/try-runtime",
+	"vflow-volta-runtime/try-runtime",
+	"vflow-mainnet-runtime/try-runtime",
 ]
 txpool = [ "fc-rpc/txpool" ]
-metadata-hash = [ "vflow-runtime/metadata-hash" ]
+metadata-hash = [ "vflow-volta-runtime/metadata-hash", "vflow-mainnet-runtime/metadata-hash" ]

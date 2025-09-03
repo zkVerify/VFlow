@@ -24,7 +24,7 @@ use cumulus_primitives_core::ParaId;
 // Frontier
 use frame_system::Call as SystemCall;
 use parity_scale_codec::Encode;
-use vflow_runtime::{self as runtime, AccountId};
+use vflow_volta_runtime::{self as runtime, AccountId};
 // Substrate
 use sc_client_api::BlockBackend;
 use sc_client_api::UsageProvider;

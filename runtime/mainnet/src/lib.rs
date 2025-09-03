@@ -31,7 +31,6 @@ pub use precompiles::Precompiles;
 mod tests;
 pub mod types;
 mod weights;
-mod xcm_teleport;
 
 /// In this module, we're re-export all dependencies needed by special weight modules.
 pub(crate) mod weights_aliases {
@@ -170,7 +169,7 @@ impl_opaque_keys! {
 // Version of the runtime.
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: Cow::Borrowed("tvflow-runtime"),
+    spec_name: Cow::Borrowed("vflow-runtime"),
     impl_name: Cow::Borrowed("vflow-node"),
     authoring_version: 1,
     spec_version: 1_000_000,

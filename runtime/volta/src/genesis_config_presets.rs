@@ -281,6 +281,7 @@ pub fn testnet_config_genesis() -> serde_json::Value {
     let sudo = hex!("96e74657b82f6865f15f3280667cda5a6dd79c51").into();
 
     genesis(
+        // parachain id
         1.into(),
         // Initial PoA authorities
         initial_authorities,
@@ -298,7 +299,7 @@ pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
     let cfg = match id.as_ref() {
         "development" => development_config_genesis(),
         "local" => local_config_genesis(),
-        "testnet" => testnet_config_genesis(),
+        "volta" => testnet_config_genesis(),
         _ => return None,
     };
     Some(
@@ -312,6 +313,6 @@ pub fn preset_names() -> Vec<PresetId> {
     vec![
         PresetId::from("development"),
         PresetId::from("local"),
-        PresetId::from("testnet"),
+        PresetId::from("volta"),
     ]
 }

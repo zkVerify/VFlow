@@ -1,5 +1,5 @@
 [package]
-name = "vflow-runtime"
+name = "vflow-mainnet-runtime"
 version = "1.0.0"
 description = "VFlow Runtime"
 authors.workspace = true
@@ -15,6 +15,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 workspace = true
 
 [dependencies]
+vflow-runtime-common = {workspace = true}
 parity-scale-codec = {workspace = true, features = ["derive"]}
 scale-info = {workspace = true, features = ["derive"]}
 hex-literal = {workspace = true}
@@ -187,6 +188,7 @@ std = [
 	"xcm-executor/std",
 	"xcm-primitives/std",
 	"xcm/std",
+  "vflow-runtime-common/std",
 ]
 
 runtime-benchmarks = [
@@ -220,6 +222,7 @@ runtime-benchmarks = [
 	"xcm-builder/runtime-benchmarks",
 	"xcm-executor/runtime-benchmarks",
 	"xcm-primitives/runtime-benchmarks",
+  "vflow-runtime-common/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -253,6 +256,7 @@ try-runtime = [
 	"parachain-info/try-runtime",
 	"polkadot-runtime-common/try-runtime",
 	"sp-runtime/try-runtime",
+  "vflow-runtime-common/try-runtime",
 ]
 
 # A feature that should be enabled when the runtime should be built for on-chain

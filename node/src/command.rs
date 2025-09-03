@@ -24,7 +24,7 @@ use sc_cli::{
 };
 use sc_service::config::{BasePath, PrometheusConfig};
 use sp_runtime::traits::AccountIdConversion;
-use vflow_runtime::Block;
+use vflow_volta_runtime::Block;
 
 use crate::{
     chain_spec,
@@ -34,10 +34,14 @@ use crate::{
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
     Ok(match id {
-        "" | "test" | "testnet" => Box::new(GenericChainSpec::from_json_bytes(
+        "" | "mainnet" => Box::new(GenericChainSpec::from_json_bytes(
+            &include_bytes!("../chain-specs/vflow_mainnet.json")[..],
+        )?),
+        "test" | "testnet" | "volta" => Box::new(GenericChainSpec::from_json_bytes(
             &include_bytes!("../chain-specs/vflow_volta.json")[..],
         )?),
         "testnet_build" => Box::new(chain_spec::testnet_config()?),
+        "mainnet_build" => Box::new(chain_spec::mainnet_config()?),
         "dev" => Box::new(chain_spec::development_config()?),
         "local" => Box::new(chain_spec::local_testnet_config()?),
         path => Box::new(GenericChainSpec::from_json_file(std::path::PathBuf::from(
