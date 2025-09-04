@@ -20,11 +20,16 @@ pub use vflow_runtime_common::constants::{
 pub use crate::{AllPalletsWithSystem, Runtime, RuntimeCall};
 use vflow_runtime_common::types as ct;
 
+use sp_runtime::generic;
+
 /// Unchecked extrinsic type as expected by this runtime.
 pub type UncheckedExtrinsic = ct::UncheckedExtrinsic<Runtime, RuntimeCall>;
 
 /// Block type as expected by this runtime.
 pub type Block = ct::Block<Runtime, RuntimeCall>;
+
+/// The payload being signed in transactions.
+pub type SignedPayload = generic::SignedPayload<RuntimeCall, SignedExtra>;
 
 /// The SignedExtension to the basic transaction logic.
 pub type SignedExtra = ct::SignedExtra<Runtime>;

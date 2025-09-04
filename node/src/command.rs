@@ -24,12 +24,11 @@ use sc_cli::{
 };
 use sc_service::config::{BasePath, PrometheusConfig};
 use sp_runtime::traits::AccountIdConversion;
-use vflow_volta_runtime::Block;
 
 use crate::{
     chain_spec,
     cli::{Cli, RelayChainCli, Subcommand},
-    service::new_partial,
+    service::{self, new_partial, IdentifyVariant},
 };
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
@@ -211,7 +210,7 @@ pub fn run() -> Result<()> {
                 BenchmarkCmd::Pallet(cmd) => {
                     if cfg!(feature = "runtime-benchmarks") {
                         runner.sync_run(|config| {
-                            cmd.run_with_spec::<sp_runtime::traits::HashingFor<Block>, crate::service::HostFunctions>(
+                            cmd.run_with_spec::<sp_runtime::traits::HashingFor<service::Block>, service::HostFunctions>(
                                 Some(config.chain_spec),
                             )
                         })
@@ -244,7 +243,7 @@ pub fn run() -> Result<()> {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};
 
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
-                    let ext_builder = RemarkBuilder::new(partials.client.clone());
+                    let ext_builder = RemarkBuilder::new(partials.client.clone(), config.chain_spec.identify_chain());
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)
                             .map(|e| e.para_id)

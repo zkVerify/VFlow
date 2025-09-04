@@ -17,8 +17,7 @@
 
 use crate::{
     configs::system::{ProxyType, ReservedXcmpWeight},
-    AccountId,
-    BlockNumber, Runtime, RuntimeEvent,
+    AccountId, BlockNumber, Runtime, RuntimeEvent,
 };
 use frame_support::ensure;
 use frame_system::EnsureRoot;

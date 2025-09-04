@@ -43,6 +43,7 @@ extern crate alloc;
 
 use alloc::{borrow::Cow, string::String};
 
+pub use frame_system::Call as SystemCall;
 use frame_support::{
     construct_runtime,
     genesis_builder_helper::{build_state, get_preset},
@@ -75,8 +76,7 @@ use sp_version::RuntimeVersion;
 
 pub use vflow_runtime_common::*;
 
-use crate::{currency::VFY, types::ConsensusHook};
-pub use crate::types::{Block, Executive, UncheckedExtrinsic};
+use crate::types::{Block, ConsensusHook, Executive, UncheckedExtrinsic};
 
 impl fp_self_contained::SelfContainedCall for RuntimeCall {
     type SignedInfo = H160;
@@ -672,7 +672,7 @@ impl_runtime_apis! {
 
             pub mod xcm {
                 use super::*;
-                use crate::{configs::monetary::*, configs::xcm::*, constants::currency::CENTS};
+                use crate::{configs::monetary::*, configs::xcm::*, constants::currency::{CENTS, VFY}};
                 use frame_support::parameter_types;
                 use xcm::v5::{Asset, AssetId, Assets, Location, InteriorLocation, Junction, Junctions::Here, NetworkId, Response, Fungibility::Fungible, Parent};
                 use frame_benchmarking::BenchmarkError;

@@ -23,7 +23,6 @@ use sp_core::{Pair, Public, H160};
 use sp_genesis_builder::PresetId;
 
 const ENDOWMENT: Balance = 1_000_000 * VFY;
-
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
 struct AccountEntry<'a> {
@@ -42,6 +41,18 @@ impl<'a> AccountEntry<'a> {
     }
 }
 
+const DEFAULT_ENDOWED_SEEDS: &[AccountEntry<'static>] = &[
+    AccountEntry::new("Alith", hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
+    AccountEntry::new(
+        "Baltathar",
+        hex!("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0"),
+    ),
+    AccountEntry::new("Charleth", hex!("798d4Ba9baf0064Ec19eB4F0a1a45785ae9D6DFc")),
+    AccountEntry::new("Doroty", hex!("773539d4Ac0e786233D90A233654ccEE26a613D9")),
+    AccountEntry::new("Ethan", hex!("Ff64d3F6efE2317EE2807d223a0Bdc4c0c49dfDB")),
+    AccountEntry::new("Faith", hex!("C0F0f4ab324C46e55D02D0033343B4Be8A55532d")),
+];
+
 /// Generate a crypto pair from seed.
 pub fn try_get_from_seed_url<TPublic: Public>(
     seed: &str,
@@ -52,6 +63,13 @@ pub fn try_get_from_seed_url<TPublic: Public>(
 /// Generate a crypto pair from seed.
 pub fn get_from_seed_url<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
     try_get_from_seed_url::<TPublic>(seed).expect("static values are valid; qed")
+}
+
+/// Generate a crypto pair from seed.
+pub fn get_from_substrate_account<TPublic: Public>(
+    account: &str,
+) -> <TPublic::Pair as Pair>::Public {
+    get_from_seed_url::<TPublic>(&format!("//{account}"))
 }
 
 fn from_ss58check<T: sp_core::crypto::Ss58Codec>(
@@ -160,6 +178,86 @@ impl FundedAccount {
     }
 }
 
+pub fn development_config_genesis() -> serde_json::Value {
+    let balances = DEFAULT_ENDOWED_SEEDS
+        .iter()
+        .map(|entry| FundedAccount::from_account_entry(entry, ENDOWMENT))
+        .collect::<Vec<_>>();
+
+    let authorities_num = 2;
+    let initial_authorities = DEFAULT_ENDOWED_SEEDS
+        .iter()
+        .take(authorities_num)
+        .map(|entry| {
+            (
+                entry.eth_addr.into(),
+                get_from_substrate_account::<AuraId>(entry.seed),
+            )
+        })
+        .collect::<Vec<_>>();
+
+    genesis(
+        // Para id
+        2000.into(),
+        // Initial PoA authorities
+        initial_authorities,
+        // Sudo account
+        DEFAULT_ENDOWED_SEEDS[0].eth_addr.into(),
+        // Pre-funded accounts
+        balances
+            .iter()
+            .map(FundedAccount::json_data)
+            .collect::<Vec<_>>(),
+        // EVM chain id
+        9999,
+        // Account allowed to deploy contracts
+        DEFAULT_ENDOWED_SEEDS
+            .iter()
+            .map(|entry| entry.eth_addr.into())
+            .collect::<Vec<_>>(),
+    )
+}
+
+pub fn local_config_genesis() -> serde_json::Value {
+    let balances = DEFAULT_ENDOWED_SEEDS
+        .iter()
+        .map(|entry| FundedAccount::from_account_entry(entry, ENDOWMENT))
+        .collect::<Vec<_>>();
+
+    let authorities_num = 2;
+    let initial_authorities = DEFAULT_ENDOWED_SEEDS
+        .iter()
+        .take(authorities_num)
+        .map(|entry| {
+            (
+                entry.eth_addr.into(),
+                get_from_substrate_account::<AuraId>(entry.seed),
+            )
+        })
+        .collect::<Vec<_>>();
+
+    genesis(
+        2000.into(),
+        // Initial PoA authorities
+        initial_authorities,
+        // Sudo account
+        DEFAULT_ENDOWED_SEEDS[0].eth_addr.into(),
+        // Pre-funded accounts
+        balances
+            .iter()
+            .take(authorities_num)
+            .map(FundedAccount::json_data)
+            .collect::<Vec<_>>(),
+        // EVM chain id
+        9999,
+        // Account allowed to deploy contracts
+        DEFAULT_ENDOWED_SEEDS
+            .iter()
+            .map(|entry| entry.eth_addr.into())
+            .collect::<Vec<_>>(),
+    )
+}
+
 pub fn mainnet_config_genesis() -> serde_json::Value {
     fn aura(p: &str) -> AuraId {
         from_ss58check(p).expect("Aura is valid. qed")
@@ -198,7 +296,9 @@ pub fn mainnet_config_genesis() -> serde_json::Value {
 
 pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
     let cfg = match id.as_ref() {
-        "mainnet" => mainnet_config_genesis(),
+        "development" => development_config_genesis(),
+        "local" => local_config_genesis(),
+        "volta" => mainnet_config_genesis(),
         _ => return None,
     };
     Some(
@@ -209,5 +309,9 @@ pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
 }
 
 pub fn preset_names() -> Vec<PresetId> {
-    vec![PresetId::from("mainnet")]
+    vec![
+        PresetId::from("development"),
+        PresetId::from("local"),
+        PresetId::from("mainnet"),
+    ]
 }

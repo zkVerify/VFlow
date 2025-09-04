@@ -60,6 +60,7 @@ sp-core = {workspace = true}
 sp-inherents = {workspace = true}
 sp-io = {workspace = true}
 sp-keystore = {workspace = true}
+sp-keyring = {workspace = true}
 sp-runtime = {workspace = true}
 sp-timestamp = {workspace = true}
 substrate-frame-rpc-system = {workspace = true}
