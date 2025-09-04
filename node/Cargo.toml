@@ -30,7 +30,7 @@ vflow-mainnet-runtime = {workspace = true}
 # Substrate
 frame-benchmarking = {workspace = true}
 frame-benchmarking-cli = {workspace = true}
-frame-metadata-hash-extension = {workspace = true, optional = true}
+frame-metadata-hash-extension = {workspace = true}
 frame-system = {workspace = true}
 pallet-transaction-payment-rpc = {workspace = true}
 pallet-transaction-payment = {workspace = true}
@@ -106,7 +106,6 @@ substrate-build-script-utils = {workspace = true}
 default = [ "txpool" ]
 runtime-benchmarks = [
 	"cumulus-primitives-core/runtime-benchmarks",
-	"dep:frame-metadata-hash-extension",
 	"frame-benchmarking-cli/runtime-benchmarks",
 	"frame-benchmarking/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",

@@ -238,12 +238,14 @@ pub fn run() -> Result<()> {
                     let storage = partials.backend.expose_storage();
                     cmd.run(config, partials.client.clone(), db, storage)
                 }),
-                #[cfg(feature = "runtime-benchmarks")]
                 BenchmarkCmd::Overhead(cmd) => runner.sync_run(|config| {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};
 
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
-                    let ext_builder = RemarkBuilder::new(partials.client.clone(), config.chain_spec.identify_chain());
+                    let ext_builder = RemarkBuilder::new(
+                        partials.client.clone(),
+                        config.chain_spec.identify_chain(),
+                    );
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)
                             .map(|e| e.para_id)
@@ -258,11 +260,6 @@ pub fn run() -> Result<()> {
                         true, // It's a parachain -> should record the rpoof
                     )
                 }),
-                #[cfg(not(feature = "runtime-benchmarks"))]
-                BenchmarkCmd::Overhead(_) => Err(sc_cli::Error::Input(
-                    "Compile with --features=runtime-benchmarks to enable overhead benchmarks."
-                        .into(),
-                )),
                 BenchmarkCmd::Machine(cmd) => {
                     runner.sync_run(|config| cmd.run(&config, SUBSTRATE_REFERENCE_HARDWARE.clone()))
                 }

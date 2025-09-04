@@ -24,12 +24,12 @@ use cumulus_primitives_core::ParaId;
 // Frontier
 use parity_scale_codec::Encode;
 // Substrate
-use vflow_volta_runtime::AccountId;
 use sc_client_api::BlockBackend;
 use sc_client_api::UsageProvider;
 use sp_core::{ecdsa, Pair};
 use sp_inherents::{InherentData, InherentDataProvider};
 use sp_runtime::{generic::Era, OpaqueExtrinsic, SaturatedConversion};
+use vflow_volta_runtime::AccountId;
 
 use crate::service::{Chain, ParachainClient};
 
@@ -115,7 +115,12 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
         // We apply the extrinsic directly, so let's take some random period.
         let period = 128;
         let best = self.client.usage_info().chain.best_hash;
-        let genesis = self.client.block_hash(0).ok().flatten().expect("Genesis exists; qed");
+        let genesis = self
+            .client
+            .block_hash(0)
+            .ok()
+            .flatten()
+            .expect("Genesis exists; qed");
         let signer = ecdsa::Pair::from_string("//Bob", None).expect("static values are valid; qed");
         let current_block = 0;
 
@@ -179,7 +184,8 @@ fn volta_sign_call(
         ),
     );
 
-    let signature = raw_payload.using_encoded(|e| acc.sign_prehashed(&sp_io::hashing::keccak_256(e)));
+    let signature =
+        raw_payload.using_encoded(|e| acc.sign_prehashed(&sp_io::hashing::keccak_256(e)));
 
     runtime::types::UncheckedExtrinsic::new_signed(
         call,
@@ -232,7 +238,8 @@ fn mainnet_sign_call(
         ),
     );
 
-    let signature = raw_payload.using_encoded(|e| acc.sign_prehashed(&sp_io::hashing::keccak_256(e)));
+    let signature =
+        raw_payload.using_encoded(|e| acc.sign_prehashed(&sp_io::hashing::keccak_256(e)));
 
     runtime::types::UncheckedExtrinsic::new_signed(
         call,

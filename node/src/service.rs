@@ -119,9 +119,6 @@ pub trait IdentifyVariant {
     /// Returns true if this is a configuration for the `VFlow Mainnet` network.
     fn is_vflow(&self) -> bool;
 
-    /// Returns true if this configuration is for a development network.
-    fn is_dev(&self) -> bool;
-
     /// Identifies the variant of the chain.
     fn identify_chain(&self) -> Chain;
 }
@@ -132,13 +129,9 @@ impl IdentifyVariant for Box<dyn ChainSpec> {
     }
 
     fn is_vflow(&self) -> bool {
-        self.id().starts_with("vflow_mainnet") ||
-        self.id().starts_with("vflow") ||
-        self.id().starts_with("mainnet")
-    }
-
-    fn is_dev(&self) -> bool {
-        self.id().ends_with("dev")
+        self.id().starts_with("vflow_mainnet")
+            || self.id().starts_with("vflow")
+            || self.id().starts_with("mainnet")
     }
 
     fn identify_chain(&self) -> Chain {

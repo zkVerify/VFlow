@@ -44,7 +44,7 @@ mod constant_tests {
 mod runtime_tests {
     use super::*;
     use crate::configs::system::SS58Prefix;
-    use constants::{currency::*, *};
+    use constants::currency::*;
     use frame_support::{pallet_prelude::Weight, PalletId};
 
     #[test]
