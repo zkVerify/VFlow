@@ -18,6 +18,32 @@ use sp_runtime::Perbill;
 
 use crate::types::BlockNumber;
 
+pub mod currency {
+    use crate::types::Balance;
+
+    #[allow(non_upper_case_globals)]
+    pub const VFY: Balance = 1_000_000_000_000_000_000; // we have 18 decimals, so 1 VFY is 1*10^18
+    pub const CENTS: Balance = VFY / 100;
+    pub const MILLIS: Balance = VFY / 1000;
+    pub const MILLICENTS: Balance = CENTS / 1_000;
+    pub const MICROCENTS: Balance = MILLICENTS / 1_000;
+    pub const GRAND: Balance = 1_000 * VFY;
+
+    #[cfg(not(feature = "runtime-benchmarks"))]
+    pub const EXISTENTIAL_DEPOSIT: Balance = 0;
+
+    #[cfg(feature = "runtime-benchmarks")]
+    // The meaning of `EXISTENTIAL_DEPOSIT` for runtime benchmarks is just a way to
+    // fall or not in some cases that you want to benchmark. You're not testing the runtime
+    // correctness here, so you can set any value that makes the benchmarks happy without
+    // compromising the results.
+    pub const EXISTENTIAL_DEPOSIT: Balance = 100;
+
+    pub const fn deposit(items: u32, bytes: u32) -> Balance {
+        items as Balance * 200 * CENTS + (bytes as Balance) * 100 * MILLICENTS
+    }
+}
+
 /// This determines the average expected block time that we are targeting.
 /// Blocks will be produced at a minimum duration defined by `SLOT_DURATION`.
 /// `SLOT_DURATION` is picked up by `pallet_timestamp` which is in turn picked

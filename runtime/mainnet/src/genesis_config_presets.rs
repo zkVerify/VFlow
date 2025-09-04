@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::constants::currency::tVFY;
-use crate::{AccountId, Balance, Precompiles, Runtime, SessionKeys};
+use crate::{currency::VFY, AccountId, Balance, Precompiles, Runtime, SessionKeys};
 use alloc::{collections::BTreeMap, format, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
@@ -22,6 +21,8 @@ use parachains_common::AuraId;
 use sp_core::crypto::SecretStringError;
 use sp_core::{Pair, Public, H160};
 use sp_genesis_builder::PresetId;
+
+const ENDOWMENT: Balance = 1_000_000 * VFY;
 
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
@@ -39,6 +40,18 @@ impl<'a> AccountEntry<'a> {
     const fn new(seed: &'a str, eth_addr: [u8; 20]) -> Self {
         Self { seed, eth_addr }
     }
+}
+
+/// Generate a crypto pair from seed.
+pub fn try_get_from_seed_url<TPublic: Public>(
+    seed: &str,
+) -> Result<<TPublic::Pair as Pair>::Public, SecretStringError> {
+    TPublic::Pair::from_string(seed, None).map(|pair| pair.public())
+}
+
+/// Generate a crypto pair from seed.
+pub fn get_from_seed_url<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
+    try_get_from_seed_url::<TPublic>(seed).expect("static values are valid; qed")
 }
 
 fn from_ss58check<T: sp_core::crypto::Ss58Codec>(

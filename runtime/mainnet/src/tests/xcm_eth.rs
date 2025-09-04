@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     configs::xcm::RelayLocation,
-    constants::currency::tVFY,
+    constants::currency::VFY,
     tests::{ExtBuilder, ALICE, BOB},
     Balances, RuntimeCall, RuntimeOrigin,
 };
@@ -55,11 +55,11 @@ fn xcm_evm_create_eip_1559_transaction(bytecode: &[u8]) -> EthereumXcmTransactio
 #[test]
 fn xcm_can_do_direct_eth_transfer() {
     ExtBuilder::default()
-        .with_balances(vec![(ALICE.into(), tVFY), (BOB.into(), tVFY)])
+        .with_balances(vec![(ALICE.into(), VFY), (BOB.into(), VFY)])
         .build()
         .execute_with(|| {
             let balances_before = Balances::free_balance(AccountId::from(BOB));
-            let tx_value = tVFY / 2;
+            let tx_value = VFY / 2;
             assert_ok!(pallet_ethereum_xcm::Pallet::<Runtime>::transact(
                 RawOrigin::XcmEthereumTransaction(ALICE.into()).into(),
                 xcm_evm_transfer_eip_1559_transaction(BOB.into(), U256::from(tx_value)),
@@ -75,10 +75,10 @@ fn xcm_can_do_direct_eth_transfer() {
 #[test]
 fn alice_cannot_do_direct_eth_transfer() {
     ExtBuilder::default()
-        .with_balances(vec![(ALICE.into(), tVFY), (BOB.into(), tVFY)])
+        .with_balances(vec![(ALICE.into(), VFY), (BOB.into(), VFY)])
         .build()
         .execute_with(|| {
-            let tx_value = tVFY / 2;
+            let tx_value = VFY / 2;
             assert_noop!(
                 pallet_ethereum_xcm::Pallet::<Runtime>::transact(
                     RuntimeOrigin::signed(ALICE.into()),
@@ -92,12 +92,12 @@ fn alice_cannot_do_direct_eth_transfer() {
 #[test]
 fn can_call_eth_from_xcm() {
     ExtBuilder::default()
-        .with_balances(vec![(ALICE.into(), tVFY), (BOB.into(), tVFY)])
+        .with_balances(vec![(ALICE.into(), VFY), (BOB.into(), VFY)])
         .build()
         .execute_with(|| {
             let balances_before = Balances::free_balance(AccountId::from(BOB));
-            let tx_value = tVFY / 10;
-            let xcm_cost = tVFY / 2;
+            let tx_value = VFY / 10;
+            let xcm_cost = VFY / 2;
             let eth_call_bytes =
                 RuntimeCall::from(pallet_ethereum_xcm::Call::<Runtime>::transact {
                     xcm_transaction: xcm_evm_transfer_eip_1559_transaction(
@@ -137,7 +137,7 @@ fn can_call_eth_from_xcm() {
 #[test]
 fn cannot_create_eth_from_xcm() {
     ExtBuilder::default()
-        .with_balances(vec![(ALICE.into(), tVFY)])
+        .with_balances(vec![(ALICE.into(), VFY)])
         .build()
         .execute_with(|| {
             assert_noop!(
@@ -162,10 +162,10 @@ fn cannot_create_eth_from_xcm() {
 #[test]
 fn cannot_call_transact_remark_from_xcm() {
     ExtBuilder::default()
-        .with_balances(vec![(ALICE.into(), tVFY), (BOB.into(), tVFY)])
+        .with_balances(vec![(ALICE.into(), VFY), (BOB.into(), VFY)])
         .build()
         .execute_with(|| {
-            let xcm_cost = tVFY / 2;
+            let xcm_cost = VFY / 2;
             let eth_call_bytes = RuntimeCall::from(frame_system::Call::<Runtime>::remark {
                 remark: hex_literal::hex!("beeb").to_vec(),
             })

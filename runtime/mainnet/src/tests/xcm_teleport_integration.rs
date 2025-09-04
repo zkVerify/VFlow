@@ -1,6 +1,6 @@
 use crate::{
     configs::xcm::{NativeAssetId, RelayLocation},
-    constants::currency::tVFY,
+    constants::currency::VFY,
     tests::ALICE,
     AccountId, Runtime, RuntimeOrigin, ZKVXcm,
 };
@@ -15,7 +15,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
         .unwrap();
 
     pallet_balances::GenesisConfig::<Runtime> {
-        balances: vec![(ALICE.into(), 10 * tVFY)],
+        balances: vec![(ALICE.into(), 10 * VFY)],
     }
     .assimilate_storage(&mut t)
     .unwrap();
@@ -58,7 +58,7 @@ fn can_teleport_vfy_to_relay() {
 
         let assets = VersionedAssets::V5(Assets::from(vec![Asset {
             id: NativeAssetId::get(),
-            fun: Fungibility::Fungible(tVFY),
+            fun: Fungibility::Fungible(VFY),
         }]));
 
         // Verify the construction is valid (no panics)

@@ -58,7 +58,8 @@ pub type Address = AccountId;
 pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
 
 ///// Block type as expected by this runtime.
-pub type Block<Runtime, RuntimeCall> = generic::Block<Header, UncheckedExtrinsic<Runtime, RuntimeCall>>;
+pub type Block<Runtime, RuntimeCall> =
+    generic::Block<Header, UncheckedExtrinsic<Runtime, RuntimeCall>>;
 
 /// The SignedExtension to the basic transaction logic.
 pub type SignedExtra<Runtime> = (
@@ -73,20 +74,20 @@ pub type SignedExtra<Runtime> = (
     frame_metadata_hash_extension::CheckMetadataHash<Runtime>,
     cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim<Runtime>,
 );
-//
-///// Executive: handles dispatch to the various modules.
-//pub type Executive = frame_executive::Executive<
-//    Runtime,
-//    Block,
-//    frame_system::ChainContext<Runtime>,
-//    Runtime,
-//    AllPalletsWithSystem,
-//>;
-//
-///// Configures the number of blocks that can be created without submission of validity proof to the relay chain
-//pub type ConsensusHook = cumulus_pallet_aura_ext::FixedVelocityConsensusHook<
-//    Runtime,
-//    RELAY_CHAIN_SLOT_DURATION_MILLIS,
-//    BLOCK_PROCESSING_VELOCITY,
-//    UNINCLUDED_SEGMENT_CAPACITY,
-//>;
+
+/// Executive: handles dispatch to the various modules.
+pub type Executive<Runtime, RuntimeCall, AllPalletsWithSystem> = frame_executive::Executive<
+    Runtime,
+    Block<Runtime, RuntimeCall>,
+    frame_system::ChainContext<Runtime>,
+    Runtime,
+    AllPalletsWithSystem,
+>;
+
+/// Configures the number of blocks that can be created without submission of validity proof to the relay chain
+pub type ConsensusHook<Runtime> = cumulus_pallet_aura_ext::FixedVelocityConsensusHook<
+    Runtime,
+    RELAY_CHAIN_SLOT_DURATION_MILLIS,
+    BLOCK_PROCESSING_VELOCITY,
+    UNINCLUDED_SEGMENT_CAPACITY,
+>;

@@ -16,8 +16,8 @@
 //! In this module, we provide the configurations for the ethereum-xcm pallet.
 
 use crate::{
-    types::AccountId,
     configs::system::{ProxyType, ReservedXcmpWeight},
+    AccountId,
     BlockNumber, Runtime, RuntimeEvent,
 };
 use frame_support::ensure;

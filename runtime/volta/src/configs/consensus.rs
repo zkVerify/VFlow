@@ -16,12 +16,12 @@
 //! In this module, we provide the configurations about parachain consensus.
 
 use crate::{
-    constants::{HOURS, SLOT_DURATION},
     weights, AccountId, Aura, AuraId, Balances, BlockNumber, CollatorSelection, Runtime,
     RuntimeEvent, Session, SessionKeys,
 };
 use frame_support::{parameter_types, traits::ConstU64, PalletId};
 use frame_system::EnsureRoot;
+use vflow_runtime_common::*;
 
 impl pallet_authorship::Config for Runtime {
     type FindAuthor = pallet_session::FindAccountFromAuthorIndex<Self, Aura>;

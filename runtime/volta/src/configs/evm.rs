@@ -16,10 +16,9 @@
 //! In this module, we provide the configurations about evm.
 
 use crate::{
-    constants::{MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, WEIGHT_PER_GAS},
     opaque, weights, AccountId, Aura, Balances, CollatorSelection, DeploymentPermissions,
     EVMChainId, Precompiles, Runtime, RuntimeEvent, Timestamp, TransactionPayment,
-    UncheckedExtrinsic,
+    UncheckedExtrinsic, MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, WEIGHT_PER_GAS,
 };
 use fp_evm::FeeCalculator;
 use frame_support::{

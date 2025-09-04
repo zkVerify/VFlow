@@ -27,7 +27,7 @@ mod constant_tests {
 
         assert_eq!(CENTS, 1_000 * MILLICENTS);
 
-        assert_eq!(tVFY, 100 * CENTS);
+        assert_eq!(VFY, 100 * CENTS);
 
         #[cfg(not(feature = "runtime-benchmarks"))]
         let expected_existential_deposit = 0;

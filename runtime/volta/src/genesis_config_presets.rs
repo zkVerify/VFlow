@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::constants::currency::tVFY;
-use crate::{AccountId, Balance, Precompiles, Runtime, SessionKeys};
+use crate::{currency::VFY, AccountId, Balance, Precompiles, Runtime, SessionKeys};
 use alloc::{collections::BTreeMap, format, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
@@ -23,7 +22,7 @@ use sp_core::crypto::SecretStringError;
 use sp_core::{Pair, Public, H160};
 use sp_genesis_builder::PresetId;
 
-const ENDOWMENT: Balance = 1_000_000 * tVFY;
+const ENDOWMENT: Balance = 1_000_000 * VFY;
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
 struct AccountEntry<'a> {

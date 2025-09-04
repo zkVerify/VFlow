@@ -21,10 +21,10 @@ use crate::{
         currency::deposit, AVERAGE_ON_INITIALIZE_RATIO, MAXIMUM_BLOCK_WEIGHT, MAX_BLOCK_LENGTH,
         NORMAL_DISPATCH_RATIO, SLOT_DURATION,
     },
-    types::{ConsensusHook, Hash},
+    types::ConsensusHook,
     weights,
     weights::ExtrinsicBaseWeight,
-    AccountId, Aura, Balance, Balances, Block, MessageQueue, Nonce, OriginCaller, PalletInfo,
+    AccountId, Aura, Balance, Balances, Block, Hash, MessageQueue, Nonce, OriginCaller, PalletInfo,
     Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue, VERSION,
 };
 use core::fmt::Debug;

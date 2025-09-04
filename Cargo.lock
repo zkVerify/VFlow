@@ -20948,6 +20948,7 @@ dependencies = [
  "substrate-prometheus-endpoint",
  "tokio",
  "vflow-mainnet-runtime",
+ "vflow-runtime-common",
  "vflow-volta-runtime",
  "zkv-cli",
 ]

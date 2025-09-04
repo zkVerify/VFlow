@@ -714,7 +714,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
             inherent_data: &mut sp_inherents::InherentData,
         ) -> Result<(), sp_inherents::Error> {
             TIMESTAMP.with(|x| {
-                *x.borrow_mut() += vflow_volta_runtime::constants::SLOT_DURATION;
+                *x.borrow_mut() += vflow_runtime_common::SLOT_DURATION;
                 inherent_data.put_data(sp_timestamp::INHERENT_IDENTIFIER, &*x.borrow())
             })
         }

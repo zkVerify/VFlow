@@ -22,7 +22,6 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 pub mod configs;
-pub mod constants;
 mod genesis_config_presets;
 
 mod precompiles;
@@ -74,10 +73,10 @@ use sp_std::prelude::{Vec, *};
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 
-pub use crate::types::{
-    AccountId, Balance, Block, BlockNumber, Executive, Nonce, Signature, UncheckedExtrinsic,
-};
-use crate::{constants::SLOT_DURATION, types::ConsensusHook};
+pub use vflow_runtime_common::*;
+
+use crate::{currency::VFY, types::ConsensusHook};
+pub use crate::types::{Block, Executive, UncheckedExtrinsic};
 
 impl fp_self_contained::SelfContainedCall for RuntimeCall {
     type SignedInfo = H160;
@@ -742,7 +741,7 @@ impl_runtime_apis! {
                     fn worst_case_holding(_depositable_count: u32) -> Assets {
                         vec![Asset {
                             id: FeeAssetId::get(),
-                            fun: Fungible(crate::constants::currency::tVFY),
+                            fun: Fungible(VFY),
                         }].into()
                     }
                 }
@@ -801,9 +800,8 @@ impl_runtime_apis! {
 
                     fn claimable_asset() -> Result<(Location, Location, Assets), BenchmarkError> {
                         // an asset that can be trapped and claimed
-                        use crate::constants::currency::tVFY;
                         let origin = RelayLocation::get();
-                        let assets: Assets = (NativeAssetId::get(), tVFY).into();
+                        let assets: Assets = (NativeAssetId::get(), VFY).into();
                         let ticket = Location { parents: 0, interior: Here };
                         Ok((origin, ticket, assets))
                     }

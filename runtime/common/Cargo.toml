@@ -73,6 +73,7 @@ runtime-benchmarks = [
   "frame-system/runtime-benchmarks",
   "pallet-evm/runtime-benchmarks",
   "pallet-xcm/runtime-benchmarks",
+  "pallet-transaction-payment/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -81,6 +82,10 @@ try-runtime = [
 	"frame-system/try-runtime",
   "pallet-evm/try-runtime",
   "pallet-xcm/try-runtime",
+  "cumulus-pallet-aura-ext/try-runtime",
+  "fp-self-contained/try-runtime",
+  "frame-executive/try-runtime",
+  "pallet-transaction-payment/try-runtime",
 ]
 
 metadata-hash = [ "substrate-wasm-builder/metadata-hash" ]

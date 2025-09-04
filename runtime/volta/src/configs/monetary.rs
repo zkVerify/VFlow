@@ -17,8 +17,8 @@
 //! of pallets used for currency management.
 
 use crate::{
-    constants::currency::EXISTENTIAL_DEPOSIT, weights, AccountId, Balance, Balances,
-    CollatorSelection, Runtime, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason, System,
+    currency::EXISTENTIAL_DEPOSIT, weights, AccountId, Balance, Balances, CollatorSelection,
+    Runtime, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason, System,
 };
 use frame_support::{parameter_types, traits::tokens::imbalance::ResolveTo};
 use pallet_transaction_payment::{Multiplier, TargetedFeeAdjustment};
