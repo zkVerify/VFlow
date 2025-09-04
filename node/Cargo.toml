@@ -60,7 +60,6 @@ sp-core = {workspace = true}
 sp-inherents = {workspace = true}
 sp-io = {workspace = true}
 sp-keystore = {workspace = true}
-sp-keyring = {workspace = true}
 sp-runtime = {workspace = true}
 sp-timestamp = {workspace = true}
 substrate-frame-rpc-system = {workspace = true}
@@ -69,7 +68,6 @@ substrate-prometheus-endpoint = {workspace = true}
 # Polkadot
 polkadot-cli = {workspace = true}
 polkadot-primitives = {workspace = true}
-polkadot-runtime-common = {workspace = true}
 
 # Cumulus
 color-print = {workspace = true}
@@ -112,7 +110,6 @@ runtime-benchmarks = [
 	"pallet-transaction-payment/runtime-benchmarks",
 	"polkadot-cli/runtime-benchmarks",
 	"polkadot-primitives/runtime-benchmarks",
-	"polkadot-runtime-common/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
 	"vflow-runtime-common/runtime-benchmarks",
@@ -123,7 +120,6 @@ try-runtime = [
 	"frame-system/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"polkadot-cli/try-runtime",
-	"polkadot-runtime-common/try-runtime",
 	"sp-runtime/try-runtime",
 	"vflow-runtime-common/try-runtime",
 	"vflow-volta-runtime/try-runtime",
