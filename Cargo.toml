@@ -113,7 +113,7 @@ substrate-wasm-builder = { version = "25.0.1" }
 # Polkadot
 pallet-xcm = { version = "18.1.2", default-features = false }
 pallet-xcm-benchmarks = { version = "18.1.1", default-features = false }
-polkadot-cli = {package = "zkv-cli", git = "https://github.com/zkVerify/zkVerify", tag = "0.9.2-0.16.0"}
+polkadot-cli = {package = "zkv-cli", git = "https://github.com/zkVerify/zkVerify", tag = "0.10.0-1.1.0"}
 polkadot-primitives = { version = "17.1.0", default-features = false }
 polkadot-runtime-common = { version = "18.1.0", default-features = false }
 xcm = { version = "15.1.0", package = "staging-xcm", default-features = false }
@@ -182,9 +182,9 @@ tokio = {version = "1.13"}
 ignored = ["num_enum"]
 
 [patch.crates-io]
-cumulus-relay-chain-inprocess-interface = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.9.2-0.16.0"}
-cumulus-relay-chain-minimal-node = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.9.2-0.16.0"}
-polkadot-omni-node-lib = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.9.2-0.16.0"}
+cumulus-relay-chain-inprocess-interface = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
+cumulus-relay-chain-minimal-node = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
+polkadot-omni-node-lib = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
 
 [patch."https://github.com/paritytech/polkadot-sdk"]
 sc-block-builder = { version = "0.43.0" }
@@ -237,7 +237,7 @@ sp-trie = { version = "38.0.0 "}
 sp-version = { version = "38.0.0" }
 sp-weights = { version = "31.1.0" }
 # Substrate FRAME
-frame-benchmarking = { version = "39.1.0" }
+frame-benchmarking = { version = "39.1.1" }
 frame-executive = { version = "39.1.1" }
 frame-support = { version = "39.1.0" }
 frame-system = { version = "39.1.0" }
@@ -258,7 +258,7 @@ substrate-build-script-utils = { version = "11.0.0" }
 substrate-frame-rpc-system = { version = "42.0.0" }
 substrate-wasm-builder = { version = "25.0.1" }
 cumulus-primitives-storage-weight-reclaim = { version = "9.1.0" }
-substrate-prometheus-endpoint = { version = "0.17.2" }
+substrate-prometheus-endpoint = { version = "0.17.7" }
 
 #[patch."https://github.com/rust-ethereum/ethereum"]
 #ethereum = {version = "0.15.0"}
@@ -278,7 +278,7 @@ xcm = { version = "15.1.0", package = "staging-xcm" }
 
 [patch."https://github.com/moonbeam-foundation/polkadot-sdk"]
 staging-xcm-builder = { version = "18.2.1" }
-xcm-executor = { version = "18.0.3", package = "staging-xcm-executor" }
+xcm-executor = { version = "18.0.5", package = "staging-xcm-executor" }
 pallet-staking = { version = "39.1.0" }
 cumulus-primitives-core = { version = "0.17.0" }
 polkadot-runtime-common = { version = "18.1.0" }
@@ -333,7 +333,7 @@ sp-trie = { version = "38.0.0 "}
 sp-version = { version = "38.0.0" }
 sp-weights = { version = "31.1.0" }
 # Substrate FRAME
-frame-benchmarking = { version = "39.1.0" }
+frame-benchmarking = { version = "39.1.1" }
 frame-executive = { version = "39.1.1" }
 frame-support = { version = "39.1.0" }
 frame-system = { version = "39.1.0" }
@@ -354,7 +354,7 @@ substrate-build-script-utils = { version = "11.0.0" }
 substrate-frame-rpc-system = { version = "42.0.0" }
 substrate-wasm-builder = { version = "25.0.1" }
 cumulus-primitives-storage-weight-reclaim = { version = "9.1.0" }
-substrate-prometheus-endpoint = { version = "0.17.2" }
+substrate-prometheus-endpoint = { version = "0.17.7" }
 
 #[patch."https://github.com/rust-ethereum/ethereum"]
 #ethereum = {version = "0.15.0"}
