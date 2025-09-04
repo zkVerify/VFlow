@@ -16,7 +16,7 @@
 #![allow(dead_code)]
 
 // ExtBuilder impl for all runtime integration tests
-pub use crate::{
+use crate::{
     configs::evm::TransactionConverter, AccountId, Balance, BuildStorage, Runtime, System,
     UncheckedExtrinsic,
 };

@@ -40,6 +40,7 @@ macro_rules! identify_chain {
 		$current_block:ident,
 		$period:ident,
 		$genesis:ident,
+		$best:ident,
 		$signer:ident,
 		$generic_code:expr $(,)*
 	) => {
@@ -69,6 +70,7 @@ macro_rules! identify_chain {
                     $current_block,
                     $period,
                     $genesis,
+                    $best,
                     $signer,
                 ))
             }
@@ -112,7 +114,8 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
     fn build(&self, nonce: u32) -> std::result::Result<OpaqueExtrinsic, &'static str> {
         // We apply the extrinsic directly, so let's take some random period.
         let period = 128;
-        let genesis = self.client.usage_info().chain.best_hash;
+        let best = self.client.usage_info().chain.best_hash;
+        let genesis = self.client.block_hash(0).ok().flatten().expect("Genesis exists; qed");
         let signer = ecdsa::Pair::from_string("//Bob", None).expect("static values are valid; qed");
         let current_block = 0;
 
@@ -122,6 +125,7 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
             current_block,
             period,
             genesis,
+            best,
             signer,
             {
                 runtime::RuntimeCall::System(
@@ -138,6 +142,7 @@ fn volta_sign_call(
     current_block: u64,
     period: u64,
     genesis: sp_core::H256,
+    best: sp_core::H256,
     acc: ecdsa::Pair,
 ) -> OpaqueExtrinsic {
     use vflow_volta_runtime as runtime;
@@ -165,7 +170,7 @@ fn volta_sign_call(
             runtime::VERSION.spec_version,
             runtime::VERSION.transaction_version,
             genesis,
-            genesis,
+            best,
             (),
             (),
             (),

@@ -113,10 +113,10 @@ pub enum Chain {
 
 /// Can be called for a `Configuration` to identify which network the configuration targets.
 pub trait IdentifyVariant {
-    /// Returns true if this is a configuration for the `Volta` network.
+    /// Returns true if this is a configuration for the `VFlow Volta` network.
     fn is_volta(&self) -> bool;
 
-    /// Returns true if this is a configuration for the `zkVerify` network.
+    /// Returns true if this is a configuration for the `VFlow Mainnet` network.
     fn is_vflow(&self) -> bool;
 
     /// Returns true if this configuration is for a development network.
@@ -132,7 +132,9 @@ impl IdentifyVariant for Box<dyn ChainSpec> {
     }
 
     fn is_vflow(&self) -> bool {
-        self.id().starts_with("vflow_mainnet")
+        self.id().starts_with("vflow_mainnet") ||
+        self.id().starts_with("vflow") ||
+        self.id().starts_with("mainnet")
     }
 
     fn is_dev(&self) -> bool {
