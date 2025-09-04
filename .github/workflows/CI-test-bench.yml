@@ -26,7 +26,7 @@ jobs:
           command: >-
             ./target/release/vflow-node benchmark pallet \
               --runtime ./target/release/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm --genesis-builder=runtime \
-              --pallet "*" --extrinsic "*" -s 2 -r 1'
+              --pallet "*" --extrinsic "*" -s 2 -r 1
           use_cache: 'no'
 
       - name: Run benchmarks Mainnet
@@ -35,5 +35,5 @@ jobs:
           command: >-
             ./target/release/vflow-node benchmark pallet \
               --runtime ./target/release/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm --genesis-builder=runtime \
-              --pallet "*" --extrinsic "*" -s 2 -r 1'
+              --pallet "*" --extrinsic "*" -s 2 -r 1
           use_cache: 'no'
