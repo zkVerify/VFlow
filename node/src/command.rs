@@ -33,16 +33,23 @@ use crate::{
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
     Ok(match id {
-        "" | "mainnet" => Box::new(GenericChainSpec::from_json_bytes(
-            &include_bytes!("../chain-specs/vflow_mainnet.json")[..],
-        )?),
+        // Volta
         "test" | "testnet" | "volta" => Box::new(GenericChainSpec::from_json_bytes(
             &include_bytes!("../chain-specs/vflow_volta.json")[..],
         )?),
-        "testnet_build" => Box::new(chain_spec::testnet_config()?),
-        "mainnet_build" => Box::new(chain_spec::mainnet_config()?),
-        "dev" => Box::new(chain_spec::development_config()?),
-        "local" => Box::new(chain_spec::local_testnet_config()?),
+        "testnet_build" | "volta_build" => Box::new(chain_spec::volta_config()?),
+        "dev" | "volta_dev" | "testnet_dev" => Box::new(chain_spec::volta_development_config()?),
+        "volta_local" | "testnet_local" => Box::new(chain_spec::volta_local_testnet_config()?),
+
+        // Mainnet
+        "" | "mainnet" | "vflow" => Box::new(GenericChainSpec::from_json_bytes(
+            &include_bytes!("../chain-specs/vflow_mainnet.json")[..],
+        )?),
+        "mainnet_build" | "vflow_build" => Box::new(chain_spec::mainnet_config()?),
+        "mainnet_dev" | "vflow_dev" => Box::new(chain_spec::mainnet_development_config()?),
+        "mainnet_local" | "vflow_local" => Box::new(chain_spec::mainnet_local_testnet_config()?),
+
+        // Custom
         path => Box::new(GenericChainSpec::from_json_file(std::path::PathBuf::from(
             path,
         ))?),
@@ -257,7 +264,7 @@ pub fn run() -> Result<()> {
                         create_inherent_data(partials.client.clone(), para_id),
                         Vec::new(),
                         &ext_builder,
-                        true, // It's a parachain -> should record the rpoof
+                        true, // It's a parachain -> should record the proof
                     )
                 }),
                 BenchmarkCmd::Machine(cmd) => {
