@@ -64,6 +64,7 @@ RUN apt-get update -qq \
 
 COPY --from=builder "/usr/src/node/target/${PROFILE}/${BINARY}" "/usr/local/bin/"
 COPY --from=builder "/usr/src/node/target/${PROFILE}/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm" "./vflow_volta_runtime.compact.compressed.wasm"
+COPY --from=builder "/usr/src/node/target/${PROFILE}/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm" "./vflow_mainnet_runtime.compact.compressed.wasm"
 RUN chmod -R a+rx "/usr/local/bin"
 
 COPY docker/scripts/entrypoint.sh .
