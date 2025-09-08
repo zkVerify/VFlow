@@ -29,7 +29,7 @@ id = 1
 add_to_genesis = true
 cumulus_based = true
 force_decorator = "generic-evm"
-chain = "dev"
+chain = "volta_dev"
 
 [[parachains.collators]]
 name = "vflow-parachain-collator01"
