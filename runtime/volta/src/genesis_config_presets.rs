@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::{
-    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry,
-    AccountId, Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
-};
 #[cfg(feature = "runtime-benchmarks")]
 use crate::get_from_seed_url;
+use crate::{
+    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry, AccountId, Balance,
+    FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+};
 use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
@@ -26,6 +26,7 @@ use parachains_common::AuraId;
 use sp_core::H160;
 use sp_genesis_builder::PresetId;
 
+const EVM_CHAIN_ID: u64 = 1409;
 const ENDOWMENT: Balance = 1_000_000 * VFY;
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
@@ -130,7 +131,7 @@ pub fn development_config_genesis() -> serde_json::Value {
 
     genesis(
         // Para id
-        2000.into(),
+        1.into(),
         // Initial PoA authorities
         initial_authorities,
         // Sudo account
@@ -141,7 +142,7 @@ pub fn development_config_genesis() -> serde_json::Value {
             .map(FundedAccount::json_data)
             .collect::<Vec<_>>(),
         // EVM chain id
-        9999,
+        EVM_CHAIN_ID,
         // Account allowed to deploy contracts
         DEFAULT_ENDOWED_SEEDS
             .iter()
@@ -169,7 +170,7 @@ pub fn local_config_genesis() -> serde_json::Value {
         .collect::<Vec<_>>();
 
     genesis(
-        2000.into(),
+        1.into(),
         // Initial PoA authorities
         initial_authorities,
         // Sudo account
@@ -181,7 +182,7 @@ pub fn local_config_genesis() -> serde_json::Value {
             .map(FundedAccount::json_data)
             .collect::<Vec<_>>(),
         // EVM chain id
-        9999,
+        EVM_CHAIN_ID,
         // Account allowed to deploy contracts
         DEFAULT_ENDOWED_SEEDS
             .iter()
@@ -220,7 +221,7 @@ pub fn testnet_config_genesis() -> serde_json::Value {
         sudo,
         // No Pre-funded accounts
         Default::default(),
-        1409,
+        EVM_CHAIN_ID,
         // No allowed deployers in genesis: sudo will add it
         Default::default(),
     )

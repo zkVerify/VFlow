@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::{
-    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry,
-    AccountId, Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
-};
 #[cfg(feature = "runtime-benchmarks")]
 use crate::get_from_seed_url;
+use crate::{
+    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry, AccountId, Balance,
+    FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+};
 use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
@@ -26,6 +26,7 @@ use parachains_common::AuraId;
 use sp_core::H160;
 use sp_genesis_builder::PresetId;
 
+const EVM_CHAIN_ID: u64 = 1408;
 const ENDOWMENT: Balance = 1_000_000 * VFY;
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
@@ -130,7 +131,7 @@ pub fn development_config_genesis() -> serde_json::Value {
 
     genesis(
         // Para id
-        2000.into(),
+        1.into(),
         // Initial PoA authorities
         initial_authorities,
         // Sudo account
@@ -141,7 +142,7 @@ pub fn development_config_genesis() -> serde_json::Value {
             .map(FundedAccount::json_data)
             .collect::<Vec<_>>(),
         // EVM chain id
-        9999,
+        EVM_CHAIN_ID,
         // Account allowed to deploy contracts
         DEFAULT_ENDOWED_SEEDS
             .iter()
@@ -169,7 +170,7 @@ pub fn local_config_genesis() -> serde_json::Value {
         .collect::<Vec<_>>();
 
     genesis(
-        2000.into(),
+        1.into(),
         // Initial PoA authorities
         initial_authorities,
         // Sudo account
@@ -181,7 +182,7 @@ pub fn local_config_genesis() -> serde_json::Value {
             .map(FundedAccount::json_data)
             .collect::<Vec<_>>(),
         // EVM chain id
-        9999,
+        EVM_CHAIN_ID,
         // Account allowed to deploy contracts
         DEFAULT_ENDOWED_SEEDS
             .iter()
@@ -197,19 +198,19 @@ pub fn mainnet_config_genesis() -> serde_json::Value {
 
     let initial_authorities = vec![
         (
-            hex!("f01550a972bd740bb4bf0e310df5a24951bcc4d7").into(),
-            aura("5D2uV6TzfCygTZZaewQEQParxfVpS7wBKMzYFYisba9jsdvu"),
+            hex!("a98193126fa68a9F77dE4A44B36f51a845f985c6").into(),
+            aura("5FUNZpLNXTpyaWQsKsw17c2QywJCRT5EMUazbhWcBGVd2ric"),
         ),
         (
-            hex!("0bc86963d4be46ccf88f2dd5ddd2f762a2758551").into(),
-            aura("5HKatXMUHuP6o7NzPfAsF9yMxXMwbNZqHoLDsixQFXma8Svq"),
+            hex!("098aE96842200399b3F89d8D2D4B77588337A148").into(),
+            aura("5CyeBKChqfWHnbNn4Xcn7UM6Uw31fcbGEiA9tioy4br2WwkA"),
         ),
         (
-            hex!("840ca56f773c06d4a5085b9aa6269bcd28c274f5").into(),
-            aura("5ED9jAcPPACLKvSa7AePyGUD8oxPLnsTMrzYpiEqWiygP2GE"),
+            hex!("014a2382ce088fff1c550Ce2CD9C53B66191141C").into(),
+            aura("5DHsyJzJ9EMFZihq3CUT7zmQf7VVsdLTP8s1pg5AUNpb41MD"),
         ),
     ];
-    let sudo = hex!("96e74657b82f6865f15f3280667cda5a6dd79c51").into();
+    let sudo = hex!("e1b96Dd5D395E3EC55e033a1bc463b824D7Ace75").into();
 
     genesis(
         // parachain id
@@ -220,7 +221,7 @@ pub fn mainnet_config_genesis() -> serde_json::Value {
         sudo,
         // No Pre-funded accounts
         Default::default(),
-        1408,
+        EVM_CHAIN_ID,
         // No allowed deployers in genesis: sudo will add it
         Default::default(),
     )
