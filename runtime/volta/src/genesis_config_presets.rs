@@ -13,38 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use crate::{
+    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry,
+    AccountId, Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+};
 #[cfg(feature = "runtime-benchmarks")]
 use crate::get_from_seed_url;
-use crate::{
-    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry, AccountId, Balance,
-    FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
-};
 use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
 use parachains_common::AuraId;
-use sp_core::crypto::SecretStringError;
-use sp_core::{Pair, Public, H160};
+use sp_core::H160;
 use sp_genesis_builder::PresetId;
 
 const ENDOWMENT: Balance = 1_000_000 * VFY;
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
-
-struct AccountEntry<'a> {
-    /// The seed use to generate the key pair with the url "DEFAULT_SUBSTRATE_SEED_PHRASE//seed".
-    pub seed: &'a str,
-    /// Eth address from "DEFAULT_SUBSTRATE_SEED_PHRASE//seed".
-    /// They can also be generated with a wallet created using
-    /// the below SUBSTRATE_DEFAULT_SEED_PHRASE with Metamask
-    /// or Ganache
-    pub eth_addr: [u8; 20],
-}
-
-impl<'a> AccountEntry<'a> {
-    const fn new(seed: &'a str, eth_addr: [u8; 20]) -> Self {
-        Self { seed, eth_addr }
-    }
-}
 
 const DEFAULT_ENDOWED_SEEDS: &[AccountEntry<'static>] = &[
     AccountEntry::new("Alith", hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
@@ -57,33 +40,6 @@ const DEFAULT_ENDOWED_SEEDS: &[AccountEntry<'static>] = &[
     AccountEntry::new("Ethan", hex!("Ff64d3F6efE2317EE2807d223a0Bdc4c0c49dfDB")),
     AccountEntry::new("Faith", hex!("C0F0f4ab324C46e55D02D0033343B4Be8A55532d")),
 ];
-
-/// Generate a crypto pair from seed.
-pub fn try_get_from_seed_url<TPublic: Public>(
-    seed: &str,
-) -> Result<<TPublic::Pair as Pair>::Public, SecretStringError> {
-    TPublic::Pair::from_string(seed, None).map(|pair| pair.public())
-}
-
-/// Generate a crypto pair from seed.
-pub fn get_from_seed_url<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
-    try_get_from_seed_url::<TPublic>(seed).expect("static values are valid; qed")
-}
-
-/// Generate a crypto pair from seed.
-pub fn get_from_substrate_account<TPublic: Public>(
-    account: &str,
-) -> <TPublic::Pair as Pair>::Public {
-    get_from_seed_url::<TPublic>(&format!("//{account}"))
-}
-
-fn from_ss58check<T: sp_core::crypto::Ss58Codec>(
-    key: &str,
-) -> Result<T, sp_core::crypto::PublicError> {
-    <T as sp_core::crypto::Ss58Codec>::from_ss58check(key)
-}
-
-type Ids = (AccountId, AuraId);
 
 /// Configure initial storage state for FRAME modules.
 #[allow(clippy::too_many_arguments)]
@@ -152,35 +108,6 @@ fn genesis(
         },
         "sudo": { "key": Some(root_key) },
     })
-}
-
-#[derive(Clone)]
-struct FundedAccount {
-    /// The account-id
-    account_id: AccountId,
-    /// Initial balance
-    balance: Balance,
-}
-
-impl FundedAccount {
-    pub const fn new(account_id: AccountId, balance: Balance) -> Self {
-        Self {
-            account_id,
-            balance,
-        }
-    }
-
-    fn from_account_entry(entry: &AccountEntry, balance: Balance) -> Self {
-        Self::from_addr(entry.eth_addr, balance)
-    }
-
-    fn from_addr(eth_address: [u8; 20], balance: Balance) -> Self {
-        Self::new(eth_address.into(), balance)
-    }
-
-    fn json_data(&self) -> (AccountId, Balance) {
-        (self.account_id, self.balance)
-    }
 }
 
 pub fn development_config_genesis() -> serde_json::Value {

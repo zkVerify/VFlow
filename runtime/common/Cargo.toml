@@ -35,6 +35,8 @@ pallet-evm = {workspace = true}
 pallet-xcm = {workspace = true}
 pallet-transaction-payment = {workspace = true}
 xcm = {workspace = true}
+hex-literal = {workspace = true}
+parachains-common = {workspace = true}
 
 [build-dependencies]
 substrate-wasm-builder = {workspace = true}
