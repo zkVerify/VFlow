@@ -21434,6 +21434,7 @@ dependencies = [
  "vflow-mainnet-runtime",
  "vflow-runtime-common",
  "vflow-volta-runtime",
+ "zkv-benchmarks",
  "zkv-cli",
 ]
 

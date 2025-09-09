@@ -13,8 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::{currency::VFY, AccountId, Balance, Precompiles, Runtime, SessionKeys};
-use alloc::{collections::BTreeMap, format, vec::Vec};
+#[cfg(feature = "runtime-benchmarks")]
+use crate::get_from_seed_url;
+use crate::{
+    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry, AccountId, Balance,
+    FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+};
+use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;
 use hex_literal::hex;
 use parachains_common::AuraId;

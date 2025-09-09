@@ -37,7 +37,6 @@ use cumulus_primitives_core::{
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
 use fc_storage::{StorageOverride, StorageOverrideHandler};
 // Substrate Imports
-use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
 use parity_scale_codec::Encode;
 use sc_client_api::Backend;
 use sc_consensus::{ImportQueue, LongestChain};
@@ -55,6 +54,7 @@ use sp_runtime::traits::Header;
 use substrate_prometheus_endpoint::Registry;
 pub use vflow_volta_runtime::opaque::Block;
 use vflow_volta_runtime::{configs::evm::TransactionConverter, opaque::Hash, RuntimeApi};
+use zkv_benchmarks::hardware::zkv_reference_hardware;
 
 use crate::eth::{
     db_config_dir, new_frontier_partial, spawn_frontier_tasks, BackendType, EthConfiguration,
@@ -469,12 +469,8 @@ where
 
     if let Some(hwbench) = hwbench {
         sc_sysinfo::print_hwbench(&hwbench);
-        // Here you can check whether the hardware meets your chains' requirements.
-        // Putting a link in there and swapping out the requirements for your
-        // own are probably a good idea. The requirements for a para-chain are
-        // dictated by its relay-chain.
-        // FIXME: second argument should be isCollator
-        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench, true) {
+        // The requirements for a para-chain are dictated by its relay-chain.
+        match zkv_reference_hardware().check_hardware(&hwbench, validator) {
             Err(err) if validator => {
                 log::warn!(
                     "⚠️  The hardware does not meet the minimal requirements {err} for role \
