@@ -358,6 +358,7 @@ where
         ));
         let execute_gas_limit_multiplier = eth_config.execute_gas_limit_multiplier;
         let max_past_logs = eth_config.max_past_logs;
+        let max_block_range = eth_config.max_block_range;
         let network = network.clone();
         let sync_service = sync_service.clone();
         let frontier_backend = frontier_backend.clone();
@@ -384,6 +385,7 @@ where
                 block_data_cache: block_data_cache.clone(),
                 filter_pool: filter_pool.clone(),
                 max_past_logs,
+                max_block_range,
                 fee_history_cache: fee_history_cache.clone(),
                 fee_history_cache_limit,
                 execute_gas_limit_multiplier,
@@ -796,6 +798,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
         ));
         let execute_gas_limit_multiplier = eth_config.execute_gas_limit_multiplier;
         let max_past_logs = eth_config.max_past_logs;
+        let max_block_range = eth_config.max_block_range;
         let network = network.clone();
         let sync_service = sync_service.clone();
         let frontier_backend = frontier_backend.clone();
@@ -822,6 +825,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
                 block_data_cache: block_data_cache.clone(),
                 filter_pool: filter_pool.clone(),
                 max_past_logs,
+                max_block_range,
                 fee_history_cache: fee_history_cache.clone(),
                 fee_history_cache_limit,
                 execute_gas_limit_multiplier,
