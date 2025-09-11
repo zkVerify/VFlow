@@ -75,11 +75,10 @@ fn volta_chain_properties() -> Map<String, Value> {
 
 pub fn volta_development_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
-            relay_chain: "local".into(),
-            para_id: 2000,
+            relay_chain: "volta-local".into(),
+            para_id: 1,
         },
     )
     .with_name("Volta Development")
@@ -92,11 +91,10 @@ pub fn volta_development_config() -> Result<ChainSpec, String> {
 
 pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
-            relay_chain: "local".into(),
-            para_id: 2000,
+            relay_chain: "volta-local".into(),
+            para_id: 1,
         },
     )
     .with_name("Volta Local Testnet")
@@ -116,10 +114,9 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWFVarmg1RGuCnEsHVjYSxKd6idJ6cCEowkKkgaBPovt84";
 
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
-            relay_chain: "test".into(),
+            relay_chain: "volta".into(),
             para_id: 1,
         },
     )
@@ -154,11 +151,10 @@ fn mainnet_chain_properties() -> Map<String, Value> {
 
 pub fn mainnet_development_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
-            relay_chain: "local".into(),
-            para_id: 2000,
+            relay_chain: "zkverify-local".into(),
+            para_id: 1,
         },
     )
     .with_name("Mainnet Development")
@@ -171,11 +167,10 @@ pub fn mainnet_development_config() -> Result<ChainSpec, String> {
 
 pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
-            relay_chain: "local".into(),
-            para_id: 2000,
+            relay_chain: "zkverify-local".into(),
+            para_id: 1,
         },
     )
     .with_name("Mainnet Local Testnet")
@@ -189,16 +184,16 @@ pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
 
 pub fn mainnet_config() -> Result<ChainSpec, String> {
     // The connection strings for bootnodes
-    const BOOTNODE_1_DNS: &str = "boot-node-tn-vflow-1.zkverify.io";
-    const BOOTNODE_1_PEER_ID: &str = "12D3KooWStRw5P6v8bydm3RjzsdSE75PNoFtCzZ5PnV1hkntWGim";
-    const BOOTNODE_2_DNS: &str = "boot-node-tn-vflow-2.zkverify.io";
-    const BOOTNODE_2_PEER_ID: &str = "12D3KooWFVarmg1RGuCnEsHVjYSxKd6idJ6cCEowkKkgaBPovt84";
+    const BOOTNODE_1_DNS: &str = "boot-node-vflow-1.zkverify.io";
+    const BOOTNODE_1_PEER_ID: &str = "12D3KooWEdJ8hLcSfr9RAieL4KNFKKgfmegJvfvYhAqspAfvpHKJ";
+    const BOOTNODE_2_DNS: &str = "boot-node-vflow-2.zkverify.io";
+    const BOOTNODE_2_PEER_ID: &str = "12D3KooWRQCKkAomumTLGA3tzPTazixvhWys9RpQBEkWZ8nYTsJD";
 
     Ok(ChainSpec::builder(
         vflow_mainnet_runtime::WASM_BINARY
-            .ok_or_else(|| "Development wasm not available".to_string())?,
+            .ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
-            relay_chain: "main".into(),
+            relay_chain: "mainnet".into(),
             para_id: 1,
         },
     )
