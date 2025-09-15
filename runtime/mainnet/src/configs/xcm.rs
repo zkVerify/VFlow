@@ -60,7 +60,7 @@ use xcm_executor::{
 use crate::weights::pallet_xcm_benchmarks::ZKVEvmWeight as XcmZKVEvmWeight;
 
 const ZKV_GENESIS_HASH: [u8; 32] =
-    hex_literal::hex!("deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
+    hex_literal::hex!("07982e2ca17ec4dc468aac452bcddda8c870cc9a96f99e1b7e1900648331fb08");
 
 parameter_types! {
     pub const RootLocation: Location = Here.into_location();
