@@ -1,6 +1,6 @@
 [package]
 name = "vflow-node"
-version = "0.2.3"
+version = "1.0.0"
 description = "VFlow Node"
 authors.workspace = true
 edition.workspace = true

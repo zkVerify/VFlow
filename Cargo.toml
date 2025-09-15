@@ -44,7 +44,7 @@ serde_json = { version = "1.0.114", default-features = false, features = [
 tracing = {version = "0.1.37", default-features = false}
 
 # ZKV relay
-zkv-benchmarks = {git = "https://github.com/zkVerify/zkVerify", tag = "0.10.0-1.1.0"}
+zkv-benchmarks = {git = "https://github.com/zkVerify/zkVerify", tag = "1.0.0-1.0.0"}
 
 # Substrate
 frame-benchmarking = { version = "39.1.0", default-features = false }
@@ -116,7 +116,7 @@ substrate-wasm-builder = { version = "25.0.1" }
 # Polkadot
 pallet-xcm = { version = "18.1.2", default-features = false }
 pallet-xcm-benchmarks = { version = "18.1.1", default-features = false }
-polkadot-cli = {package = "zkv-cli", git = "https://github.com/zkVerify/zkVerify", tag = "0.10.0-1.1.0"}
+polkadot-cli = {package = "zkv-cli", git = "https://github.com/zkVerify/zkVerify", tag = "1.0.0-1.0.0"}
 polkadot-primitives = { version = "17.1.0", default-features = false }
 polkadot-runtime-common = { version = "18.1.0", default-features = false }
 xcm = { version = "15.1.0", package = "staging-xcm", default-features = false }
@@ -185,9 +185,9 @@ tokio = {version = "1.13"}
 ignored = ["num_enum"]
 
 [patch.crates-io]
-cumulus-relay-chain-inprocess-interface = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
-cumulus-relay-chain-minimal-node = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
-polkadot-omni-node-lib = {git = "https://github.com/zkVerify/zkVerify.git", tag = "0.10.0-1.1.0"}
+cumulus-relay-chain-inprocess-interface = {git = "https://github.com/zkVerify/zkVerify.git", tag = "1.0.0-1.0.0"}
+cumulus-relay-chain-minimal-node = {git = "https://github.com/zkVerify/zkVerify.git", tag = "1.0.0-1.0.0"}
+polkadot-omni-node-lib = {git = "https://github.com/zkVerify/zkVerify.git", tag = "1.0.0-1.0.0"}
 
 [patch."https://github.com/paritytech/polkadot-sdk"]
 sc-block-builder = { version = "0.43.0" }
