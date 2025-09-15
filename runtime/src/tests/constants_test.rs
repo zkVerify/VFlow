@@ -209,6 +209,10 @@ mod runtime_tests {
 mod xcm_tests {
     use super::*;
     use configs::xcm::*;
+    use hex_literal::hex;
+    use xcm::latest::prelude::*;
+    use xcm::opaque::latest::Junctions::X1;
+    use xcm_executor::traits::ConvertLocation;
 
     #[test]
     fn xcm_executor_constants() {
@@ -223,6 +227,20 @@ mod xcm_tests {
         assert_eq!(
             <Runtime as pallet_xcm::Config>::VERSION_DISCOVERY_QUEUE_SIZE,
             100
+        );
+    }
+
+    #[test]
+    fn relay_treasury_account() {
+        // TODO: replace with zkv_runtime::TreasuryPalletIdx::get() on next zkVerify tag?
+        let loc = Location {
+            parents: 1,
+            interior: X1([PalletInstance(14)].into()), // 14 is the index of the treasury pallet in zkv-runtime
+        };
+        assert_eq!(
+            LocationAccountId32ToAccountId::convert_location(&loc)
+                .expect("Location is not convertible; qed"),
+            hex!("f260e064445be1b5e12e5cef1e1c11fc4c4b4963").into(),
         );
     }
 }

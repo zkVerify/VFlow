@@ -36,7 +36,6 @@ name = "vflow-parachain-collator01"
 command = "./target/release/vflow-node"
 ws_port = 9933
 rpc_port = 8833
-#args = ["--rpc-max-connections 10000 -ltrace"]
 args = ["-lxcm=trace", "--rpc-max-connections 10000"]
 
 [[parachains.collators]]
