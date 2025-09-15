@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: zkv build with runtime-benchmarks
+      - name: VFlow build with runtime-benchmarks
         uses: ./.github/actions/cmd-in-docker
         with:
           command: "cargo build -p vflow-node --release --features runtime-benchmarks"
@@ -20,8 +20,20 @@ jobs:
           cache_key: 'build-runtime-benchmarks'
           lld_install: 'yes'
 
-      - name: Run benchmarks
+      - name: Run benchmarks Volta
         uses: ./.github/actions/cmd-in-docker
         with:
-          command: './target/release/vflow-node benchmark pallet --pallet "*" --extrinsic "*" -s 2 -r 1'
+          command: >-
+            ./target/release/vflow-node benchmark pallet \
+              --runtime ./target/release/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm --genesis-builder=runtime \
+              --pallet "*" --extrinsic "*" -s 2 -r 1
+          use_cache: 'no'
+
+      - name: Run benchmarks Mainnet
+        uses: ./.github/actions/cmd-in-docker
+        with:
+          command: >-
+            ./target/release/vflow-node benchmark pallet \
+              --runtime ./target/release/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm --genesis-builder=runtime \
+              --pallet "*" --extrinsic "*" -s 2 -r 1
           use_cache: 'no'

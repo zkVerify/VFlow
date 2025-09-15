@@ -26,7 +26,7 @@ jobs:
       - name: Cargo unit test runtime without features
         uses: ./.github/actions/cmd-in-docker
         with:
-          command: "cargo test --lib -p vflow-runtime --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
+          command: "cargo test --lib -p vflow-volta-runtime -p vflow-mainnet-runtime --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
           use_cache: 'yes'
           cache_key: 'unit-test'
           lld_install: 'yes'

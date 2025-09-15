@@ -37,25 +37,24 @@ use cumulus_primitives_core::{
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
 use fc_storage::{StorageOverride, StorageOverrideHandler};
 // Substrate Imports
-use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
 use parity_scale_codec::Encode;
 use sc_client_api::Backend;
 use sc_consensus::{ImportQueue, LongestChain};
 use sc_consensus_manual_seal::consensus::aura::AuraConsensusDataProvider;
 use sc_executor::{HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY};
 use sc_network::{NetworkBackend, NetworkBlock};
-use sc_service::{Configuration, PartialComponents, TFullBackend, TFullClient, TaskManager};
+use sc_service::{
+    ChainSpec, Configuration, PartialComponents, TFullBackend, TFullClient, TaskManager,
+};
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sc_transaction_pool_api::OffchainTransactionPoolFactory;
 use sp_core::U256;
 use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Header;
 use substrate_prometheus_endpoint::Registry;
-use vflow_runtime::{
-    configs::evm::TransactionConverter,
-    opaque::{Block, Hash},
-    RuntimeApi,
-};
+pub use vflow_volta_runtime::opaque::Block;
+use vflow_volta_runtime::{configs::evm::TransactionConverter, opaque::Hash, RuntimeApi};
+use zkv_benchmarks::hardware::zkv_reference_hardware;
 
 use crate::eth::{
     db_config_dir, new_frontier_partial, spawn_frontier_tasks, BackendType, EthConfiguration,
@@ -100,6 +99,51 @@ pub type Service = PartialComponents<
         Arc<dyn StorageOverride<Block>>,
     ),
 >;
+
+/// Identifies the variant of the chain.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Chain {
+    /// VFlow Testnet.
+    Volta,
+    /// VFlow Mainnet.
+    VFlow,
+    /// Unknown chain?
+    Unknown,
+}
+
+/// Can be called for a `Configuration` to identify which network the configuration targets.
+pub trait IdentifyVariant {
+    /// Returns true if this is a configuration for the `VFlow Volta` network.
+    fn is_volta(&self) -> bool;
+
+    /// Returns true if this is a configuration for the `VFlow Mainnet` network.
+    fn is_vflow(&self) -> bool;
+
+    /// Identifies the variant of the chain.
+    fn identify_chain(&self) -> Chain;
+}
+
+impl IdentifyVariant for Box<dyn ChainSpec> {
+    fn is_volta(&self) -> bool {
+        self.id().starts_with("volta") || self.id().starts_with("vflow_testnet")
+    }
+
+    fn is_vflow(&self) -> bool {
+        self.id().starts_with("vflow_mainnet")
+            || self.id().starts_with("vflow")
+            || self.id().starts_with("mainnet")
+    }
+
+    fn identify_chain(&self) -> Chain {
+        if self.is_volta() {
+            Chain::Volta
+        } else if self.is_vflow() {
+            Chain::VFlow
+        } else {
+            Chain::Unknown
+        }
+    }
+}
 
 /// Starts a `ServiceBuilder` for a full service.
 ///
@@ -425,12 +469,8 @@ where
 
     if let Some(hwbench) = hwbench {
         sc_sysinfo::print_hwbench(&hwbench);
-        // Here you can check whether the hardware meets your chains' requirements.
-        // Putting a link in there and swapping out the requirements for your
-        // own are probably a good idea. The requirements for a para-chain are
-        // dictated by its relay-chain.
-        // FIXME: second argument should be isCollator
-        match SUBSTRATE_REFERENCE_HARDWARE.check_hardware(&hwbench, true) {
+        // The requirements for a para-chain are dictated by its relay-chain.
+        match zkv_reference_hardware().check_hardware(&hwbench, validator) {
             Err(err) if validator => {
                 log::warn!(
                     "⚠️  The hardware does not meet the minimal requirements {err} for role \
@@ -714,7 +754,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
             inherent_data: &mut sp_inherents::InherentData,
         ) -> Result<(), sp_inherents::Error> {
             TIMESTAMP.with(|x| {
-                *x.borrow_mut() += vflow_runtime::constants::SLOT_DURATION;
+                *x.borrow_mut() += vflow_runtime_common::SLOT_DURATION;
                 inherent_data.put_data(sp_timestamp::INHERENT_IDENTIFIER, &*x.borrow())
             })
         }

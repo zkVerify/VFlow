@@ -90,7 +90,8 @@ if [ "${is_a_release}" = "true" ]; then
   # Extract runtime artifact
   log_info "=== Extract runtime artifact ==="
   container_id="$(docker create "index.docker.io/${docker_hub_org}/${docker_image_build_name}:${docker_tag_full}")"
-  docker cp "${container_id}":/app/vflow_runtime.compact.compressed.wasm ./vflow_runtime.compact.compressed.wasm
+  docker cp "${container_id}":/app/vflow_volta_runtime.compact.compressed.wasm ./vflow_volta_runtime.compact.compressed.wasm
+  docker cp "${container_id}":/app/vflow_mainnet_runtime.compact.compressed.wasm ./vflow_mainnet_runtime.compact.compressed.wasm
   docker rm "${container_id}"  # Clean up the container
 else
   fn_die "ERROR: the build did NOT satisfy RELEASE build requirements(IS_A_RELEASE variable=${is_a_release}). Docker image(s) was(were) NOT published."

@@ -24,22 +24,32 @@ use sc_cli::{
 };
 use sc_service::config::{BasePath, PrometheusConfig};
 use sp_runtime::traits::AccountIdConversion;
-use vflow_runtime::Block;
 
 use crate::{
     chain_spec,
     cli::{Cli, RelayChainCli, Subcommand},
-    service::new_partial,
+    service::{self, new_partial, IdentifyVariant},
 };
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
     Ok(match id {
-        "" | "test" | "testnet" => Box::new(GenericChainSpec::from_json_bytes(
+        // Volta
+        "test" | "testnet" | "volta" => Box::new(GenericChainSpec::from_json_bytes(
             &include_bytes!("../chain-specs/vflow_volta.json")[..],
         )?),
-        "testnet_build" => Box::new(chain_spec::testnet_config()?),
-        "dev" => Box::new(chain_spec::development_config()?),
-        "local" => Box::new(chain_spec::local_testnet_config()?),
+        "testnet_build" | "volta_build" => Box::new(chain_spec::volta_config()?),
+        "dev" | "volta_dev" | "testnet_dev" => Box::new(chain_spec::volta_development_config()?),
+        "volta_local" | "testnet_local" => Box::new(chain_spec::volta_local_testnet_config()?),
+
+        // Mainnet
+        "" | "mainnet" | "vflow" => Box::new(GenericChainSpec::from_json_bytes(
+            &include_bytes!("../chain-specs/vflow_mainnet.json")[..],
+        )?),
+        "mainnet_build" | "vflow_build" => Box::new(chain_spec::mainnet_config()?),
+        "mainnet_dev" | "vflow_dev" => Box::new(chain_spec::mainnet_development_config()?),
+        "mainnet_local" | "vflow_local" => Box::new(chain_spec::mainnet_local_testnet_config()?),
+
+        // Custom
         path => Box::new(GenericChainSpec::from_json_file(std::path::PathBuf::from(
             path,
         ))?),
@@ -207,7 +217,7 @@ pub fn run() -> Result<()> {
                 BenchmarkCmd::Pallet(cmd) => {
                     if cfg!(feature = "runtime-benchmarks") {
                         runner.sync_run(|config| {
-                            cmd.run_with_spec::<sp_runtime::traits::HashingFor<Block>, crate::service::HostFunctions>(
+                            cmd.run_with_spec::<sp_runtime::traits::HashingFor<service::Block>, service::HostFunctions>(
                                 Some(config.chain_spec),
                             )
                         })
@@ -235,12 +245,14 @@ pub fn run() -> Result<()> {
                     let storage = partials.backend.expose_storage();
                     cmd.run(config, partials.client.clone(), db, storage)
                 }),
-                #[cfg(feature = "runtime-benchmarks")]
                 BenchmarkCmd::Overhead(cmd) => runner.sync_run(|config| {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};
 
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
-                    let ext_builder = RemarkBuilder::new(partials.client.clone());
+                    let ext_builder = RemarkBuilder::new(
+                        partials.client.clone(),
+                        config.chain_spec.identify_chain(),
+                    );
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)
                             .map(|e| e.para_id)
@@ -252,14 +264,9 @@ pub fn run() -> Result<()> {
                         create_inherent_data(partials.client.clone(), para_id),
                         Vec::new(),
                         &ext_builder,
-                        true, // It's a parachain -> should record the rpoof
+                        true, // It's a parachain -> should record the proof
                     )
                 }),
-                #[cfg(not(feature = "runtime-benchmarks"))]
-                BenchmarkCmd::Overhead(_) => Err(sc_cli::Error::Input(
-                    "Compile with --features=runtime-benchmarks to enable overhead benchmarks."
-                        .into(),
-                )),
                 BenchmarkCmd::Machine(cmd) => {
                     runner.sync_run(|config| cmd.run(&config, SUBSTRATE_REFERENCE_HARDWARE.clone()))
                 }

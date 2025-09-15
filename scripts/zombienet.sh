@@ -2,6 +2,7 @@
 
 ZOMBIENET_V=v1.3.128
 BIN_DIR=relay-bin
+CHAIN=${CHAIN:-"volta"} # or mainnet
 
 case "$(uname -s)" in
     Linux*)     MACHINE=Linux;;
@@ -58,6 +59,10 @@ zombienet_init() {
   if [ ! -f $BIN_DIR/zkv-relay ]; then
    echo "Fetch_zkVerify() not yet implemented: you must execute 'zombienet build'"
   fi
+  if [ ! -f $BIN_DIR/zkv-relay-execute-worker ] || [ ! -f $BIN_DIR/zkv-relay-prepare-worker ]; then
+   echo "The zkVerify node binary is available, but external workers are missing."
+   exit -1
+  fi
 }
 
 zombienet_build() {
@@ -74,9 +79,9 @@ zombienet_build() {
 zombienet_devnet() {
   zombienet_init
   cargo build --release
-  echo "spawning local relay chain plus devnet as a parachain..."
+  echo "spawning local relay chain plus devnet ${CHAIN} as a parachain..."
   local dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-  ./$ZOMBIENET_BIN spawn "$dir/../zombienet-config/devnet.toml" -p native
+  ./$ZOMBIENET_BIN spawn "$dir/../zombienet-config/devnet-${CHAIN}.toml" -p native
 }
 
 

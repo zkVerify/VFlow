@@ -1,6 +1,6 @@
 [package]
 name = "vflow-node"
-version = "0.2.3"
+version = "1.0.0"
 description = "VFlow Node"
 authors.workspace = true
 edition.workspace = true
@@ -23,12 +23,17 @@ serde = {workspace = true, features = ["derive"]}
 serde_json = {workspace = true, features = ["std"]}
 
 # Local
-vflow-runtime = {workspace = true}
+vflow-runtime-common = {workspace = true}
+vflow-volta-runtime = {workspace = true}
+vflow-mainnet-runtime = {workspace = true}
+
+# ZKV relay
+zkv-benchmarks = {workspace = true}
 
 # Substrate
 frame-benchmarking = {workspace = true}
 frame-benchmarking-cli = {workspace = true}
-frame-metadata-hash-extension = {workspace = true, optional = true}
+frame-metadata-hash-extension = {workspace = true}
 frame-system = {workspace = true}
 pallet-transaction-payment-rpc = {workspace = true}
 pallet-transaction-payment = {workspace = true}
@@ -66,7 +71,6 @@ substrate-prometheus-endpoint = {workspace = true}
 # Polkadot
 polkadot-cli = {workspace = true}
 polkadot-primitives = {workspace = true}
-polkadot-runtime-common = {workspace = true}
 
 # Cumulus
 color-print = {workspace = true}
@@ -103,25 +107,29 @@ substrate-build-script-utils = {workspace = true}
 default = [ "txpool" ]
 runtime-benchmarks = [
 	"cumulus-primitives-core/runtime-benchmarks",
-	"dep:frame-metadata-hash-extension",
 	"frame-benchmarking-cli/runtime-benchmarks",
 	"frame-benchmarking/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
 	"pallet-transaction-payment/runtime-benchmarks",
 	"polkadot-cli/runtime-benchmarks",
 	"polkadot-primitives/runtime-benchmarks",
-	"polkadot-runtime-common/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"vflow-runtime/runtime-benchmarks",
+	"vflow-mainnet-runtime/runtime-benchmarks",
+	"vflow-runtime-common/runtime-benchmarks",
+	"vflow-volta-runtime/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-system/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"polkadot-cli/try-runtime",
-	"polkadot-runtime-common/try-runtime",
 	"sp-runtime/try-runtime",
-	"vflow-runtime/try-runtime",
+	"vflow-mainnet-runtime/try-runtime",
+	"vflow-runtime-common/try-runtime",
+	"vflow-volta-runtime/try-runtime",
 ]
 txpool = [ "fc-rpc/txpool" ]
-metadata-hash = [ "vflow-runtime/metadata-hash" ]
+metadata-hash = [
+	"vflow-mainnet-runtime/metadata-hash",
+	"vflow-volta-runtime/metadata-hash",
+]
