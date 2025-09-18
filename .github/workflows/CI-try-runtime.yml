@@ -1,0 +1,69 @@
+name: Try runtime
+
+run-name: "Workflow CI/CD Steps: execute try-runtime"
+
+on:
+  workflow_call:
+    inputs:
+      execute-try-runtime:
+        description: 'Whether to execute try-runtime step or not'
+        required: false
+        type: string
+        default: 'yes'
+      try-runtime-version:
+        description: 'What version of the try-runtime tool to use'
+        required: false
+        type: string
+        default: 'v0.8.0'
+  workflow_dispatch:
+    inputs:
+      execute-try-runtime:
+        description: 'Whether to execute try-runtime step or not'
+        required: false
+        type: string
+        default: 'yes'
+      try-runtime-version:
+        description: 'What version of the try-runtime tool to use'
+        required: false
+        type: string
+        default: 'v0.8.0'
+
+jobs:
+  try-runtime:
+    runs-on: warp-ubuntu-latest-x64-8x
+    name: Try runtime
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Runtimes build
+        uses: ./.github/actions/cmd-in-docker
+        with:
+          command: "cargo build -p vflow-mainnet-runtime -p vflow-volta-runtime --release --features try-runtime"
+          use_cache: 'yes'
+          cache_key: 'build-try-runtime'
+          lld_install: 'yes'
+
+      - name: Execute try-runtime Volta
+        if: ${{ inputs.execute-try-runtime == 'yes' }}
+        uses: ./.github/actions/cmd-in-docker
+        with:
+          command: >-
+            try-runtime --runtime /build/target/release/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm \
+              on-runtime-upgrade \
+              --blocktime 6 --disable-mbm-checks --disable-spec-version-check live \
+              --uri wss://vflow-volta-rpc.zkverify.io/
+          try_runtime: ${{ inputs.try-runtime-version }}
+          use_cache: 'no'
+
+      - name: Execute try-runtime Mainnet
+        if: ${{ inputs.execute-try-runtime == 'yes' }}
+        uses: ./.github/actions/cmd-in-docker
+        with:
+          command: >-
+            try-runtime --runtime /build/target/release/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm \
+              on-runtime-upgrade \
+              --blocktime 6 --disable-mbm-checks --disable-spec-version-check live \
+              --uri wss://vflow-rpc.zkverify.io/
+          try_runtime: ${{ inputs.try-runtime-version }}
+          use_cache: 'no'

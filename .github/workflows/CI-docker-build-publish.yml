@@ -69,11 +69,19 @@ jobs:
           source "${GITHUB_WORKSPACE}/ci/setup_env.sh"
           "${GITHUB_WORKSPACE}/ci/publish-docker-image.sh" --image-artifact ${{ needs.build-docker.outputs.artifact_name }}
 
-      - name: Upload runtime artifacts
+      - name: Upload Volta runtime artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: "vflow_runtime.compact.compressed.wasm"
-          path: ./vflow_runtime.compact.compressed.wasm
+          name: "vflow_volta_runtime.compact.compressed.wasm"
+          path: ./vflow_volta_runtime.compact.compressed.wasm
+          retention-days: 7
+          overwrite: true
+
+      - name: Upload Mainnet runtime artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "vflow_mainnet_runtime.compact.compressed.wasm"
+          path: ./vflow_mainnet_runtime.compact.compressed.wasm
           retention-days: 7
           overwrite: true
 

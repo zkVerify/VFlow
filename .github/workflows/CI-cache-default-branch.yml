@@ -26,6 +26,12 @@ jobs:
     name: Cargo test bench job cache rebuild
     uses: ./.github/workflows/CI-test-bench.yml
 
+  try-runtime-job-cache:
+    name: Try runtime job cache rebuild
+    uses: ./.github/workflows/CI-try-runtime.yml
+    with:
+      execute-try-runtime: 'no'
+
   lint-format-job-cache:
     name: Lint and format job cache rebuild
     uses: ./.github/workflows/CI-lint-format.yml
