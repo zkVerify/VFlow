@@ -146,6 +146,21 @@ else
 fi
 
 ####
+# Migrate the relay chain dir to the new path if it was using the old default
+####
+ZKV_BASE_PATH=${ZKV_CONF_BASE_PATH:-}
+
+if [ -z "${ZKV_BASE_PATH}" ]; then
+  source_chain_dir="/data/node/polkadot"
+  dest_chain_dir="/data/node/zkv_relay"
+
+  if [ -d "${source_chain_dir}" ] && [ ! -e "${dest_chain_dir}" ]; then
+    log_green "INFO: old default config detected. Moving '${source_chain_dir}' to '${dest_chain_dir}' ..."
+    mv "${source_chain_dir}" "${dest_chain_dir}" || fn_die "ERROR: failed to move '${source_chain_dir}' to '${dest_chain_dir}'!"
+  fi
+fi
+
+####
 # Parachain node's configurations
 ####
 log_bold_green "=== Parachain node's configuration:"
