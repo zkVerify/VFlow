@@ -241,6 +241,12 @@ where
         config: &fp_evm::Config,
         force_address: H160,
     ) -> Result<fp_evm::CreateInfo, RunnerError<Self::Error>> {
+        let (_, weight) = T::FeeCalculator::min_gas_price();
+        C::check_create_origin(&source).map_err(|err| RunnerError {
+            error: PermissionedDeployError::Permission(err),
+            weight,
+        })?;
+
         R::create_force_address(
             source,
             init,

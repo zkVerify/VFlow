@@ -32,9 +32,11 @@ use cumulus_client_service::{
 };
 use cumulus_primitives_core::{
     relay_chain::{CollatorPair, ValidationCode},
-    BlockT, ParaId,
+    BlockT, ParaId, PersistedValidationData,
 };
+use cumulus_primitives_parachain_inherent::ParachainInherentData;
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
+use cumulus_test_relay_sproof_builder::RelayStateSproofBuilder;
 use fc_storage::{StorageOverride, StorageOverrideHandler};
 // Substrate Imports
 use parity_scale_codec::Encode;
@@ -332,7 +334,6 @@ where
     let prometheus_registry = parachain_config.prometheus_registry().cloned();
     let transaction_pool = params.transaction_pool.clone();
     let import_queue_service = params.import_queue.service();
-    let slot_duration = sc_consensus_aura::slot_duration(&*client)?;
     let frontier_backend = Arc::new(frontier_backend);
 
     let (network, system_rpc_tx, tx_handler_controller, start_network, sync_service) =
@@ -380,18 +381,28 @@ where
     let rpc_builder = {
         let client = client.clone();
         let pool = transaction_pool.clone();
-        let target_gas_price = eth_config.target_gas_price;
         let enable_dev_signer = eth_config.enable_dev_signer;
-        let pending_create_inherent_data_providers = move |_, ()| async move {
-            let current = sp_timestamp::InherentDataProvider::from_system_time();
-            let next_slot = current.timestamp().as_millis() + slot_duration.as_millis();
-            let timestamp = sp_timestamp::InherentDataProvider::new(next_slot.into());
-            let slot = sp_consensus_aura::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
-				*timestamp,
-				slot_duration,
-			);
-            let dynamic_fee = fp_dynamic_fee::InherentDataProvider(U256::from(target_gas_price));
-            Ok((slot, timestamp, dynamic_fee))
+        let pending_create_inherent_data_providers = move |_, _| async move {
+            let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
+            // Create a dummy parachain inherent data provider which is required to pass
+            // the checks by the para chain system. We use dummy values because in the 'pending context'
+            // neither do we have access to the real values nor do we need them.
+            let (relay_parent_storage_root, relay_chain_state) =
+                RelayStateSproofBuilder::default().into_state_root_and_proof();
+            let vfp = PersistedValidationData {
+                // This is a hack to make `cumulus_pallet_parachain_system::RelayNumberStrictlyIncreases`
+                // happy. Relay parent number can't be bigger than u32::MAX.
+                relay_parent_number: u32::MAX,
+                relay_parent_storage_root,
+                ..Default::default()
+            };
+            let parachain_inherent_data = ParachainInherentData {
+                validation_data: vfp,
+                relay_chain_state,
+                downward_messages: Default::default(),
+                horizontal_messages: Default::default(),
+            };
+            Ok((timestamp, parachain_inherent_data))
         };
         let block_data_cache = Arc::new(fc_rpc::EthBlockDataCacheTask::new(
             task_manager.spawn_handle(),

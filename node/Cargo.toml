@@ -42,7 +42,6 @@ sc-chain-spec = {workspace = true}
 sc-cli = {workspace = true}
 sc-client-api = {workspace = true}
 sc-consensus = {workspace = true}
-sc-consensus-aura = {workspace = true}
 sc-consensus-manual-seal = {workspace = true}
 sc-executor = {workspace = true}
 sc-network = {workspace = true}
@@ -80,10 +79,12 @@ cumulus-client-consensus-aura = {workspace = true}
 cumulus-client-consensus-common = {workspace = true}
 cumulus-client-consensus-proposer = {workspace = true}
 cumulus-client-parachain-inherent = {workspace = true}
+cumulus-test-relay-sproof-builder = {workspace = true}
 cumulus-client-service = {workspace = true}
 cumulus-primitives-core = {workspace = true}
 cumulus-relay-chain-interface = {workspace = true}
 cumulus-primitives-storage-weight-reclaim = {workspace = true}
+cumulus-primitives-parachain-inherent = {workspace = true}
 
 # Frontier
 fc-api = {workspace = true}
