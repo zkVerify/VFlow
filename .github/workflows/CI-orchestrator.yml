@@ -24,7 +24,12 @@ jobs:
     name: Cargo test bench job
     needs: [check-lockfile-job]
     uses: ./.github/workflows/CI-test-bench.yml
-    
+
+  try-runtime-job:
+    name: Try runtime job
+    needs: [check-lockfile-job]
+    uses: ./.github/workflows/CI-try-runtime.yml
+
   lint-format-job:
     name: Lint and format job
     needs: [check-lockfile-job]
@@ -54,6 +59,7 @@ jobs:
         build-job,
         test-job,
         test-bench-job,
+        try-runtime-job,
         lint-format-job,
         audit-job,
         feature-propagation-job,
@@ -99,6 +105,7 @@ jobs:
                 [ "${{ needs.build-job.result }}" != "success" ] ||
                 [ "${{ needs.test-job.result }}" != "success" ] ||
                 [ "${{ needs.test-bench-job.result }}" != "success" ] ||
+                [ "${{ needs.try-runtime-job.result }}" != "success" ] ||
                 [ "${{ needs.lint-format-job.result }}" != "success" ] ||
                 [ "${{ needs.feature-propagation-job.result }}" != "success" ] ||
                 [ "${{ needs.audit-job.result }}" != "success" ] ||
