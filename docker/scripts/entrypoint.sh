@@ -148,7 +148,7 @@ fi
 ####
 # Migrate the relay chain dir to the new path if it was using the old default
 ####
-ZKV_BASE_PATH=${ZKV_CONF_BASE_PATH:-}
+ZKV_BASE_PATH="${ZKV_CONF_BASE_PATH:-}"
 
 if [ -z "${ZKV_BASE_PATH}" ]; then
   source_chain_dir="/data/node/polkadot"
