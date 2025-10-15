@@ -15,11 +15,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
+use sc_cli::RuntimeVersion;
 use sc_network::config::MultiaddrWithPeerId;
 use sc_service::ChainType;
 use sc_telemetry::TelemetryEndpoints;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
+use sp_runtime::Cow;
 use std::str;
 
 /// Specialized `ChainSpec` for the normal parachain runtime.
@@ -27,6 +29,9 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 
 // The URL for the telemetry server.
 const TELEMETRY_URL: &str = "wss://telemetry.zkverify.io/submit/";
+
+const MAINNET_SPEC_NAME: &str = "vflow-runtime";
+const VOLTA_SPEC_NAME: &str = "tvflow-runtime";
 
 /// The extensions for the [`ChainSpec`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
@@ -43,6 +48,21 @@ impl Extensions {
     pub fn try_get(chain_spec: &dyn sc_service::ChainSpec) -> Option<&Self> {
         sc_chain_spec::get_extension(chain_spec.extensions())
     }
+}
+
+fn check_correct_runtime(iname: &str, runtime: RuntimeVersion) -> Result<(), String> {
+    if let RuntimeVersion {
+        spec_name: Cow::Borrowed(name),
+        ..
+    } = runtime
+    {
+        if name == iname {
+            return Ok(());
+        } else {
+            return Err(format!("Requested {iname} runtime, but compiled for {name}").to_string());
+        }
+    }
+    Err("Unexpected runtime version type".to_string())
 }
 
 fn boot_node_address(dns: &str, peer_id: &str) -> impl Iterator<Item = MultiaddrWithPeerId> {
@@ -74,8 +94,10 @@ fn volta_chain_properties() -> Map<String, Value> {
 }
 
 pub fn volta_development_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -90,8 +112,10 @@ pub fn volta_development_config() -> Result<ChainSpec, String> {
 }
 
 pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -107,6 +131,8 @@ pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
 }
 
 pub fn volta_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     // The connection strings for bootnodes
     const BOOTNODE_1_DNS: &str = "boot-node-tn-vflow-1.zkverify.io";
     const BOOTNODE_1_PEER_ID: &str = "12D3KooWStRw5P6v8bydm3RjzsdSE75PNoFtCzZ5PnV1hkntWGim";
@@ -114,7 +140,7 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWFVarmg1RGuCnEsHVjYSxKd6idJ6cCEowkKkgaBPovt84";
 
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta".into(),
             para_id: 1,
@@ -150,8 +176,10 @@ fn mainnet_chain_properties() -> Map<String, Value> {
 }
 
 pub fn mainnet_development_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "zkverify-local".into(),
             para_id: 1,
@@ -166,8 +194,10 @@ pub fn mainnet_development_config() -> Result<ChainSpec, String> {
 }
 
 pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "zkverify-local".into(),
             para_id: 1,
@@ -183,6 +213,8 @@ pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
 }
 
 pub fn mainnet_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     // The connection strings for bootnodes
     const BOOTNODE_1_DNS: &str = "boot-node-vflow-1.zkverify.io";
     const BOOTNODE_1_PEER_ID: &str = "12D3KooWEdJ8hLcSfr9RAieL4KNFKKgfmegJvfvYhAqspAfvpHKJ";
@@ -190,8 +222,7 @@ pub fn mainnet_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWRQCKkAomumTLGA3tzPTazixvhWys9RpQBEkWZ8nYTsJD";
 
     Ok(ChainSpec::builder(
-        vflow_mainnet_runtime::WASM_BINARY
-            .ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "mainnet".into(),
             para_id: 1,

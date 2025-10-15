@@ -24,7 +24,13 @@ fn main() {
         // variable.
         #[cfg(feature = "metadata-hash")]
         let builder = if std::env::var_os("ZKV_FORCE_DISABLE_METADATA_HASH").is_none() {
-            builder.enable_metadata_hash("tVFY", 18)
+            const TOKEN_SYMBOL: &str = if cfg!(not(feature = "volta")) {
+                "VFY"
+            } else {
+                "tVFY"
+            };
+            const TOKEN_DECIMAL: u8 = 18;
+            builder.enable_metadata_hash(TOKEN_SYMBOL, TOKEN_DECIMAL)
         } else {
             builder
         };

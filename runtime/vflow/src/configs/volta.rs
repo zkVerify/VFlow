@@ -13,13 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! In this module, we provide the configurations about parachain governance.
-//! For now, we just use sudo.
+use crate::*;
 
-use crate::{weights, Runtime, RuntimeCall, RuntimeEvent};
+// Version of the runtime.
+runtime_version!("tvflow-runtime");
 
-impl pallet_sudo::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
-    type RuntimeCall = RuntimeCall;
-    type WeightInfo = weights::pallet_sudo::ZKVEvmWeight<Runtime>;
-}
+pub(crate) const ZKV_GENESIS_HASH: [u8; 32] =
+    hex_literal::hex!("ff7fe5a610f15fe7a0c52f94f86313fb7db7d3786e7f8acf2b66c11d5be7c242");
+
+pub(crate) const ERC20_NAME: sp_runtime::Cow<'_, str> = Cow::Borrowed("tVFY token");
+pub(crate) const ERC20_SYMBOL: sp_runtime::Cow<'_, str> = Cow::Borrowed("tVFY");
+pub(crate) const EVM_CHAIN_ID: u64 = 1409;

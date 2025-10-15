@@ -17,6 +17,7 @@
 //! of pallets used for base functionalities and utilities.
 
 use crate::{
+    configs::VERSION,
     constants::{
         currency::deposit, AVERAGE_ON_INITIALIZE_RATIO, MAXIMUM_BLOCK_WEIGHT, MAX_BLOCK_LENGTH,
         NORMAL_DISPATCH_RATIO, SLOT_DURATION,
@@ -25,7 +26,7 @@ use crate::{
     weights,
     weights::ExtrinsicBaseWeight,
     AccountId, Aura, Balance, Balances, Block, Hash, MessageQueue, Nonce, OriginCaller, PalletInfo,
-    Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue, VERSION,
+    Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue,
 };
 use core::fmt::Debug;
 use cumulus_pallet_parachain_system::{
