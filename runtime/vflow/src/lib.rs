@@ -21,8 +21,15 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+#[cfg_attr(feature = "volta", path = "volta/configs/configs.rs")]
+#[cfg_attr(not(feature = "volta"), path = "mainnet/configs/configs.rs")]
 pub mod configs;
-mod genesis_config_presets;
+
+#[path = "volta/genesis_config_presets.rs"]
+mod volta_genesis_config_presets;
+
+#[path = "mainnet/genesis_config_presets.rs"]
+mod mainnet_genesis_config_presets;
 
 mod precompiles;
 pub use precompiles::Precompiles;
@@ -165,24 +172,11 @@ impl_opaque_keys! {
     }
 }
 
-// Version of the runtime.
-#[sp_version::runtime_version]
-pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: Cow::Borrowed("vflow-runtime"),
-    impl_name: Cow::Borrowed("vflow-node"),
-    authoring_version: 1,
-    spec_version: 1_000_000,
-    impl_version: 0,
-    apis: RUNTIME_API_VERSIONS,
-    transaction_version: 1,
-    system_version: 1,
-};
-
 /// The version information used to identify this runtime when compiled natively.
 #[cfg(feature = "std")]
 pub fn native_version() -> NativeVersion {
     NativeVersion {
-        runtime_version: VERSION,
+        runtime_version: configs::VERSION,
         can_author_with: Default::default(),
     }
 }
@@ -256,7 +250,7 @@ impl_runtime_apis! {
 
     impl sp_api::Core<Block> for Runtime {
         fn version() -> RuntimeVersion {
-            VERSION
+            configs::VERSION
         }
 
         fn execute_block(block: Block) {
@@ -672,7 +666,7 @@ impl_runtime_apis! {
 
             pub mod xcm {
                 use super::*;
-                use crate::{configs::monetary::*, configs::xcm::*, constants::currency::{CENTS, VFY}};
+                use crate::{configs::monetary::*, configs::xcm::*, currency::{CENTS, VFY}};
                 use frame_support::parameter_types;
                 use xcm::v5::{Asset, Assets, Location, InteriorLocation, Junction, Junctions::Here, NetworkId, Response, Fungibility::Fungible, Parent};
                 use frame_benchmarking::BenchmarkError;
@@ -850,11 +844,16 @@ impl_runtime_apis! {
         }
 
         fn get_preset(id: &Option<sp_genesis_builder::PresetId>) -> Option<Vec<u8>> {
-            get_preset::<RuntimeGenesisConfig>(id, &genesis_config_presets::get_preset)
+            get_preset::<RuntimeGenesisConfig>(id, |id| {
+                volta_genesis_config_presets::get_preset(id).or_else(
+                    || { mainnet_genesis_config_presets::get_preset(id) }
+                )
+            })
         }
 
         fn preset_names() -> Vec<sp_genesis_builder::PresetId> {
-           genesis_config_presets::preset_names()
+            [volta_genesis_config_presets::preset_names(),
+             mainnet_genesis_config_presets::preset_names()].concat()
         }
     }
 }

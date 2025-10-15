@@ -18,9 +18,9 @@
 use crate::{
     configs::monetary::TransactionByteFee,
     configs::system::RuntimeBlockWeights,
-    constants::currency::{CENTS, MILLIS},
-    weights, AccountId, AllPalletsWithSystem, Balances, MessageQueue, ParachainInfo,
-    ParachainSystem, Perbill, Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, XcmpQueue, ZKVXcm,
+    currency::{CENTS, MILLIS},
+    weights, AllPalletsWithSystem, Balances, MessageQueue, ParachainInfo, ParachainSystem, Perbill,
+    Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, XcmpQueue, ZKVXcm,
 };
 use cumulus_primitives_core::{AggregateMessageOrigin, ParaId};
 use frame_support::{
@@ -42,6 +42,7 @@ use sp_runtime::{
     traits::{PostDispatchInfoOf, TryConvert},
     DispatchErrorWithPostInfo,
 };
+use vflow_runtime_common::types::AccountId;
 use xcm::latest::prelude::*;
 use xcm_builder::{
     AccountKey20Aliases, AllowKnownQueryResponses, AllowSubscriptionsFrom,
@@ -58,9 +59,7 @@ use xcm_executor::{
 };
 
 use crate::weights::pallet_xcm_benchmarks::ZKVEvmWeight as XcmZKVEvmWeight;
-
-const ZKV_GENESIS_HASH: [u8; 32] =
-    hex_literal::hex!("07982e2ca17ec4dc468aac452bcddda8c870cc9a96f99e1b7e1900648331fb08");
+use crate::configs::ZKV_GENESIS_HASH;
 
 parameter_types! {
     pub const RootLocation: Location = Here.into_location();

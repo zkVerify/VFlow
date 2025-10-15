@@ -38,7 +38,7 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::H256;
 use sp_inherents::CreateInherentDataProviders;
 use sp_runtime::traits::Block as BlockT;
-use vflow_volta_runtime::{opaque::Block, AccountId, Balance, Nonce};
+use vflow_runtime::{opaque::Block, AccountId, Balance, Nonce};
 
 pub use self::eth::EthDeps;
 use crate::rpc::eth::create_eth;

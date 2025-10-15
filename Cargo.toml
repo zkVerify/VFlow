@@ -10,8 +10,7 @@ members = [
     "node",
     "pallets/deployment-permissions",
     "pallets/parachain-inherent",
-    "runtime/volta",
-    "runtime/mainnet",
+    "runtime/vflow",
     "runtime/common",
 ]
 resolver = "2"
@@ -22,8 +21,7 @@ resolver = "2"
 cumulus-client-parachain-inherent = {path = "pallets/parachain-inherent", default-features = false}
 pallet-deployment-permissions = {path = "pallets/deployment-permissions", default-features = false}
 vflow-runtime-common = {path = "runtime/common", default-features = false}
-vflow-volta-runtime = {path = "runtime/volta"}
-vflow-mainnet-runtime = {path = "runtime/mainnet"}
+vflow-runtime = {path = "runtime/vflow"}
 
 # Common
 async-trait = {version = "0.1.42"}

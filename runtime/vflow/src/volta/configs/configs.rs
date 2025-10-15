@@ -13,13 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! In this module, we provide the configurations about parachain governance.
-//! For now, we just use sudo.
+#[path = "../../common/configs/configs.rs"]
+pub mod common_configs;
+pub use common_configs::*;
 
-use crate::{weights, Runtime, RuntimeCall, RuntimeEvent};
+use crate::*;
+// Version of the runtime.
+#[sp_version::runtime_version]
+pub const VERSION: RuntimeVersion = RuntimeVersion {
+    spec_name: Cow::Borrowed("tvflow-runtime"),
+    impl_name: Cow::Borrowed("vflow-node"),
+    authoring_version: 1,
+    spec_version: 1_000_000,
+    impl_version: 0,
+    apis: RUNTIME_API_VERSIONS,
+    transaction_version: 1,
+    system_version: 1,
+};
 
-impl pallet_sudo::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
-    type RuntimeCall = RuntimeCall;
-    type WeightInfo = weights::pallet_sudo::ZKVEvmWeight<Runtime>;
-}
+const ZKV_GENESIS_HASH: [u8; 32] =
+    hex_literal::hex!("ff7fe5a610f15fe7a0c52f94f86313fb7db7d3786e7f8acf2b66c11d5be7c242");

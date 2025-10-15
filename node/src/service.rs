@@ -46,7 +46,7 @@ use sc_consensus_manual_seal::consensus::aura::AuraConsensusDataProvider;
 use sc_executor::{HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY};
 use sc_network::{NetworkBackend, NetworkBlock};
 use sc_service::{
-    ChainSpec, Configuration, PartialComponents, TFullBackend, TFullClient, TaskManager,
+    Configuration, PartialComponents, TFullBackend, TFullClient, TaskManager,
 };
 use sc_telemetry::{Telemetry, TelemetryHandle, TelemetryWorker, TelemetryWorkerHandle};
 use sc_transaction_pool_api::OffchainTransactionPoolFactory;
@@ -54,8 +54,8 @@ use sp_core::U256;
 use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Header;
 use substrate_prometheus_endpoint::Registry;
-pub use vflow_volta_runtime::opaque::Block;
-use vflow_volta_runtime::{configs::evm::TransactionConverter, opaque::Hash, RuntimeApi};
+pub use vflow_runtime::opaque::Block;
+use vflow_runtime::{configs::evm::TransactionConverter, opaque::Hash, RuntimeApi};
 use zkv_benchmarks::hardware::zkv_reference_hardware;
 
 use crate::eth::{
@@ -101,51 +101,6 @@ pub type Service = PartialComponents<
         Arc<dyn StorageOverride<Block>>,
     ),
 >;
-
-/// Identifies the variant of the chain.
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Chain {
-    /// VFlow Testnet.
-    Volta,
-    /// VFlow Mainnet.
-    VFlow,
-    /// Unknown chain?
-    Unknown,
-}
-
-/// Can be called for a `Configuration` to identify which network the configuration targets.
-pub trait IdentifyVariant {
-    /// Returns true if this is a configuration for the `VFlow Volta` network.
-    fn is_volta(&self) -> bool;
-
-    /// Returns true if this is a configuration for the `VFlow Mainnet` network.
-    fn is_vflow(&self) -> bool;
-
-    /// Identifies the variant of the chain.
-    fn identify_chain(&self) -> Chain;
-}
-
-impl IdentifyVariant for Box<dyn ChainSpec> {
-    fn is_volta(&self) -> bool {
-        self.id().starts_with("volta") || self.id().starts_with("vflow_testnet")
-    }
-
-    fn is_vflow(&self) -> bool {
-        self.id().starts_with("vflow_mainnet")
-            || self.id().starts_with("vflow")
-            || self.id().starts_with("mainnet")
-    }
-
-    fn identify_chain(&self) -> Chain {
-        if self.is_volta() {
-            Chain::Volta
-        } else if self.is_vflow() {
-            Chain::VFlow
-        } else {
-            Chain::Unknown
-        }
-    }
-}
 
 /// Starts a `ServiceBuilder` for a full service.
 ///

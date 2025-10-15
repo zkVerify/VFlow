@@ -75,7 +75,7 @@ fn volta_chain_properties() -> Map<String, Value> {
 
 pub fn volta_development_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -91,7 +91,7 @@ pub fn volta_development_config() -> Result<ChainSpec, String> {
 
 pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -114,7 +114,7 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWFVarmg1RGuCnEsHVjYSxKd6idJ6cCEowkKkgaBPovt84";
 
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta".into(),
             para_id: 1,
@@ -151,7 +151,7 @@ fn mainnet_chain_properties() -> Map<String, Value> {
 
 pub fn mainnet_development_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "zkverify-local".into(),
             para_id: 1,
@@ -167,7 +167,7 @@ pub fn mainnet_development_config() -> Result<ChainSpec, String> {
 
 pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "zkverify-local".into(),
             para_id: 1,
@@ -190,8 +190,7 @@ pub fn mainnet_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWRQCKkAomumTLGA3tzPTazixvhWys9RpQBEkWZ8nYTsJD";
 
     Ok(ChainSpec::builder(
-        vflow_mainnet_runtime::WASM_BINARY
-            .ok_or_else(|| "Mainnet wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
         Extensions {
             relay_chain: "mainnet".into(),
             para_id: 1,

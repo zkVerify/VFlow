@@ -28,7 +28,7 @@ use sp_runtime::traits::AccountIdConversion;
 use crate::{
     chain_spec,
     cli::{Cli, RelayChainCli, Subcommand},
-    service::{self, new_partial, IdentifyVariant},
+    service::{self, new_partial},
 };
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
@@ -251,7 +251,6 @@ pub fn run() -> Result<()> {
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
                     let ext_builder = RemarkBuilder::new(
                         partials.client.clone(),
-                        config.chain_spec.identify_chain(),
                     );
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)

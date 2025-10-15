@@ -29,76 +29,21 @@ use sc_client_api::UsageProvider;
 use sp_core::{ecdsa, Pair};
 use sp_inherents::{InherentData, InherentDataProvider};
 use sp_runtime::{generic::Era, OpaqueExtrinsic, SaturatedConversion};
-use vflow_volta_runtime::AccountId;
+use vflow_runtime::AccountId;
 
-use crate::service::{Chain, ParachainClient};
-
-macro_rules! identify_chain {
-    (
-		$chain:expr,
-		$nonce:ident,
-		$current_block:ident,
-		$period:ident,
-		$genesis:ident,
-		$best:ident,
-		$signer:ident,
-		$generic_code:expr $(,)*
-	) => {
-        match $chain {
-            Chain::VFlow => {
-                use vflow_mainnet_runtime as runtime;
-
-                let call = $generic_code;
-
-                Ok(mainnet_sign_call(
-                    call,
-                    $nonce,
-                    $current_block,
-                    $period,
-                    $genesis,
-                    $signer,
-                ))
-            }
-            Chain::Volta => {
-                use vflow_volta_runtime as runtime;
-
-                let call = $generic_code;
-
-                Ok(volta_sign_call(
-                    call,
-                    $nonce,
-                    $current_block,
-                    $period,
-                    $genesis,
-                    $best,
-                    $signer,
-                ))
-            }
-            Chain::Unknown => {
-                let _ = $nonce;
-                let _ = $current_block;
-                let _ = $period;
-                let _ = $genesis;
-                let _ = $signer;
-
-                Err("Unknown chain")
-            }
-        }
-    };
-}
+use crate::service::ParachainClient;
 
 /// Generates `System::Remark` extrinsics for the benchmarks.
 ///
 /// Note: Should only be used for benchmarking.
 pub struct RemarkBuilder {
     client: Arc<ParachainClient>,
-    chain: Chain,
 }
 
 impl RemarkBuilder {
     /// Creates a new [`Self`] from the given client.
-    pub fn new(client: Arc<ParachainClient>, chain: Chain) -> Self {
-        Self { client, chain }
+    pub fn new(client: Arc<ParachainClient>) -> Self {
+        Self { client }
     }
 }
 
@@ -114,7 +59,6 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
     fn build(&self, nonce: u32) -> std::result::Result<OpaqueExtrinsic, &'static str> {
         // We apply the extrinsic directly, so let's take some random period.
         let period = 128;
-        let best = self.client.usage_info().chain.best_hash;
         let genesis = self
             .client
             .block_hash(0)
@@ -124,33 +68,29 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
         let signer = ecdsa::Pair::from_string("//Bob", None).expect("static values are valid; qed");
         let current_block = 0;
 
-        identify_chain! {
-            self.chain,
+        let call = vflow_runtime::RuntimeCall::System(
+                    vflow_runtime::SystemCall::remark { remark: vec![] }
+        );
+        Ok(sign_call(
+            call,
             nonce,
             current_block,
             period,
             genesis,
-            best,
             signer,
-            {
-                runtime::RuntimeCall::System(
-                    runtime::SystemCall::remark { remark: vec![] }
-                )
-            },
-        }
+        ))
     }
 }
 
-fn volta_sign_call(
-    call: vflow_volta_runtime::RuntimeCall,
+fn sign_call(
+    call: vflow_runtime::RuntimeCall,
     nonce: u32,
     current_block: u64,
     period: u64,
     genesis: sp_core::H256,
-    best: sp_core::H256,
     acc: ecdsa::Pair,
 ) -> OpaqueExtrinsic {
-    use vflow_volta_runtime as runtime;
+    use vflow_runtime as runtime;
     let extra: runtime::types::SignedExtra = (
         frame_system::CheckNonZeroSender::<runtime::Runtime>::new(),
         frame_system::CheckSpecVersion::<runtime::Runtime>::new(),
@@ -172,62 +112,8 @@ fn volta_sign_call(
         extra.clone(),
         (
             (),
-            runtime::VERSION.spec_version,
-            runtime::VERSION.transaction_version,
-            genesis,
-            best,
-            (),
-            (),
-            (),
-            None,
-            (),
-        ),
-    );
-
-    let signature =
-        raw_payload.using_encoded(|e| acc.sign_prehashed(&sp_io::hashing::keccak_256(e)));
-
-    runtime::types::UncheckedExtrinsic::new_signed(
-        call,
-        AccountId::from(acc.public()),
-        runtime::Signature::new(signature),
-        extra,
-    )
-    .into()
-}
-
-fn mainnet_sign_call(
-    call: vflow_mainnet_runtime::RuntimeCall,
-    nonce: u32,
-    current_block: u64,
-    period: u64,
-    genesis: sp_core::H256,
-    acc: ecdsa::Pair,
-) -> OpaqueExtrinsic {
-    use vflow_mainnet_runtime as runtime;
-    let extra: runtime::types::SignedExtra = (
-        frame_system::CheckNonZeroSender::<runtime::Runtime>::new(),
-        frame_system::CheckSpecVersion::<runtime::Runtime>::new(),
-        frame_system::CheckTxVersion::<runtime::Runtime>::new(),
-        frame_system::CheckGenesis::<runtime::Runtime>::new(),
-        frame_system::CheckMortality::<runtime::Runtime>::from(Era::mortal(
-            period,
-            current_block.saturated_into(),
-        )),
-        frame_system::CheckNonce::<runtime::Runtime>::from(nonce),
-        frame_system::CheckWeight::<runtime::Runtime>::new(),
-        pallet_transaction_payment::ChargeTransactionPayment::<runtime::Runtime>::from(0),
-        frame_metadata_hash_extension::CheckMetadataHash::<runtime::Runtime>::new(false),
-        cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim::<runtime::Runtime>::new(),
-    );
-
-    let raw_payload = runtime::types::SignedPayload::from_raw(
-        call.clone(),
-        extra.clone(),
-        (
-            (),
-            runtime::VERSION.spec_version,
-            runtime::VERSION.transaction_version,
+            runtime::configs::VERSION.spec_version,
+            runtime::configs::VERSION.transaction_version,
             genesis,
             genesis,
             (),
