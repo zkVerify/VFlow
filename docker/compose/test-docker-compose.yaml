@@ -1,13 +1,13 @@
 version: '3'
 services:
   relay_alice:
-    image: horizenlabs/zkverify:latest-relay
+    image: zkverify/relay-node:latest
     volumes:
       - ../../staging/relay-spec-raw.json:/data/chain_spec.json
     env_file:
       - ../resources/envs/relaychain/.env.alice
   relay_bob:
-    image: horizenlabs/zkverify:latest-relay
+    image: zkverify/relay-node:latest
     volumes:
       - ../../staging/relay-spec-raw.json:/data/chain_spec.json
     env_file:

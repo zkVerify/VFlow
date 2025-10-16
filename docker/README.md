@@ -32,13 +32,13 @@ Here the full steps:<br>
 1- Generate **relaychain** spec:
 
 ```bash
-docker run --entrypoint zkv-relay --rm horizenlabs/zkverify:latest-relay  build-spec --disable-default-bootnode --chain local  > ./staging/relay-spec.json
+docker run --entrypoint zkv --rm zkverify/relay-node:latest  build-spec --disable-default-bootnode --chain local  > ./staging/relay-spec.json
 ```
 
 2- Generate **relaychain** raw spec:
 
 ```bash
-docker run --entrypoint zkv-relay --rm -v ./staging/relay-spec.json:/tmp/relay-spec.json horizenlabs/zkverify:latest-relay build-spec --chain local --disable-default-bootnode --raw > ./staging/relay-spec-raw.json
+docker run --entrypoint zkv --rm -v ./staging/relay-spec.json:/tmp/relay-spec.json zkverify/relay-node:latest build-spec --chain local --disable-default-bootnode --raw > ./staging/relay-spec-raw.json
 ```
 
 3- Generate **parachain** spec:
