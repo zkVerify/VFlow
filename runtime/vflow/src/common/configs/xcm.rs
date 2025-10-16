@@ -58,8 +58,8 @@ use xcm_executor::{
     XcmExecutor,
 };
 
-use crate::weights::pallet_xcm_benchmarks::ZKVEvmWeight as XcmZKVEvmWeight;
 use crate::configs::ZKV_GENESIS_HASH;
+use crate::weights::pallet_xcm_benchmarks::ZKVEvmWeight as XcmZKVEvmWeight;
 
 parameter_types! {
     pub const RootLocation: Location = Here.into_location();

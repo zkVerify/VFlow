@@ -229,8 +229,8 @@ pub fn mainnet_config_genesis() -> serde_json::Value {
 
 pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
     let cfg = match id.as_ref() {
-        "development" => development_config_genesis(),
-        "local_testnet" => local_config_genesis(),
+        "mainnet_development" => development_config_genesis(),
+        "mainnet_local_testnet" => local_config_genesis(),
         "mainnet" => mainnet_config_genesis(),
         _ => return None,
     };
@@ -243,8 +243,8 @@ pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
 
 pub fn preset_names() -> Vec<PresetId> {
     vec![
-        PresetId::from("development"), // default for benchmarking
-        PresetId::from("local_testnet"),
+        PresetId::from("mainnet_development"), // default for benchmarking
+        PresetId::from("mainnet_local_testnet"),
         PresetId::from("mainnet"),
     ]
 }

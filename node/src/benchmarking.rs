@@ -68,9 +68,9 @@ impl frame_benchmarking_cli::ExtrinsicBuilder for RemarkBuilder {
         let signer = ecdsa::Pair::from_string("//Bob", None).expect("static values are valid; qed");
         let current_block = 0;
 
-        let call = vflow_runtime::RuntimeCall::System(
-                    vflow_runtime::SystemCall::remark { remark: vec![] }
-        );
+        let call = vflow_runtime::RuntimeCall::System(vflow_runtime::SystemCall::remark {
+            remark: vec![],
+        });
         Ok(sign_call(
             call,
             nonce,

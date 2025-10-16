@@ -249,9 +249,7 @@ pub fn run() -> Result<()> {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};
 
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
-                    let ext_builder = RemarkBuilder::new(
-                        partials.client.clone(),
-                    );
+                    let ext_builder = RemarkBuilder::new(partials.client.clone());
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)
                             .map(|e| e.para_id)
