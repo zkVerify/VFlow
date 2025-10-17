@@ -20,3 +20,20 @@ mod governance;
 pub mod monetary;
 pub mod system;
 pub mod xcm;
+
+#[macro_export]
+macro_rules! runtime_version {
+    ( $spec_name:tt, $impl_name:tt ) => {
+        #[sp_version::runtime_version]
+        pub const VERSION: RuntimeVersion = RuntimeVersion {
+            spec_name: Cow::Borrowed($spec_name),
+            impl_name: Cow::Borrowed($impl_name),
+            authoring_version: 1,
+            spec_version: 1_000_000,
+            impl_version: 0,
+            apis: RUNTIME_API_VERSIONS,
+            transaction_version: 1,
+            system_version: 1,
+        };
+    };
+}

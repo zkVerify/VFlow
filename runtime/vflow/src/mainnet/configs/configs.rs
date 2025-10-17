@@ -20,17 +20,10 @@ pub use common_configs::*;
 use crate::*;
 
 // Version of the runtime.
-#[sp_version::runtime_version]
-pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: Cow::Borrowed("vflow-runtime"),
-    impl_name: Cow::Borrowed("vflow-node"),
-    authoring_version: 1,
-    spec_version: 1_000_000,
-    impl_version: 0,
-    apis: RUNTIME_API_VERSIONS,
-    transaction_version: 1,
-    system_version: 1,
-};
+runtime_version!("vflow-runtime", "vflow_node");
 
 const ZKV_GENESIS_HASH: [u8; 32] =
     hex_literal::hex!("060e3dd3fa2904d031206bb913c954687a2bcc350e5a83d33d9e273ad21460f1");
+
+pub(crate) const ERC20_NAME: sp_runtime::Cow<'_, str> = Cow::Borrowed("VFY token");
+pub(crate) const ERC20_SYMBOL: sp_runtime::Cow<'_, str> = Cow::Borrowed("VFY");
