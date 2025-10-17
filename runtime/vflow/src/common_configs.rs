@@ -23,11 +23,11 @@ pub mod xcm;
 
 #[macro_export]
 macro_rules! runtime_version {
-    ( $spec_name:tt, $impl_name:tt ) => {
+    ( $spec_name:tt ) => {
         #[sp_version::runtime_version]
         pub const VERSION: RuntimeVersion = RuntimeVersion {
             spec_name: Cow::Borrowed($spec_name),
-            impl_name: Cow::Borrowed($impl_name),
+            impl_name: Cow::Borrowed("vflow_node"),
             authoring_version: 1,
             spec_version: 1_000_000,
             impl_version: 0,

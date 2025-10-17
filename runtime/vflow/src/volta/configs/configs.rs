@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[path = "../../common/configs/configs.rs"]
-pub mod common_configs;
 pub use common_configs::*;
+
+pub(crate) mod genesis_config_presets;
 
 use crate::*;
 
 // Version of the runtime.
-runtime_version!("tvflow-runtime", "vflow_node");
+runtime_version!("tvflow-runtime");
 
-const ZKV_GENESIS_HASH: [u8; 32] =
+pub(crate) const ZKV_GENESIS_HASH: [u8; 32] =
     hex_literal::hex!("ff7fe5a610f15fe7a0c52f94f86313fb7db7d3786e7f8acf2b66c11d5be7c242");
 
 pub(crate) const ERC20_NAME: sp_runtime::Cow<'_, str> = Cow::Borrowed("tVFY token");

@@ -107,7 +107,7 @@ pub fn volta_development_config() -> Result<ChainSpec, String> {
     .with_id("volta_dev")
     .with_chain_type(ChainType::Development)
     .with_properties(volta_chain_properties())
-    .with_genesis_config_preset_name("volta_development")
+    .with_genesis_config_preset_name("development")
     .build())
 }
 
@@ -126,7 +126,7 @@ pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
     .with_chain_type(ChainType::Local)
     .with_protocol_id("volta_local_testnet")
     .with_properties(volta_chain_properties())
-    .with_genesis_config_preset_name("volta_local_testnet")
+    .with_genesis_config_preset_name("local_testnet")
     .build())
 }
 
@@ -189,7 +189,7 @@ pub fn mainnet_development_config() -> Result<ChainSpec, String> {
     .with_id("mainnet_dev")
     .with_chain_type(ChainType::Development)
     .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("mainnet_development")
+    .with_genesis_config_preset_name("development")
     .build())
 }
 
@@ -208,7 +208,7 @@ pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
     .with_chain_type(ChainType::Local)
     .with_protocol_id("mainnet_local_testnet")
     .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("mainnet_local_testnet")
+    .with_genesis_config_preset_name("local_testnet")
     .build())
 }
 

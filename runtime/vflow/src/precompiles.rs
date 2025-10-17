@@ -22,7 +22,10 @@ use pallet_evm_precompile_sha3fips::Sha3FIPS256;
 use pallet_evm_precompile_simple::{ECRecover, ECRecoverPublicKey, Identity, Ripemd160, Sha256};
 use precompile_utils::precompile_set::*;
 
-use crate::configs::xcm::{NativeAssetId, RelayLocation};
+use crate::configs::{
+    xcm::{NativeAssetId, RelayLocation},
+    ERC20_NAME, ERC20_SYMBOL,
+};
 use crate::{RuntimeCall, RuntimeOrigin};
 use vflow_runtime_common::xcm_teleport::XcmTeleportPrecompile;
 
@@ -32,12 +35,12 @@ pub struct NativeErc20Metadata;
 impl Erc20Metadata for NativeErc20Metadata {
     /// Returns the name of the token.
     fn name() -> &'static str {
-        "tVFY token"
+        &ERC20_NAME
     }
 
     /// Returns the symbol of the token.
     fn symbol() -> &'static str {
-        "tVFY"
+        &ERC20_SYMBOL
     }
 
     /// Returns the decimals places of the token.

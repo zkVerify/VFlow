@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[path = "../../common/configs/configs.rs"]
-mod common_configs;
 pub use common_configs::*;
+
+pub(crate) mod genesis_config_presets;
 
 use crate::*;
 
 // Version of the runtime.
-runtime_version!("vflow-runtime", "vflow_node");
+runtime_version!("vflow-runtime");
 
-const ZKV_GENESIS_HASH: [u8; 32] =
+pub(crate) const ZKV_GENESIS_HASH: [u8; 32] =
     hex_literal::hex!("060e3dd3fa2904d031206bb913c954687a2bcc350e5a83d33d9e273ad21460f1");
 
 pub(crate) const ERC20_NAME: sp_runtime::Cow<'_, str> = Cow::Borrowed("VFY token");

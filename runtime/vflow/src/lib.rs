@@ -21,15 +21,11 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+mod common_configs;
+
 #[cfg_attr(feature = "volta", path = "volta/configs/configs.rs")]
 #[cfg_attr(not(feature = "volta"), path = "mainnet/configs/configs.rs")]
 pub mod configs;
-
-#[path = "volta/genesis_config_presets.rs"]
-mod volta_genesis_config_presets;
-
-#[path = "mainnet/genesis_config_presets.rs"]
-mod mainnet_genesis_config_presets;
 
 mod precompiles;
 pub use precompiles::Precompiles;
@@ -844,16 +840,11 @@ impl_runtime_apis! {
         }
 
         fn get_preset(id: &Option<sp_genesis_builder::PresetId>) -> Option<Vec<u8>> {
-            get_preset::<RuntimeGenesisConfig>(id, |id| {
-                volta_genesis_config_presets::get_preset(id).or_else(
-                    || { mainnet_genesis_config_presets::get_preset(id) }
-                )
-            })
+            get_preset::<RuntimeGenesisConfig>(id, configs::genesis_config_presets::get_preset)
         }
 
         fn preset_names() -> Vec<sp_genesis_builder::PresetId> {
-            [volta_genesis_config_presets::preset_names(),
-             mainnet_genesis_config_presets::preset_names()].concat()
+            configs::genesis_config_presets::preset_names()
         }
     }
 }
