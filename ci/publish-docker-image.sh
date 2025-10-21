@@ -61,6 +61,7 @@ if [ "${DRY_RUN}" != "true" ]; then
   if [ -z "${docker_hub_username:-}" ]; then
     fn_die "ERROR: DOCKER_HUB_USERNAME variable is not set. Exiting ..."
   fi
+  echo "${docker_hub_token}" | docker login -u "${docker_hub_username}" --password-stdin
 fi
 
 # Load docker image
@@ -78,7 +79,6 @@ if [ "${is_a_release}" = "true" ]; then
 
   # Publishing to DockerHub
   log_info "=== Publishing Docker image(s) on Docker Hub ==="
-  echo "${docker_hub_token}" | docker login -u "${docker_hub_username}" --password-stdin
 
   # Docker image(s) tags for PROD vs DEV release
   if [ "${prod_release}" = "true" ]; then
@@ -108,7 +108,7 @@ if [ "${is_a_release}" = "true" ]; then
 
   # Extract runtime artifacts
   if [ "${extract_runtime}" == "true" ]; then
-    ./ci/extract-wasm.sh --image "index.docker.io/${docker_hub_org}/${docker_image_build_name}:${docker_tag_full}"
+    ./ci/extract_wasm.sh --image "index.docker.io/${docker_hub_org}/${docker_image_build_name}:${docker_tag_full}"
   else
     log_info "=== Skipping runtime artifact extraction ==="
   fi
