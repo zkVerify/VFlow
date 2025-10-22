@@ -24,7 +24,7 @@ serde_json = {workspace = true, features = ["std"]}
 
 # Local
 vflow-runtime-common = {workspace = true}
-vflow-runtime = {workspace = true}
+vflow-runtime = {workspace = true, features = ["volta"]}
 
 # ZKV relay
 zkv-benchmarks = {workspace = true}

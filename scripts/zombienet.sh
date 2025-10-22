@@ -2,7 +2,7 @@
 
 ZOMBIENET_V=v1.3.128
 BIN_DIR=relay-bin
-CHAIN=${CHAIN:-"volta"} # or mainnet
+CHAIN=${CHAIN:-"volta"} # mainnet NOT available for local dev
 
 case "$(uname -s)" in
     Linux*)     MACHINE=Linux;;

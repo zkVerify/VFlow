@@ -16,8 +16,8 @@
 #[cfg(feature = "runtime-benchmarks")]
 use crate::get_from_seed_url;
 use crate::{
-    configs::EVM_CHAIN_ID, currency::VFY, get_from_substrate_account, AccountEntry,
-    AccountId, Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+    configs::EVM_CHAIN_ID, currency::VFY, get_from_substrate_account, AccountEntry, AccountId,
+    Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
 };
 use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;

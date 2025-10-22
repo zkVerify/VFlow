@@ -43,7 +43,7 @@ pub(crate) mod weights_aliases {
 #[macro_use]
 extern crate alloc;
 
-use alloc::{borrow::Cow, string::String};
+use alloc::string::String;
 
 use frame_support::{
     construct_runtime,

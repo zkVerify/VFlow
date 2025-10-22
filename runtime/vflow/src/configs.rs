@@ -21,15 +21,10 @@ pub mod monetary;
 pub mod system;
 pub mod xcm;
 
-#[cfg(feature = "volta")]
-pub mod volta;
-#[cfg(feature = "volta")]
-pub use volta::*;
-
-#[cfg(not(feature = "volta"))]
-pub mod mainnet;
-#[cfg(not(feature = "volta"))]
-pub use mainnet::*;
+#[cfg_attr(not(feature = "volta"), path = "configs/mainnet.rs")]
+#[cfg_attr(feature = "volta", path = "configs/volta.rs")]
+pub mod chain_cfg;
+pub use chain_cfg::*;
 
 #[macro_export]
 macro_rules! runtime_version {

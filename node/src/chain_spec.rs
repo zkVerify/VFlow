@@ -30,7 +30,6 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // The URL for the telemetry server.
 const TELEMETRY_URL: &str = "wss://telemetry.zkverify.io/submit/";
 
-const MAINNET_SPEC_NAME: &str = "vflow-runtime";
 const VOLTA_SPEC_NAME: &str = "tvflow-runtime";
 
 /// The extensions for the [`ChainSpec`].
@@ -157,88 +156,6 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     )
     .with_properties(volta_chain_properties())
     .with_genesis_config_preset_name("volta")
-    .with_telemetry_endpoints(
-        TelemetryEndpoints::new(vec![(
-            TELEMETRY_URL.to_string(),
-            sc_telemetry::CONSENSUS_INFO,
-        )])
-        .expect("Horizen Labs telemetry url is valid; qed"),
-    )
-    .build())
-}
-
-// Mainnet Configurations
-
-fn mainnet_chain_properties() -> Map<String, Value> {
-    let mut properties = common_chain_propertis();
-    properties.insert("tokenSymbol".into(), "VFY".into());
-    properties
-}
-
-pub fn mainnet_development_config() -> Result<ChainSpec, String> {
-    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
-
-    Ok(ChainSpec::builder(
-        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "zkverify-local".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("Mainnet Development")
-    .with_id("mainnet_dev")
-    .with_chain_type(ChainType::Development)
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("development")
-    .build())
-}
-
-pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
-    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
-
-    Ok(ChainSpec::builder(
-        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "zkverify-local".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("Mainnet Local Testnet")
-    .with_id("mainnet_local_testnet")
-    .with_chain_type(ChainType::Local)
-    .with_protocol_id("mainnet_local_testnet")
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("local_testnet")
-    .build())
-}
-
-pub fn mainnet_config() -> Result<ChainSpec, String> {
-    check_correct_runtime(MAINNET_SPEC_NAME, vflow_runtime::configs::VERSION)?;
-
-    // The connection strings for bootnodes
-    const BOOTNODE_1_DNS: &str = "boot-node-vflow-1.zkverify.io";
-    const BOOTNODE_1_PEER_ID: &str = "12D3KooWEdJ8hLcSfr9RAieL4KNFKKgfmegJvfvYhAqspAfvpHKJ";
-    const BOOTNODE_2_DNS: &str = "boot-node-vflow-2.zkverify.io";
-    const BOOTNODE_2_PEER_ID: &str = "12D3KooWRQCKkAomumTLGA3tzPTazixvhWys9RpQBEkWZ8nYTsJD";
-
-    Ok(ChainSpec::builder(
-        vflow_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "mainnet".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("VFlow")
-    .with_id("vflow_mainnet")
-    .with_chain_type(ChainType::Live)
-    .with_protocol_id("vflow")
-    .with_boot_nodes(
-        boot_node_address(BOOTNODE_1_DNS, BOOTNODE_1_PEER_ID)
-            .chain(boot_node_address(BOOTNODE_2_DNS, BOOTNODE_2_PEER_ID))
-            .collect(),
-    )
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("mainnet")
     .with_telemetry_endpoints(
         TelemetryEndpoints::new(vec![(
             TELEMETRY_URL.to_string(),
