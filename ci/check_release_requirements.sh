@@ -25,7 +25,7 @@ export VERSION_STR="${version_str}"
 export COMMON_FILE_LOCATION='ci/common.sh'
 # Requirement
 if ! [ -f "${workdir}/${COMMON_FILE_LOCATION}" ]; then
-  echo -e "\n\033[1;31mERROR: ${COMMON_FILE_LOCATION} file is missing !!! \033[0m\n"
+  log_error "ERROR: ${COMMON_FILE_LOCATION} file is missing!!!"
   return
 else
   # shellcheck disable=SC1090
