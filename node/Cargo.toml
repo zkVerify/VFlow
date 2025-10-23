@@ -115,18 +115,16 @@ runtime-benchmarks = [
 	"polkadot-primitives/runtime-benchmarks",
 	"sc-service/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"vflow-runtime/runtime-benchmarks",
 	"vflow-runtime-common/runtime-benchmarks",
+	"vflow-runtime/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-system/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"polkadot-cli/try-runtime",
 	"sp-runtime/try-runtime",
-	"vflow-runtime/try-runtime",
 	"vflow-runtime-common/try-runtime",
+	"vflow-runtime/try-runtime",
 ]
 txpool = [ "fc-rpc/txpool" ]
-metadata-hash = [
-	"vflow-runtime/metadata-hash",
-]
+metadata-hash = [ "vflow-runtime/metadata-hash" ]
