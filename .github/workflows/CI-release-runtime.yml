@@ -1,0 +1,186 @@
+name: Release runtime
+
+run-name: "Workflow Release Steps: build docker images, publish them, create release and notify on slack"
+
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        description: "Runtime to build [mainnet|volta]"
+        required: true
+        type: string
+      release_name:
+        description: "The release name"
+        required: true
+        type: string
+      release_branch:
+        description: "Github branch name release can be created from"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run execution"
+        required: true
+        type: boolean
+        default: false
+    secrets:
+      RELEASES_PROD_SLACK_WEBHOOK_URL:
+        required: true
+env:
+  DOCKER_IMAGE_NAME: rt-${{ inputs.runtime }}
+  DOCKER_HUB_ORG: ${{ vars.DOCKER_HUB_ORG }}
+
+jobs:
+  check-requirements:
+    runs-on: warp-ubuntu-latest-x64-2x
+    name: Check Release Requirements
+    outputs:
+      is-a-release: ${{ steps.check-requirements.outputs.IS_A_RELEASE }}
+      is-a-prod-release: ${{ steps.check-requirements.outputs.PROD_RELEASE }}
+      is-a-rc-release: ${{ steps.check-requirements.outputs.RC_RELEASE }}
+      is-a-test-release: ${{ steps.check-requirements.outputs.TEST_RELEASE }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - name: Check Requirements
+        id: check-requirements
+        env:
+          RUNTIME: ${{ inputs.runtime }}
+          RELEASE_BRANCH: ${{ inputs.release_branch }}
+          MAINTAINERS_KEYS: ${{ vars.MAINTAINERS_KEYS }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          # shellcheck disable=SC1090
+          source "${GITHUB_WORKSPACE}/ci/check_runtime_requirements.sh"
+          echo "IS_A_RELEASE=${IS_A_RELEASE}" >> "${GITHUB_OUTPUT}"
+          echo "PROD_RELEASE=${PROD_RELEASE}" >> "${GITHUB_OUTPUT}"
+          echo "RC_RELEASE=${RC_RELEASE}" >> "${GITHUB_OUTPUT}"
+          echo "TEST_RELEASE=${TEST_RELEASE}" >> "${GITHUB_OUTPUT}"
+
+  build-docker:
+    runs-on: warp-ubuntu-latest-x64-8x
+    name: Build Docker Image ${{ inputs.runtime }} Runtime
+    needs: [ check-requirements ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker build
+        id: build-docker-image
+        uses: ./.github/actions/build-docker-image
+        with:
+          ref: ${{ github.ref }}
+          docker_hub_org: ${{ vars.DOCKER_HUB_ORG }}
+          docker_image_name: ${{ env.DOCKER_IMAGE_NAME }}
+          docker_image_suffix: ''
+          type: ${{ inputs.runtime }}
+          dry_run: ${{ inputs.dry_run }}
+
+    outputs:
+      artifact_name: ${{ steps.build-docker-image.outputs.artifact_name }}
+
+  extract-runtimes:
+    runs-on: warp-ubuntu-latest-x64-2x
+    name: Extract runtime wasm
+    needs: [ build-docker ]
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Download Docker runtime image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-docker.outputs.artifact_name }}
+          path: ./
+
+      - name: Extract runtime wasm from dockers
+        env:
+          RELEASE_BRANCH: ${{ inputs.release_branch }}
+          MAINTAINERS_KEYS: ${{ vars.MAINTAINERS_KEYS }}
+          DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        shell: bash
+        run: |
+          "${GITHUB_WORKSPACE}/ci/extract_wasm.sh" --image-artifact ${{ needs.build-docker.outputs.artifact_name }}
+
+      - name: Upload runtime artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtimes
+          path: ./*.compact.compressed.wasm
+          retention-days: 7
+          overwrite: true
+
+  release:
+    runs-on: warp-ubuntu-latest-x64-2x
+    name: Create release
+    needs: [ check-requirements, build-docker, extract-runtimes ]
+    steps:
+      - name: Retrieve Docker runtime image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-docker.outputs.artifact_name }}
+          path: docker-images/
+
+      - name: Retrieve saved runtimes wasm
+        uses: actions/download-artifact@v4
+        with:
+          name: runtimes
+          path: wasm
+
+      - name: Create Release
+        id: create-release
+        if: ${{ needs.check-requirements.outputs.is-a-release == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ inputs.release_name }}
+          generate_release_notes: true
+          draft: ${{ inputs.dry_run || ( needs.check-requirements.outputs.is-a-prod-release != 'true' ) }}
+          prerelease: ${{ needs.check-requirements.outputs.is-a-prod-release != 'true' }}
+          preserve_order: true
+          files: |
+            wasm/*
+            docker-images/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Slack Production Releases
+        if: ${{ inputs.dry_run == false }}
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": ":tada:  :vflow:  ${{ inputs.release_name }}  :vflow:  :tada:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Release:*  <${{ steps.create-release.outputs.url }}| ${{ inputs.release_name }}>\n"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Build URL:*  <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Build>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.RELEASES_PROD_SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
