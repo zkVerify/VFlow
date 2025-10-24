@@ -31,39 +31,36 @@ on:
 jobs:
   try-runtime:
     runs-on: warp-ubuntu-latest-x64-8x
-    name: Try runtime
+    strategy:
+      matrix:
+        include:
+          - runtime: 'mainnet'
+            features: ''
+            rpc: 'vflow-rpc.zkverify.io'
+          - runtime: 'volta'
+            features: 'volta'
+            rpc: 'vflow-volta-rpc.zkverify.io'
+    name: Try runtime ${{ matrix.runtime }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Runtimes build
+      - name: Runtime ${{ matrix.runtime }} build
         uses: ./.github/actions/cmd-in-docker
         with:
-          command: "cargo build -p vflow-mainnet-runtime -p vflow-volta-runtime --release --features try-runtime"
+          command: "cargo build -p vflow-runtime --release --features try-runtime,${{ matrix.features }}"
           use_cache: 'yes'
-          cache_key: 'build-try-runtime'
+          cache_key: 'build-try-runtime-${{ matrix.runtime }}'
           lld_install: 'yes'
 
-      - name: Execute try-runtime Volta
+      - name: Execute try-runtime ${{ matrix.runtime }}
         if: ${{ inputs.execute-try-runtime == 'yes' }}
         uses: ./.github/actions/cmd-in-docker
         with:
           command: >-
-            try-runtime --runtime /build/target/release/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm \
+            try-runtime --runtime /build/target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm \
               on-runtime-upgrade \
               --blocktime 6 --disable-mbm-checks --disable-spec-version-check live \
-              --uri wss://vflow-volta-rpc.zkverify.io/
-          try_runtime: ${{ inputs.try-runtime-version }}
-          use_cache: 'no'
-
-      - name: Execute try-runtime Mainnet
-        if: ${{ inputs.execute-try-runtime == 'yes' }}
-        uses: ./.github/actions/cmd-in-docker
-        with:
-          command: >-
-            try-runtime --runtime /build/target/release/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm \
-              on-runtime-upgrade \
-              --blocktime 6 --disable-mbm-checks --disable-spec-version-check live \
-              --uri wss://vflow-rpc.zkverify.io/
+              --uri wss://${{ matrix.rpc }}/
           try_runtime: ${{ inputs.try-runtime-version }}
           use_cache: 'no'

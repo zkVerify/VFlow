@@ -1,6 +1,6 @@
 name: Release runtime
 
-run-name: "Workflow Release Steps: build docker images, publish them, create release and notify on slack"
+run-name: "Workflow Release Steps: build docker images, extract runtimes, create release and notify on slack"
 
 on:
   workflow_call:

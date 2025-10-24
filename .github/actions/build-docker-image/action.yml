@@ -55,22 +55,24 @@ runs:
       run: |
         echo "Building VFlow Docker image"
         runtime_build_arg=""
+        features="${{ inputs.features }}"
         if [ "${{ inputs.type }}" = "node" ]; then
           dockerfile="vflow-node.Dockerfile"
           runtime_build_arg=""
         elif [ "${{ inputs.type }}" = "mainnet" ]; then
           dockerfile="vflow-runtime.Dockerfile"
-          runtime_build_arg='--build-arg "RUNTIME_CRATE=vflow-mainnet-runtime"'
+          runtime_build_arg='--build-arg "RUNTIME_CRATE=vflow-runtime"'
         elif [ "${{ inputs.type }}" = "volta" ]; then
           dockerfile="vflow-runtime.Dockerfile"
-          runtime_build_arg='--build-arg "RUNTIME_CRATE=vflow-volta-runtime"'
+          runtime_build_arg='--build-arg "RUNTIME_CRATE=vflow-runtime"'
+          features="${features},volta"
         else 
           echo "Invalid type specified: ${{ inputs.type }}. Valid values are: [node|mainnet|volta]"
           exit 1
         fi
         ${{inputs.dry_run}} && echo "*********************** Dry run mode enabled, skipping Docker build [${dockerfile},'${runtime_build_arg}'] . ***********************"
         ${{inputs.dry_run}} || docker build --build-arg "PROFILE=${{ inputs.profile }}" \
-          --build-arg "FEATURES=${{ inputs.features }}" \
+          --build-arg "FEATURES=${features}" \
           ${runtime_build_arg} \
           -f "docker/dockerfiles/${dockerfile}" \
           -t ${{ inputs.docker_hub_org }}/${{ inputs.docker_image_name }}${{ inputs.docker_image_suffix }} .

@@ -1,7 +1,7 @@
 [package]
-name = "vflow-volta-runtime"
+name = "vflow-runtime"
 version = "1.0.0"
-description = "VFlow Volta Runtime"
+description = "VFlow Runtime"
 authors.workspace = true
 edition.workspace = true
 homepage.workspace = true
@@ -21,6 +21,7 @@ scale-info = {workspace = true, features = ["derive"]}
 hex-literal = {workspace = true}
 serde_json = { workspace = true, features = ["alloc"] }
 num_enum = { workspace = true }
+cfg-if = { workspace = true }
 
 # Substrate
 frame-benchmarking = {workspace = true, optional = true}
@@ -256,6 +257,8 @@ try-runtime = [
 on-chain-release-build = [ "sp-api/disable-logging" ]
 
 metadata-hash = [ "substrate-wasm-builder/metadata-hash" ]
+
+volta = []
 
 [package.metadata.cargo-machete]
 ignored = ["scale-info"]

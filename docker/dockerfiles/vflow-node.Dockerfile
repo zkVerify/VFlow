@@ -21,7 +21,8 @@ ARG FEATURES=""
 WORKDIR /usr/src/node
 COPY . .
 
-RUN cargo build --profile "${PROFILE}" --features "${FEATURES}"
+# Build the node
+RUN cargo build -p vflow-node --profile "${PROFILE}" --features "${FEATURES}"
 
 FROM ubuntu:24.04 AS node
 
@@ -63,8 +64,7 @@ RUN apt-get update -qq \
     && rm -rf /var/{lib/apt/lists/*,cache/apt/archives/*.deb} /tmp/*
 
 COPY --from=builder "/usr/src/node/target/${PROFILE}/${BINARY}" "/usr/local/bin/"
-COPY --from=builder "/usr/src/node/target/${PROFILE}/wbuild/vflow-volta-runtime/vflow_volta_runtime.compact.compressed.wasm" "./vflow_volta_runtime.compact.compressed.wasm"
-COPY --from=builder "/usr/src/node/target/${PROFILE}/wbuild/vflow-mainnet-runtime/vflow_mainnet_runtime.compact.compressed.wasm" "./vflow_mainnet_runtime.compact.compressed.wasm"
+COPY --from=builder "/usr/src/node/target/${PROFILE}/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm" "./vflow_volta_runtime.compact.compressed.wasm"
 RUN chmod -R a+rx "/usr/local/bin"
 
 COPY docker/scripts/entrypoint.sh .

@@ -28,7 +28,7 @@ use sp_runtime::traits::AccountIdConversion;
 use crate::{
     chain_spec,
     cli::{Cli, RelayChainCli, Subcommand},
-    service::{self, new_partial, IdentifyVariant},
+    service::{self, new_partial},
 };
 
 fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
@@ -45,9 +45,6 @@ fn load_spec(id: &str) -> std::result::Result<Box<dyn ChainSpec>, String> {
         "" | "mainnet" | "vflow" => Box::new(GenericChainSpec::from_json_bytes(
             &include_bytes!("../chain-specs/vflow_mainnet.json")[..],
         )?),
-        "mainnet_build" | "vflow_build" => Box::new(chain_spec::mainnet_config()?),
-        "mainnet_dev" | "vflow_dev" => Box::new(chain_spec::mainnet_development_config()?),
-        "mainnet_local" | "vflow_local" => Box::new(chain_spec::mainnet_local_testnet_config()?),
 
         // Custom
         path => Box::new(GenericChainSpec::from_json_file(std::path::PathBuf::from(
@@ -249,10 +246,7 @@ pub fn run() -> Result<()> {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};
 
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
-                    let ext_builder = RemarkBuilder::new(
-                        partials.client.clone(),
-                        config.chain_spec.identify_chain(),
-                    );
+                    let ext_builder = RemarkBuilder::new(partials.client.clone());
                     let para_id = ParaId::from(
                         chain_spec::Extensions::try_get(&*config.chain_spec)
                             .map(|e| e.para_id)

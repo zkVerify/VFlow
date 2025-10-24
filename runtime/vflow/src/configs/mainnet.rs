@@ -13,10 +13,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-pub(crate) mod consensus;
-pub mod ethereum_xcm;
-pub mod evm;
-mod governance;
-pub mod monetary;
-pub mod system;
-pub mod xcm;
+use crate::{runtime_version, RuntimeVersion, RUNTIME_API_VERSIONS};
+use alloc::borrow::Cow;
+
+// Version of the runtime.
+runtime_version!("vflow-runtime");
+
+pub(crate) const ZKV_GENESIS_HASH: [u8; 32] =
+    hex_literal::hex!("060e3dd3fa2904d031206bb913c954687a2bcc350e5a83d33d9e273ad21460f1");
+
+pub(crate) const ERC20_NAME: sp_runtime::Cow<'_, str> = Cow::Borrowed("VFY token");
+pub(crate) const ERC20_SYMBOL: sp_runtime::Cow<'_, str> = Cow::Borrowed("VFY");
+pub(crate) const EVM_CHAIN_ID: u64 = 1408;

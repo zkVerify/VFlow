@@ -16,8 +16,8 @@
 #[cfg(feature = "runtime-benchmarks")]
 use crate::get_from_seed_url;
 use crate::{
-    currency::VFY, from_ss58check, get_from_substrate_account, AccountEntry, AccountId, Balance,
-    FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
+    configs::EVM_CHAIN_ID, currency::VFY, get_from_substrate_account, AccountEntry, AccountId,
+    Balance, FundedAccount, Ids, Precompiles, Runtime, SessionKeys,
 };
 use alloc::{collections::BTreeMap, vec::Vec};
 use cumulus_primitives_core::ParaId;
@@ -26,7 +26,6 @@ use parachains_common::AuraId;
 use sp_core::H160;
 use sp_genesis_builder::PresetId;
 
-const EVM_CHAIN_ID: u64 = 1408;
 const ENDOWMENT: Balance = 1_000_000 * VFY;
 const SAFE_XCM_VERSION: u32 = xcm::prelude::XCM_VERSION;
 
@@ -191,47 +190,10 @@ pub fn local_config_genesis() -> serde_json::Value {
     )
 }
 
-pub fn mainnet_config_genesis() -> serde_json::Value {
-    fn aura(p: &str) -> AuraId {
-        from_ss58check(p).expect("Aura is valid. qed")
-    }
-
-    let initial_authorities = vec![
-        (
-            hex!("a98193126fa68a9F77dE4A44B36f51a845f985c6").into(),
-            aura("5FUNZpLNXTpyaWQsKsw17c2QywJCRT5EMUazbhWcBGVd2ric"),
-        ),
-        (
-            hex!("098aE96842200399b3F89d8D2D4B77588337A148").into(),
-            aura("5CyeBKChqfWHnbNn4Xcn7UM6Uw31fcbGEiA9tioy4br2WwkA"),
-        ),
-        (
-            hex!("014a2382ce088fff1c550Ce2CD9C53B66191141C").into(),
-            aura("5DHsyJzJ9EMFZihq3CUT7zmQf7VVsdLTP8s1pg5AUNpb41MD"),
-        ),
-    ];
-    let sudo = hex!("e1b96Dd5D395E3EC55e033a1bc463b824D7Ace75").into();
-
-    genesis(
-        // parachain id
-        1.into(),
-        // Initial PoA authorities
-        initial_authorities,
-        // Sudo account
-        sudo,
-        // No Pre-funded accounts
-        Default::default(),
-        EVM_CHAIN_ID,
-        // No allowed deployers in genesis: sudo will add it
-        Default::default(),
-    )
-}
-
 pub fn get_preset(id: &sp_genesis_builder::PresetId) -> Option<Vec<u8>> {
     let cfg = match id.as_ref() {
         "development" => development_config_genesis(),
         "local_testnet" => local_config_genesis(),
-        "mainnet" => mainnet_config_genesis(),
         _ => return None,
     };
     Some(
@@ -245,6 +207,5 @@ pub fn preset_names() -> Vec<PresetId> {
     vec![
         PresetId::from("development"), // default for benchmarking
         PresetId::from("local_testnet"),
-        PresetId::from("mainnet"),
     ]
 }

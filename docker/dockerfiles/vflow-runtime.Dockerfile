@@ -1,6 +1,6 @@
 ARG PROFILE="release"
 ARG FEATURES=""
-ARG RUNTIME_CRATE="vflow-volta-runtime"
+ARG RUNTIME_CRATE="vflow-runtime"
 
 FROM rust:1-bookworm AS builder
 

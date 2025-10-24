@@ -15,11 +15,13 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
+use sc_cli::RuntimeVersion;
 use sc_network::config::MultiaddrWithPeerId;
 use sc_service::ChainType;
 use sc_telemetry::TelemetryEndpoints;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
+use sp_runtime::Cow;
 use std::str;
 
 /// Specialized `ChainSpec` for the normal parachain runtime.
@@ -27,6 +29,8 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 
 // The URL for the telemetry server.
 const TELEMETRY_URL: &str = "wss://telemetry.zkverify.io/submit/";
+
+const VOLTA_SPEC_NAME: &str = "tvflow-runtime";
 
 /// The extensions for the [`ChainSpec`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ChainSpecGroup, ChainSpecExtension)]
@@ -43,6 +47,21 @@ impl Extensions {
     pub fn try_get(chain_spec: &dyn sc_service::ChainSpec) -> Option<&Self> {
         sc_chain_spec::get_extension(chain_spec.extensions())
     }
+}
+
+fn check_correct_runtime(iname: &str, runtime: RuntimeVersion) -> Result<(), String> {
+    if let RuntimeVersion {
+        spec_name: Cow::Borrowed(name),
+        ..
+    } = runtime
+    {
+        if name == iname {
+            return Ok(());
+        } else {
+            return Err(format!("Requested {iname} runtime, but compiled for {name}").to_string());
+        }
+    }
+    Err("Unexpected runtime version type".to_string())
 }
 
 fn boot_node_address(dns: &str, peer_id: &str) -> impl Iterator<Item = MultiaddrWithPeerId> {
@@ -74,8 +93,10 @@ fn volta_chain_properties() -> Map<String, Value> {
 }
 
 pub fn volta_development_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -90,8 +111,10 @@ pub fn volta_development_config() -> Result<ChainSpec, String> {
 }
 
 pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta-local".into(),
             para_id: 1,
@@ -107,6 +130,8 @@ pub fn volta_local_testnet_config() -> Result<ChainSpec, String> {
 }
 
 pub fn volta_config() -> Result<ChainSpec, String> {
+    check_correct_runtime(VOLTA_SPEC_NAME, vflow_runtime::configs::VERSION)?;
+
     // The connection strings for bootnodes
     const BOOTNODE_1_DNS: &str = "boot-node-tn-vflow-1.zkverify.io";
     const BOOTNODE_1_PEER_ID: &str = "12D3KooWStRw5P6v8bydm3RjzsdSE75PNoFtCzZ5PnV1hkntWGim";
@@ -114,7 +139,7 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     const BOOTNODE_2_PEER_ID: &str = "12D3KooWFVarmg1RGuCnEsHVjYSxKd6idJ6cCEowkKkgaBPovt84";
 
     Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
+        vflow_runtime::WASM_BINARY.ok_or_else(|| "Volta wasm not available".to_string())?,
         Extensions {
             relay_chain: "volta".into(),
             para_id: 1,
@@ -131,83 +156,6 @@ pub fn volta_config() -> Result<ChainSpec, String> {
     )
     .with_properties(volta_chain_properties())
     .with_genesis_config_preset_name("volta")
-    .with_telemetry_endpoints(
-        TelemetryEndpoints::new(vec![(
-            TELEMETRY_URL.to_string(),
-            sc_telemetry::CONSENSUS_INFO,
-        )])
-        .expect("Horizen Labs telemetry url is valid; qed"),
-    )
-    .build())
-}
-
-// Mainnet Configurations
-
-fn mainnet_chain_properties() -> Map<String, Value> {
-    let mut properties = common_chain_propertis();
-    properties.insert("tokenSymbol".into(), "VFY".into());
-    properties
-}
-
-pub fn mainnet_development_config() -> Result<ChainSpec, String> {
-    Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "zkverify-local".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("Mainnet Development")
-    .with_id("mainnet_dev")
-    .with_chain_type(ChainType::Development)
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("development")
-    .build())
-}
-
-pub fn mainnet_local_testnet_config() -> Result<ChainSpec, String> {
-    Ok(ChainSpec::builder(
-        vflow_volta_runtime::WASM_BINARY.ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "zkverify-local".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("Mainnet Local Testnet")
-    .with_id("mainnet_local_testnet")
-    .with_chain_type(ChainType::Local)
-    .with_protocol_id("mainnet_local_testnet")
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("local_testnet")
-    .build())
-}
-
-pub fn mainnet_config() -> Result<ChainSpec, String> {
-    // The connection strings for bootnodes
-    const BOOTNODE_1_DNS: &str = "boot-node-vflow-1.zkverify.io";
-    const BOOTNODE_1_PEER_ID: &str = "12D3KooWEdJ8hLcSfr9RAieL4KNFKKgfmegJvfvYhAqspAfvpHKJ";
-    const BOOTNODE_2_DNS: &str = "boot-node-vflow-2.zkverify.io";
-    const BOOTNODE_2_PEER_ID: &str = "12D3KooWRQCKkAomumTLGA3tzPTazixvhWys9RpQBEkWZ8nYTsJD";
-
-    Ok(ChainSpec::builder(
-        vflow_mainnet_runtime::WASM_BINARY
-            .ok_or_else(|| "Mainnet wasm not available".to_string())?,
-        Extensions {
-            relay_chain: "mainnet".into(),
-            para_id: 1,
-        },
-    )
-    .with_name("VFlow")
-    .with_id("vflow_mainnet")
-    .with_chain_type(ChainType::Live)
-    .with_protocol_id("vflow")
-    .with_boot_nodes(
-        boot_node_address(BOOTNODE_1_DNS, BOOTNODE_1_PEER_ID)
-            .chain(boot_node_address(BOOTNODE_2_DNS, BOOTNODE_2_PEER_ID))
-            .collect(),
-    )
-    .with_properties(mainnet_chain_properties())
-    .with_genesis_config_preset_name("mainnet")
     .with_telemetry_endpoints(
         TelemetryEndpoints::new(vec![(
             TELEMETRY_URL.to_string(),
