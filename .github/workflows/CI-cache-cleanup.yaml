@@ -16,7 +16,8 @@ jobs:
           - lint-format
           - machete
           - build-runtime-benchmarks
-          - build-try-runtime
+          - build-try-runtime-mainnet
+          - build-try-runtime-volta
           - unit-test
     steps:
       - name: "Deleting '${{ matrix.cache_key }}' cache key"

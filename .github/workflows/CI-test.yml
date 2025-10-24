@@ -23,10 +23,19 @@ jobs:
           lld_install: 'yes'
           skip_wasm_build: 'yes'
 
-      - name: Cargo unit test runtime without features
+      - name: Cargo unit test runtime without features (Mainnet)
         uses: ./.github/actions/cmd-in-docker
         with:
           command: "cargo test --lib -p vflow-runtime --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
+          use_cache: 'yes'
+          cache_key: 'unit-test'
+          lld_install: 'yes'
+          skip_wasm_build: 'yes'
+
+      - name: Cargo unit test runtime without features (Volta)
+        uses: ./.github/actions/cmd-in-docker
+        with:
+          command: "cargo test --lib -p vflow-runtime --features volta --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
           use_cache: 'yes'
           cache_key: 'unit-test'
           lld_install: 'yes'

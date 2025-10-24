@@ -20,7 +20,7 @@ extract_runtime="${EXTRACT_RUNTIME:-true}"
 
 # Requirement
 if ! [ -f "${common_file_location}" ]; then
-  log_error "ERROR: ${common_file_location} file is missing!!!"
+  echo -e "\n\033[1;31mERROR: ${common_file_location} file is missing !!!  Exiting ...\033[0m\n"
   exit 1
 else
   # shellcheck disable=SC1090

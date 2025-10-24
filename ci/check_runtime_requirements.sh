@@ -23,7 +23,7 @@ version_ext="$(echo ${github_tag} | cut -d '-' -f 4- )"
 export COMMON_FILE_LOCATION='ci/common.sh'
 # Requirement
 if ! [ -f "${workdir}/${COMMON_FILE_LOCATION}" ]; then
-  log_error "ERROR: ${COMMON_FILE_LOCATION} file is missing!!!"
+  echo -e "\n\033[1;31mERROR: ${COMMON_FILE_LOCATION} file is missing !!! \033[0m\n"
   return
 else
   # shellcheck disable=SC1090

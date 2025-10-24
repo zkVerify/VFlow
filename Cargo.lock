@@ -21383,6 +21383,7 @@ dependencies = [
 name = "vflow-runtime"
 version = "1.0.0"
 dependencies = [
+ "cfg-if",
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-parachain-system",
  "cumulus-pallet-session-benchmarking",

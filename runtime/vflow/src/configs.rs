@@ -21,9 +21,15 @@ pub mod monetary;
 pub mod system;
 pub mod xcm;
 
-#[cfg_attr(not(feature = "volta"), path = "configs/mainnet.rs")]
-#[cfg_attr(feature = "volta", path = "configs/volta.rs")]
-pub mod chain_cfg;
+cfg_if::cfg_if! {
+    if #[cfg(feature = "volta")] {
+        #[path="configs/volta.rs"]
+        pub mod chain_cfg;
+    } else {
+        #[path="configs/mainnet.rs"]
+        pub mod chain_cfg;
+    }
+}
 pub use chain_cfg::*;
 
 #[macro_export]
