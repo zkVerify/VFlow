@@ -20,7 +20,6 @@ jobs:
           command: "cargo test --lib --bins --all-features --no-fail-fast --release 2>&1 | tee unit_test_output.txt"
           use_cache: 'yes'
           cache_key: 'unit-test'
-          lld_install: 'yes'
           skip_wasm_build: 'yes'
 
       - name: Cargo unit test runtime without features (Mainnet)
@@ -29,7 +28,6 @@ jobs:
           command: "cargo test --lib -p vflow-runtime --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
           use_cache: 'yes'
           cache_key: 'unit-test'
-          lld_install: 'yes'
           skip_wasm_build: 'yes'
 
       - name: Cargo unit test runtime without features (Volta)
@@ -38,7 +36,6 @@ jobs:
           command: "cargo test --lib -p vflow-runtime --features volta --no-fail-fast --release 2>&1 | tee -a unit_test_output.txt"
           use_cache: 'yes'
           cache_key: 'unit-test'
-          lld_install: 'yes'
           skip_wasm_build: 'yes'
 
       - name: Upload unit test output
