@@ -115,6 +115,7 @@ serde_json = {workspace = true}
 [features]
 default = [ "std" ]
 std = [
+	"alloy/std",
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-parachain-system/std",
 	"cumulus-pallet-session-benchmarking/std",

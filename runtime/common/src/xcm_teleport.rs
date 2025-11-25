@@ -111,9 +111,9 @@ where
         } = Self::build_teleport_params(destination_account, amount)?;
 
         let program = Self::teleport_assets_program(
-            destination.clone().into(),
-            beneficiary.into(),
-            assets.into(),
+            destination.clone(),
+            beneficiary,
+            assets,
             fee_asset_item,
         )?;
 
@@ -124,7 +124,7 @@ where
         .map_err(|_| revert("cannot query delivery fees"))?;
 
         let fees: Assets = versioned_fees.try_into().unwrap();
-        match { &fees.get(fee_asset_item as usize).unwrap().fun } {
+        match &fees.get(fee_asset_item as usize).unwrap().fun {
             Fungibility::Fungible(amount) => Ok(U256::from(*amount)),
             _ => unreachable!(),
         }

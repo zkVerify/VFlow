@@ -89,7 +89,7 @@ fn xcm_teleport_precompile_delivery_fee_computation_is_correct() {
     new_test_ext().execute_with(|| {
         let from = ALICE;
         let to = [0x42u8; 32];
-        let amount = 1 * VFY;
+        let amount = VFY;
 
         let fees_from_precompile = compute_teleport_delivery_fees_via_precompile(from, to, amount);
         let fees_from_dry_run = compute_teleport_delivery_fees_via_dry_run(from, to, amount);
