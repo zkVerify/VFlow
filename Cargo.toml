@@ -181,6 +181,8 @@ xcm-primitives = {git = "https://github.com/moonbeam-foundation/moonbeam/", tag 
 # Other
 rstest = {version = "0.26"}
 tokio = {version = "1.13"}
+alloy = { version = "1", default-features = false }
+alloy-sol-types = { version = "1" }
 
 [workspace.metadata.cargo-machete]
 ignored = ["num_enum"]
