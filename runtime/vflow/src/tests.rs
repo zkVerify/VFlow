@@ -28,6 +28,7 @@ mod permissioned_deploy;
 mod storage;
 mod use_correct_weights;
 mod xcm_eth;
+mod xcm_runtime_apis_impl;
 mod xcm_teleport_integration;
 
 mod misc {

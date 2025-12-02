@@ -1,0 +1,210 @@
+use crate::configs::xcm::{RelayLocation, RootLocation};
+use cumulus_primitives_core::{AssetId, Assets, Fungibility, Junction, WeightLimit, Xcm};
+use rstest::{fixture, rstest};
+use vflow_runtime_common::currency::VFY;
+use xcm::{IntoVersion, VersionedAssetId, VersionedLocation, VersionedXcm};
+use xcm_runtime_apis::{
+    conversions::runtime_decl_for_location_to_account_api::LocationToAccountApiV1,
+    fees::{runtime_decl_for_xcm_payment_api::XcmPaymentApiV1, Error as XcmPaymentApiError},
+};
+
+use super::*;
+
+#[fixture]
+fn xcm_program() -> VersionedXcm<()> {
+    let asset = AssetId(RelayLocation::get()).into_asset(Fungibility::Fungible(VFY));
+    let xcm = Xcm::builder()
+        .withdraw_asset(Assets::from(asset.clone()))
+        .clear_origin()
+        .buy_execution(asset, WeightLimit::Unlimited)
+        .trap(1u64)
+        .build();
+    VersionedXcm::V5(xcm)
+}
+
+mod query_acceptable_payment_assets {
+    use super::*;
+
+    #[rstest]
+    #[case::v3(3)]
+    #[case::v4(4)]
+    #[case::v5(5)]
+    fn works_with_supported_version(#[case] version: xcm::Version) {
+        ExtBuilder::default().build().execute_with(|| {
+            let got = Runtime::query_acceptable_payment_assets(version).unwrap();
+            let expected = vec![
+                VersionedAssetId::V5(xcm::latest::AssetId(RelayLocation::get()))
+                    .into_version(version)
+                    .unwrap(),
+            ];
+            assert_eq!(got, expected);
+        })
+    }
+
+    #[test]
+    fn returns_empty_vector_with_unsupported_version() {
+        ExtBuilder::default().build().execute_with(|| {
+            assert_eq!(Runtime::query_acceptable_payment_assets(2).unwrap(), vec![])
+        })
+    }
+}
+
+mod query_weight_to_asset_fee {
+    use super::*;
+
+    #[rstest]
+    #[case::v3(3)]
+    #[case::v4(4)]
+    #[case::v5(5)]
+    fn returns_nonzero_for_nonzero_weight(#[case] version: xcm::Version) {
+        ExtBuilder::default().build().execute_with(|| {
+            let weight = Weight::from_parts(1_000_000, 1_000);
+            let asset = VersionedAssetId::V5(xcm::latest::AssetId(RelayLocation::get()))
+                .into_version(version)
+                .unwrap();
+            assert_ne!(
+                Runtime::query_weight_to_asset_fee(weight, asset).unwrap(),
+                0
+            )
+        })
+    }
+
+    #[rstest]
+    #[case::v3(3)]
+    #[case::v4(4)]
+    #[case::v5(5)]
+    fn returns_zero_for_zero_weight(#[case] version: xcm::Version) {
+        ExtBuilder::default().build().execute_with(|| {
+            let weight = Weight::zero();
+            let asset = VersionedAssetId::V5(xcm::latest::AssetId(RelayLocation::get()))
+                .into_version(version)
+                .unwrap();
+            assert_eq!(
+                Runtime::query_weight_to_asset_fee(weight, asset).unwrap(),
+                0
+            )
+        })
+    }
+
+    #[test]
+    fn returns_error_for_unsupported_asset() {
+        ExtBuilder::default().build().execute_with(|| {
+            let weight = Weight::from_parts(1_000_000, 1_000);
+            let unsuitable_asset = VersionedAssetId::V5(AssetId(RootLocation::get()));
+            assert_eq!(
+                Runtime::query_weight_to_asset_fee(weight, unsuitable_asset).unwrap_err(),
+                XcmPaymentApiError::AssetNotFound
+            )
+        })
+    }
+}
+
+mod query_xcm_weight {
+    use super::*;
+
+    #[rstest]
+    fn returns_nonzero_weight_for_nonempty_program(xcm_program: VersionedXcm<()>) {
+        ExtBuilder::default().build().execute_with(|| {
+            let weight = Runtime::query_xcm_weight(xcm_program).unwrap();
+            assert_ne!(weight, Weight::zero())
+        })
+    }
+
+    #[test]
+    fn returns_zero_weight_for_empty_program() {
+        ExtBuilder::default().build().execute_with(|| {
+            let xcm_program = VersionedXcm::V5(Xcm::new());
+            let weight = Runtime::query_xcm_weight(xcm_program).unwrap();
+            assert_eq!(weight, Weight::zero())
+        })
+    }
+}
+
+mod query_delivery_fees {
+    use super::*;
+
+    #[rstest]
+    fn is_routed(xcm_program: VersionedXcm<()>) {
+        ExtBuilder::default().build().execute_with(|| {
+            assert_eq!(
+                Runtime::query_delivery_fees(
+                    VersionedLocation::V5(RelayLocation::get()),
+                    xcm_program,
+                )
+                .unwrap_err(),
+                XcmPaymentApiError::Unroutable
+            );
+        })
+    }
+}
+
+mod convert_location {
+    use super::*;
+
+    #[fixture]
+    fn alice_account_id_32() -> [u8; 32] {
+        hex_literal::hex!("d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d")
+    }
+
+    #[fixture]
+    fn alice_account_key_20() -> [u8; 20] {
+        hex_literal::hex!("7dcb1027ecb97011ebe79ca233def50d1f216eb0")
+    }
+
+    #[rstest]
+    fn computes_correct_result_for_relay_chain_account_id_32(
+        alice_account_id_32: [u8; 32],
+        alice_account_key_20: [u8; 20],
+    ) {
+        ExtBuilder::default().build().execute_with(|| {
+            let location = RelayLocation::get()
+                .pushed_with_interior(Junction::AccountId32 {
+                    network: None,
+                    id: alice_account_id_32,
+                })
+                .unwrap()
+                .into_versioned();
+
+            assert_eq!(
+                Runtime::convert_location(location).unwrap(),
+                alice_account_key_20.into()
+            );
+        })
+    }
+
+    #[rstest]
+    fn truncates_parachain_account_id_32_to_last_20_bytes(alice_account_id_32: [u8; 32]) {
+        ExtBuilder::default().build().execute_with(|| {
+            let location = RootLocation::get()
+                .pushed_with_interior(Junction::AccountId32 {
+                    network: None,
+                    id: alice_account_id_32,
+                })
+                .unwrap()
+                .into_versioned();
+
+            assert_eq!(
+                Runtime::convert_location(location).unwrap(),
+                alice_account_id_32[12..].try_into().unwrap()
+            );
+        })
+    }
+
+    #[rstest]
+    fn leaves_parachain_account_key_20_unmodified(alice_account_key_20: [u8; 20]) {
+        ExtBuilder::default().build().execute_with(|| {
+            let location = RootLocation::get()
+                .pushed_with_interior(Junction::AccountKey20 {
+                    network: None,
+                    key: alice_account_key_20,
+                })
+                .unwrap()
+                .into_versioned();
+
+            assert_eq!(
+                Runtime::convert_location(location).unwrap(),
+                alice_account_key_20.into()
+            );
+        })
+    }
+}
