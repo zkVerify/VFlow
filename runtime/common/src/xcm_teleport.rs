@@ -123,10 +123,16 @@ where
         )
         .map_err(|_| revert("cannot query delivery fees"))?;
 
-        let fees: Assets = versioned_fees.try_into().unwrap();
-        match &fees.get(fee_asset_item as usize).unwrap().fun {
-            Fungibility::Fungible(amount) => Ok(U256::from(*amount)),
-            _ => unreachable!(),
+        let fees: Assets = versioned_fees
+            .try_into()
+            .map_err(|_| RevertReason::custom("xcm conversion error"))?;
+        match fees
+            .get(fee_asset_item as usize)
+            .ok_or_else(|| RevertReason::read_out_of_bounds("fees"))?
+            .fun
+        {
+            Fungibility::Fungible(amount) => Ok(U256::from(amount)),
+            Fungibility::NonFungible(_asset_instance) => Ok(U256::zero()),
         }
     }
 
