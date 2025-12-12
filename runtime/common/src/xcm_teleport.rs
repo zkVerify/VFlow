@@ -132,7 +132,9 @@ where
             .fun
         {
             Fungibility::Fungible(amount) => Ok(U256::from(amount)),
-            Fungibility::NonFungible(_asset_instance) => Ok(U256::zero()),
+            Fungibility::NonFungible(_asset_instance) => {
+                Err(RevertReason::custom("delivery fee is not fungible"))?
+            }
         }
     }
 
