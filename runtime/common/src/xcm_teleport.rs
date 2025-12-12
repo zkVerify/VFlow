@@ -13,16 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use crate::alloc::borrow::ToOwned;
 use frame_support::dispatch::{DispatchInfo, PostDispatchInfo};
 use pallet_evm::AddressMapping;
 use precompile_utils::prelude::*;
 use sp_core::{H256, U256};
 use sp_runtime::traits::{Dispatchable, Get};
 use sp_std::{boxed::Box, marker::PhantomData, vec};
-use xcm::v5::{Asset, AssetId, Assets, Fungibility, Junction, Location};
-use xcm::{VersionedAssets, VersionedLocation};
+use xcm::{
+    v5::{
+        Asset,
+        AssetFilter::Wild,
+        AssetId, Assets, Fungibility,
+        Instruction::{BuyExecution, ClearOrigin, DepositAsset, ReceiveTeleportedAsset},
+        Junction, Location, Reanchorable, WeightLimit,
+        WildAsset::AllCounted,
+        Xcm,
+    },
+    VersionedAssets, VersionedLocation, VersionedXcm,
+};
 
 pub struct XcmTeleportPrecompile<R, O, C, L, A>(PhantomData<(R, O, C, L, A)>);
+
+struct TeleportCallParams {
+    destination: Location,
+    beneficiary: Location,
+    assets: Assets,
+    fee_asset_item: u32,
+}
 
 #[precompile_utils::precompile]
 impl<R, O, C, L, A> XcmTeleportPrecompile<R, O, C, L, A>
@@ -55,29 +73,17 @@ where
             <R as pallet_evm::Config>::AddressMapping::into_account_id(handle.context().caller);
         let origin: O = frame_system::RawOrigin::Signed(account_id).into();
 
-        let destination = VersionedLocation::V5(L::get());
-
-        let beneficiary = VersionedLocation::V5(Location::new(
-            0,
-            [Junction::AccountId32 {
-                network: None,
-                id: destination_account.into(),
-            }],
-        ));
-
-        let amount_u128: u128 = amount.try_into().map_err(|_| revert("Amount too large"))?;
-
-        let assets = VersionedAssets::V5(Assets::from(vec![Asset {
-            id: A::get(),
-            fun: Fungibility::Fungible(amount_u128),
-        }]));
-
-        let fee_asset_item = 0;
+        let TeleportCallParams {
+            destination,
+            beneficiary,
+            assets,
+            fee_asset_item,
+        } = Self::build_teleport_params(destination_account, amount)?;
 
         let call: C = pallet_xcm::Call::<R>::teleport_assets {
-            dest: Box::new(destination),
-            beneficiary: Box::new(beneficiary),
-            assets: Box::new(assets),
+            dest: Box::new(VersionedLocation::V5(destination)),
+            beneficiary: Box::new(VersionedLocation::V5(beneficiary)),
+            assets: Box::new(VersionedAssets::V5(assets)),
             fee_asset_item,
         }
         .into();
@@ -85,5 +91,116 @@ where
         RuntimeHelper::<R>::try_dispatch::<C>(handle, origin, call, 0)?;
 
         Ok(())
+    }
+
+    #[precompile::public("deliveryFee(bytes32,uint256)")]
+    fn delivery_fee(
+        handle: &mut impl PrecompileHandle,
+        destination_account: H256,
+        amount: U256,
+    ) -> EvmResult<U256> {
+        // No benchmarks availabe yet for precompiles, so charge some arbitrary gas as a spam
+        // prevention mechanism.
+        handle.record_cost(1000)?;
+
+        let TeleportCallParams {
+            destination,
+            beneficiary,
+            assets,
+            fee_asset_item,
+        } = Self::build_teleport_params(destination_account, amount)?;
+
+        let program = Self::teleport_assets_program(
+            destination.clone(),
+            beneficiary,
+            assets,
+            fee_asset_item,
+        )?;
+
+        let versioned_fees = pallet_xcm::Pallet::<R>::query_delivery_fees(
+            VersionedLocation::V5(destination),
+            VersionedXcm::V5(program),
+        )
+        .map_err(|_| revert("cannot query delivery fees"))?;
+
+        let fees: Assets = versioned_fees
+            .try_into()
+            .map_err(|_| RevertReason::custom("xcm conversion error"))?;
+        match fees
+            .get(fee_asset_item as usize)
+            .ok_or_else(|| RevertReason::read_out_of_bounds("fees"))?
+            .fun
+        {
+            Fungibility::Fungible(amount) => Ok(U256::from(amount)),
+            Fungibility::NonFungible(_asset_instance) => {
+                Err(RevertReason::custom("delivery fee is not fungible"))?
+            }
+        }
+    }
+
+    fn teleport_assets_program(
+        dest: Location,
+        beneficiary: Location,
+        assets: Assets,
+        fee_asset_item: u32,
+    ) -> EvmResult<Xcm<()>> {
+        let fees = assets
+            .get(fee_asset_item as usize)
+            .ok_or_else(|| RevertReason::read_out_of_bounds("fees"))?
+            .to_owned();
+        let max_assets = assets.len() as u32;
+        let context = R::UniversalLocation::get();
+        let reanchored_assets = assets
+            .reanchored(&dest, &context)
+            .map_err(|_| revert("cannot reanchor assets"))?;
+        let reanchored_fees = fees
+            .reanchored(&dest, &context)
+            .map_err(|_| revert("cannot reanchor fees"))?;
+
+        Ok(Xcm(vec![
+            ReceiveTeleportedAsset(reanchored_assets),
+            ClearOrigin,
+            BuyExecution {
+                fees: reanchored_fees,
+                weight_limit: WeightLimit::Unlimited,
+            },
+            DepositAsset {
+                assets: Wild(AllCounted(max_assets)),
+                beneficiary,
+            },
+        ]))
+    }
+
+    fn build_teleport_params(
+        destination_account: H256,
+        amount: U256,
+    ) -> EvmResult<TeleportCallParams> {
+        let destination = L::get();
+
+        let beneficiary = Location::new(
+            0,
+            [Junction::AccountId32 {
+                network: None,
+                id: destination_account.into(),
+            }],
+        );
+
+        let amount_u128 = amount
+            .try_into()
+            .map_err(|_| RevertReason::value_is_too_large("amount"))?;
+
+        let assets = Assets::from(vec![Asset {
+            id: A::get(),
+            fun: Fungibility::Fungible(amount_u128),
+        }]);
+
+        let fee_asset_item = 0;
+
+        Ok(TeleportCallParams {
+            destination,
+            beneficiary,
+            assets,
+            fee_asset_item,
+        })
     }
 }

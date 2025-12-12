@@ -105,13 +105,17 @@ xcm-primitives = {workspace = true}
 substrate-wasm-builder = {workspace = true}
 
 [dev-dependencies]
+alloy = {workspace = true}
+alloy-sol-types = {workspace = true}
 ethereum = {workspace = true}
 hex = {workspace = true, features = ["std"]}
 rstest = {workspace = true}
+serde_json = {workspace = true}
 
 [features]
 default = [ "std" ]
 std = [
+	"alloy/std",
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-pallet-parachain-system/std",
 	"cumulus-pallet-session-benchmarking/std",
