@@ -66,6 +66,7 @@ polkadot-runtime-common = {workspace = true}
 xcm = {workspace = true}
 xcm-builder = {workspace = true}
 xcm-executor = {workspace = true}
+xcm-runtime-apis = {workspace = true}
 
 # Cumulus
 cumulus-pallet-aura-ext = {workspace = true}
@@ -106,6 +107,7 @@ substrate-wasm-builder = {workspace = true}
 [dev-dependencies]
 ethereum = {workspace = true}
 hex = {workspace = true, features = ["std"]}
+rstest = {workspace = true}
 
 [features]
 default = [ "std" ]
@@ -181,6 +183,7 @@ std = [
 	"xcm-builder/std",
 	"xcm-executor/std",
 	"xcm-primitives/std",
+	"xcm-runtime-apis/std",
 	"xcm/std",
 ]
 
@@ -216,6 +219,7 @@ runtime-benchmarks = [
 	"xcm-builder/runtime-benchmarks",
 	"xcm-executor/runtime-benchmarks",
 	"xcm-primitives/runtime-benchmarks",
+	"xcm-runtime-apis/runtime-benchmarks",
 ]
 
 try-runtime = [

@@ -75,6 +75,15 @@ use sp_std::prelude::{Vec, *};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
+use sp_weights::WeightToFee;
+use xcm::{
+    prelude::XcmVersion, VersionedAssetId, VersionedAssets, VersionedLocation, VersionedXcm,
+};
+use xcm_runtime_apis::{
+    conversions::{Error as XcmConversionApiError, LocationToAccountHelper},
+    dry_run::{CallDryRunEffects, Error as XcmDryRunApiError, XcmDryRunEffects},
+    fees::Error as XcmPaymentApiError,
+};
 
 pub use vflow_runtime_common::*;
 
@@ -367,6 +376,74 @@ impl_runtime_apis! {
         }
         fn query_length_to_fee(length: u32) -> Balance {
             TransactionPayment::length_to_fee(length)
+        }
+    }
+
+    impl xcm_runtime_apis::conversions::LocationToAccountApi<Block, AccountId> for Runtime {
+        fn convert_location(location: VersionedLocation) -> Result<AccountId, XcmConversionApiError> {
+            LocationToAccountHelper::<
+                AccountId,
+                configs::xcm::LocationAccountId32ToAccountId
+            >::convert_location(location)
+        }
+    }
+
+    impl xcm_runtime_apis::dry_run::DryRunApi<Block, RuntimeCall, RuntimeEvent, OriginCaller> for Runtime {
+        fn dry_run_call(
+            origin: OriginCaller,
+            call: RuntimeCall,
+            result_xcms_version: XcmVersion
+        ) -> Result<CallDryRunEffects<RuntimeEvent>, XcmDryRunApiError> {
+            ZKVXcm::dry_run_call::<
+                Runtime,
+                <Runtime as pallet_xcm::Config>::XcmRouter,
+                OriginCaller,
+                RuntimeCall
+            >(origin, call, result_xcms_version)
+        }
+
+        fn dry_run_xcm(
+            origin_location: VersionedLocation,
+            xcm: VersionedXcm<RuntimeCall>
+        ) -> Result<XcmDryRunEffects<RuntimeEvent>, XcmDryRunApiError> {
+            ZKVXcm::dry_run_xcm::<
+                Runtime,
+                <Runtime as pallet_xcm::Config>::XcmRouter,
+                RuntimeCall,
+                configs::xcm::XcmConfig
+            >(origin_location, xcm)
+        }
+    }
+
+    impl xcm_runtime_apis::fees::XcmPaymentApi<Block> for Runtime {
+        fn query_acceptable_payment_assets(
+            xcm_version: xcm::Version
+        ) -> Result<Vec<VersionedAssetId>, XcmPaymentApiError> {
+            let acceptable_assets = vec![xcm::latest::AssetId(configs::xcm::RelayLocation::get())];
+            ZKVXcm::query_acceptable_payment_assets(xcm_version, acceptable_assets)
+        }
+
+        fn query_weight_to_asset_fee(
+            weight: Weight, asset: VersionedAssetId
+        ) -> Result<u128, XcmPaymentApiError> {
+            let asset_latest: xcm::latest::AssetId = asset
+                .try_into()
+                .map_err(|_| XcmPaymentApiError::VersionedConversionFailed)?;
+            if asset_latest.0 == configs::xcm::RelayLocation::get() {
+                Ok(<Runtime as pallet_transaction_payment::Config>::WeightToFee::weight_to_fee(&weight))
+            } else {
+                Err(XcmPaymentApiError::AssetNotFound)
+            }
+        }
+
+        fn query_xcm_weight(message: VersionedXcm<()>) -> Result<Weight, XcmPaymentApiError> {
+            ZKVXcm::query_xcm_weight(message)
+        }
+
+        fn query_delivery_fees(
+            destination: VersionedLocation, message: VersionedXcm<()>
+        ) -> Result<VersionedAssets, XcmPaymentApiError> {
+            ZKVXcm::query_delivery_fees(destination, message)
         }
     }
 
