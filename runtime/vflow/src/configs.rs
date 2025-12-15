@@ -40,7 +40,7 @@ macro_rules! runtime_version {
             spec_name: Cow::Borrowed($spec_name),
             impl_name: Cow::Borrowed("vflow_node"),
             authoring_version: 1,
-            spec_version: 1_000_000,
+            spec_version: 1_001_000,
             impl_version: 0,
             apis: RUNTIME_API_VERSIONS,
             transaction_version: 1,
