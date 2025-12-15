@@ -173,7 +173,10 @@ mod convert_location {
     }
 
     #[rstest]
-    fn truncates_parachain_account_id_32_to_last_20_bytes(alice_account_id_32: [u8; 32]) {
+    fn converts_local_account_id_32_to_20_bytes_projection(
+        alice_account_id_32: [u8; 32],
+        alice_account_key_20: [u8; 20],
+    ) {
         ExtBuilder::default().build().execute_with(|| {
             let location = RootLocation::get()
                 .pushed_with_interior(Junction::AccountId32 {
@@ -185,7 +188,7 @@ mod convert_location {
 
             assert_eq!(
                 Runtime::convert_location(location).unwrap(),
-                alice_account_id_32[12..].try_into().unwrap()
+                alice_account_key_20.into()
             );
         })
     }
