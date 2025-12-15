@@ -86,18 +86,17 @@ pub type LocationToAccountId = (
 pub struct LocationAccountId32ToAccountId;
 impl ConvertLocation<AccountId> for LocationAccountId32ToAccountId {
     fn convert_location(location: &Location) -> Option<AccountId> {
-        use xcm::latest::Junctions::X1;
         match location.unpack() {
+            // VFlow does not have 32 byte accounts locally; convert this as if it is representing
+            // the relay chain (picked up by HashedDescription)
             (0, [AccountId32 { network, id }]) => {
-                LocationToAccountId::convert_location(&Location {
-                    parents: 0,
-                    interior: X1(sp_std::sync::Arc::new([AccountKey20 {
+                LocationToAccountId::convert_location(&Location::new(
+                    1, // treat it as representing a relay chain address
+                    [AccountId32 {
                         network: *network,
-                        key: id.as_slice()[id.len() - 20..] // take the last 20 bytes
-                            .try_into()
-                            .expect("Cannot convert AccountId32 to AccountKey20"),
-                    }])),
-                })
+                        id: *id,
+                    }],
+                ))
             }
             _ => LocationToAccountId::convert_location(location),
         }
