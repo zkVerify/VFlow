@@ -105,7 +105,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "jsonrpsee 0.24.9",
@@ -119,7 +119,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc-runtime-api"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "binary-merkle-tree",
  "pallet-aggregate",
@@ -3965,7 +3965,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-inprocess-interface"
 version = "0.22.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "async-trait",
  "cumulus-primitives-core",
@@ -4009,7 +4009,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-minimal-node"
 version = "0.22.1"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "array-bytes",
  "async-trait",
@@ -4901,7 +4901,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "778e2ac28f6c47af28e4907f13ffd1e1ddbd400980a9abd7c8df189bf578a5ad"
 dependencies = [
  "libc",
- "windows-sys 0.60.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -5095,6 +5095,23 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.106",
+]
+
+[[package]]
+name = "ezkl-no-std"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/ezkl_verifier.git?tag=v0.1.0#a7251b17acc62a893a63bfc664731d010c091eb4"
+dependencies = [
+ "ark-bn254 0.5.0",
+ "ark-bn254-ext",
+ "ark-ec 0.5.0",
+ "ark-ff 0.5.0",
+ "ark-models-ext 0.6.0",
+ "ark-serialize 0.5.0",
+ "ark-std 0.5.0",
+ "hex-literal",
+ "sha3",
+ "snafu 0.8.9",
 ]
 
 [[package]]
@@ -6788,7 +6805,7 @@ dependencies = [
 [[package]]
 name = "hp-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-support",
  "ismp",
@@ -6802,7 +6819,7 @@ dependencies = [
 [[package]]
 name = "hp-groth16"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254 0.4.0",
@@ -6822,7 +6839,7 @@ dependencies = [
 [[package]]
 name = "hp-on-proof-verified"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "impl-trait-for-tuples",
  "sp-core",
@@ -6832,7 +6849,7 @@ dependencies = [
 [[package]]
 name = "hp-verifiers"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "hex-literal",
  "parity-scale-codec",
@@ -8017,7 +8034,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07033963ba89ebaf1584d767badaa2e8fcec21aedea6b8c0346d487d49c28667"
 dependencies = [
  "cfg-if",
- "windows-targets 0.53.3",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -9480,7 +9497,7 @@ checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 [[package]]
 name = "native"
 version = "0.3.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "ark-bn254 0.5.0",
  "ark-bn254-ext",
@@ -9834,7 +9851,7 @@ version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77e878c846a8abae00dd069496dbe8751b16ac1c3d6bd2a7283a938e8228f90d"
 dependencies = [
- "proc-macro-crate 3.3.0",
+ "proc-macro-crate 1.1.3",
  "proc-macro2",
  "quote",
  "syn 2.0.106",
@@ -10249,7 +10266,7 @@ dependencies = [
 [[package]]
 name = "pallet-aggregate"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "binary-merkle-tree",
  "educe",
@@ -10723,7 +10740,7 @@ dependencies = [
 [[package]]
 name = "pallet-claim"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -11222,6 +11239,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-ezkl-verifier"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
+dependencies = [
+ "ezkl-no-std",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "hex-literal",
+ "hp-verifiers",
+ "log",
+ "native",
+ "pallet-verifiers",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+]
+
+[[package]]
 name = "pallet-fast-unstake"
 version = "38.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -11243,7 +11280,7 @@ dependencies = [
 [[package]]
 name = "pallet-fflonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "fflonk_verifier",
  "frame-benchmarking",
@@ -11306,7 +11343,7 @@ dependencies = [
 [[package]]
 name = "pallet-groth16-verifier"
 version = "0.2.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -11338,7 +11375,7 @@ dependencies = [
 [[package]]
 name = "pallet-hyperbridge-aggregations"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "alloy-dyn-abi 0.8.26",
  "alloy-primitives 0.8.26",
@@ -11809,7 +11846,7 @@ dependencies = [
 [[package]]
 name = "pallet-plonky2-verifier"
 version = "0.1.1"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "educe",
  "frame-benchmarking",
@@ -11928,7 +11965,7 @@ dependencies = [
 [[package]]
 name = "pallet-risc0-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "ciborium",
  "frame-benchmarking",
@@ -12120,7 +12157,7 @@ dependencies = [
 [[package]]
 name = "pallet-sp1-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "bincode 2.0.1",
  "frame-benchmarking",
@@ -12272,6 +12309,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-token-claim"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "libsecp256k1",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+]
+
+[[package]]
 name = "pallet-token-gateway"
 version = "2412.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -12401,7 +12456,7 @@ dependencies = [
 [[package]]
 name = "pallet-ultrahonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12411,6 +12466,8 @@ dependencies = [
  "log",
  "native",
  "pallet-verifiers",
+ "parity-scale-codec",
+ "scale-info",
  "sp-core",
  "sp-io",
  "ultrahonk-no-std",
@@ -12419,7 +12476,7 @@ dependencies = [
 [[package]]
 name = "pallet-ultraplonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12468,7 +12525,7 @@ dependencies = [
 [[package]]
 name = "pallet-verifiers"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -12487,7 +12544,7 @@ dependencies = [
 [[package]]
 name = "pallet-verifiers-macros"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "proc-macro-crate 3.3.0",
  "proc-macro2",
@@ -13836,7 +13893,7 @@ dependencies = [
 [[package]]
 name = "polkadot-omni-node-lib"
 version = "0.4.2"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 
 [[package]]
 name = "polkadot-overseer"
@@ -15192,7 +15249,7 @@ dependencies = [
  "once_cell",
  "socket2 0.6.0",
  "tracing",
- "windows-sys 0.60.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -15606,6 +15663,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "risc0-binfmt"
+version = "3.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9dca096030bb4c52f99b12abcfe3531ea93b17b95a12a5aeb06fbf8ee588a275"
+dependencies = [
+ "anyhow",
+ "borsh",
+ "bytemuck",
+ "derive_more 2.0.1",
+ "elf",
+ "lazy_static",
+ "postcard",
+ "risc0-zkp 3.0.3",
+ "risc0-zkvm-platform 2.2.1",
+ "ruint",
+ "semver 1.0.26",
+ "serde",
+ "tracing",
+]
+
+[[package]]
 name = "risc0-circuit-rv32im"
 version = "1.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15640,6 +15718,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "risc0-circuit-rv32im"
+version = "4.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7ecd73a71ddce62eab8a28552ee182dc2ea08cdce2a3474a616a80bf2d6e9be"
+dependencies = [
+ "anyhow",
+ "bit-vec",
+ "bytemuck",
+ "derive_more 2.0.1",
+ "paste",
+ "risc0-binfmt 3.0.3",
+ "risc0-core 3.0.0",
+ "risc0-zkp 3.0.3",
+ "serde",
+ "tracing",
+]
+
+[[package]]
 name = "risc0-core"
 version = "1.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15661,9 +15757,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "risc0-core"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "80f2723fedace48c6c5a505bd8f97ac4e1712bc4cb769083e10536d862b66987"
+dependencies = [
+ "bytemuck",
+ "rand_core 0.9.3",
+]
+
+[[package]]
 name = "risc0-derive"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -15672,8 +15778,8 @@ dependencies = [
 
 [[package]]
 name = "risc0-verifier"
-version = "0.10.0"
-source = "git+https://github.com/zkVerify/risc0-verifier.git?tag=v0.10.0#783a03fa5ae8000d3bf4dc0901c5f309b58d3376"
+version = "0.11.0"
+source = "git+https://github.com/zkVerify/risc0-verifier.git?tag=v0.11.0#246268957161b8936cef1c5b9a2940e042916d3c"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -15682,10 +15788,13 @@ dependencies = [
  "risc0-binfmt 1.2.6",
  "risc0-circuit-rv32im 1.2.6",
  "risc0-circuit-rv32im 3.0.1",
+ "risc0-circuit-rv32im 4.0.3",
  "risc0-core 1.2.6",
  "risc0-core 2.0.0",
+ "risc0-core 3.0.0",
  "risc0-zkp 1.2.6",
  "risc0-zkp 2.0.3",
+ "risc0-zkp 3.0.3",
  "serde",
 ]
 
@@ -15731,6 +15840,31 @@ dependencies = [
  "paste",
  "rand_core 0.6.4",
  "risc0-core 2.0.0",
+ "risc0-zkvm-platform 2.2.1",
+ "serde",
+ "sha2 0.10.9",
+ "stability",
+ "tracing",
+]
+
+[[package]]
+name = "risc0-zkp"
+version = "3.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "beb493b3f007f04a11106a001c66bca77338d0fc375766189fd7ca3a1e8c3700"
+dependencies = [
+ "anyhow",
+ "blake2 0.10.6",
+ "borsh",
+ "bytemuck",
+ "cfg-if",
+ "digest 0.10.7",
+ "hex",
+ "hex-literal",
+ "metal",
+ "paste",
+ "rand_core 0.9.3",
+ "risc0-core 3.0.0",
  "risc0-zkvm-platform 2.2.1",
  "serde",
  "sha2 0.10.9",
@@ -15998,13 +16132,15 @@ dependencies = [
 
 [[package]]
 name = "ruint"
-version = "1.16.0"
+version = "1.17.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ecb38f82477f20c5c3d62ef52d7c4e536e38ea9b73fb570a20c5cae0e14bcf6"
+checksum = "c141e807189ad38a07276942c6623032d3753c8859c146104ac2e4d68865945a"
 dependencies = [
  "alloy-rlp",
  "ark-ff 0.3.0",
  "ark-ff 0.4.2",
+ "ark-ff 0.5.0",
+ "borsh",
  "bytes",
  "fastrlp 0.3.1",
  "fastrlp 0.4.0",
@@ -16018,7 +16154,7 @@ dependencies = [
  "rand 0.9.2",
  "rlp 0.5.2",
  "ruint-macro",
- "serde",
+ "serde_core",
  "valuable",
  "zeroize",
 ]
@@ -16140,7 +16276,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.9.4",
- "windows-sys 0.60.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -18107,10 +18243,11 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.219"
+version = "1.0.228"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f0e2c6ed6606019b4e29e69dbaba95b11854410e5347d525002456dbbb786b6"
+checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
 dependencies = [
+ "serde_core",
  "serde_derive",
 ]
 
@@ -18144,10 +18281,19 @@ dependencies = [
 ]
 
 [[package]]
-name = "serde_derive"
-version = "1.0.219"
+name = "serde_core"
+version = "1.0.228"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
+checksum = "41d385c7d4ca58e59fc732af25c3983b67ac852c1a25000afe1175de458b67ad"
+dependencies = [
+ "serde_derive",
+]
+
+[[package]]
+name = "serde_derive"
+version = "1.0.228"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -20887,7 +21033,7 @@ dependencies = [
  "getrandom 0.3.3",
  "once_cell",
  "rustix 1.0.8",
- "windows-sys 0.60.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -21606,7 +21752,7 @@ dependencies = [
 [[package]]
 name = "ultrahonk-no-std"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/ultrahonk_verifier.git?tag=v0.1.0#07262d1bd7e2943b4cb0c6f9317e43d7e780fa6f"
+source = "git+https://github.com/zkVerify/ultrahonk_verifier.git?tag=v0.2.1#4d2c8ca9b32e94e58f3918fc87b456de4dbfcea3"
 dependencies = [
  "ark-bn254 0.5.0",
  "ark-bn254-ext",
@@ -22006,11 +22152,12 @@ dependencies = [
 [[package]]
 name = "vk-hash"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "hp-groth16",
  "hp-verifiers",
  "jsonrpsee 0.24.9",
+ "pallet-ezkl-verifier",
  "pallet-fflonk-verifier",
  "pallet-groth16-verifier",
  "pallet-plonky2-verifier",
@@ -22019,7 +22166,7 @@ dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-core",
- "volta-runtime",
+ "zkv-runtime",
 ]
 
 [[package]]
@@ -22027,107 +22174,6 @@ name = "void"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
-
-[[package]]
-name = "volta-runtime"
-version = "1.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
-dependencies = [
- "aggregate-rpc-runtime-api",
- "anyhow",
- "finality-grandpa",
- "frame-benchmarking",
- "frame-election-provider-support",
- "frame-executive",
- "frame-metadata-hash-extension",
- "frame-support",
- "frame-system",
- "frame-system-benchmarking",
- "frame-system-rpc-runtime-api",
- "frame-try-runtime",
- "hex-literal",
- "hp-dispatch",
- "hp-verifiers",
- "ismp",
- "ismp-grandpa",
- "log",
- "pallet-aggregate",
- "pallet-authority-discovery",
- "pallet-authorship",
- "pallet-babe",
- "pallet-bags-list",
- "pallet-balances",
- "pallet-bounties",
- "pallet-child-bounties",
- "pallet-claim",
- "pallet-conviction-voting",
- "pallet-election-provider-support-benchmarking",
- "pallet-fflonk-verifier",
- "pallet-grandpa",
- "pallet-groth16-verifier",
- "pallet-hyperbridge",
- "pallet-hyperbridge-aggregations",
- "pallet-ismp",
- "pallet-ismp-runtime-api",
- "pallet-message-queue",
- "pallet-multisig",
- "pallet-offences",
- "pallet-plonky2-verifier",
- "pallet-preimage",
- "pallet-proxy",
- "pallet-referenda",
- "pallet-risc0-verifier",
- "pallet-scheduler",
- "pallet-session",
- "pallet-session-benchmarking",
- "pallet-sp1-verifier",
- "pallet-staking",
- "pallet-sudo",
- "pallet-timestamp",
- "pallet-token-gateway",
- "pallet-transaction-payment",
- "pallet-transaction-payment-rpc-runtime-api",
- "pallet-treasury",
- "pallet-ultrahonk-verifier",
- "pallet-ultraplonk-verifier",
- "pallet-utility",
- "pallet-verifiers",
- "pallet-vesting",
- "pallet-xcm",
- "pallet-xcm-benchmarks",
- "parity-scale-codec",
- "polkadot-primitives",
- "polkadot-runtime-common",
- "polkadot-runtime-parachains",
- "scale-info",
- "serde_json",
- "sp-api",
- "sp-authority-discovery",
- "sp-block-builder",
- "sp-consensus-babe",
- "sp-consensus-grandpa",
- "sp-core",
- "sp-genesis-builder",
- "sp-inherents",
- "sp-io",
- "sp-mmr-primitives",
- "sp-npos-elections",
- "sp-offchain",
- "sp-runtime",
- "sp-session",
- "sp-staking",
- "sp-storage",
- "sp-transaction-pool",
- "sp-version",
- "sp-weights",
- "staging-xcm",
- "staging-xcm-builder",
- "staging-xcm-executor",
- "static_assertions",
- "substrate-wasm-builder",
- "xcm-procedural",
- "zkv-runtime-common",
-]
 
 [[package]]
 name = "w3f-bls"
@@ -22857,7 +22903,7 @@ version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0978bf7171b3d90bac376700cb56d606feb40f251a475a5d6634613564460b22"
 dependencies = [
- "windows-sys 0.60.2",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
@@ -23657,7 +23703,7 @@ dependencies = [
 [[package]]
 name = "zkv-benchmarks"
 version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "sc-sysinfo",
  "serde_json",
@@ -23666,9 +23712,8 @@ dependencies = [
 [[package]]
 name = "zkv-cli"
 version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
- "cfg-if",
  "clap",
  "frame-benchmarking-cli",
  "futures",
@@ -23689,18 +23734,20 @@ dependencies = [
  "sp-runtime",
  "substrate-build-script-utils",
  "thiserror 1.0.69",
- "volta-runtime",
  "zkv-benchmarks",
+ "zkv-runtime",
  "zkv-service",
 ]
 
 [[package]]
 name = "zkv-runtime"
-version = "1.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+version = "1.3.1"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "anyhow",
+ "cfg-if",
+ "enumflags2",
  "finality-grandpa",
  "frame-benchmarking",
  "frame-election-provider-support",
@@ -23728,11 +23775,13 @@ dependencies = [
  "pallet-claim",
  "pallet-conviction-voting",
  "pallet-election-provider-support-benchmarking",
+ "pallet-ezkl-verifier",
  "pallet-fflonk-verifier",
  "pallet-grandpa",
  "pallet-groth16-verifier",
  "pallet-hyperbridge",
  "pallet-hyperbridge-aggregations",
+ "pallet-identity",
  "pallet-ismp",
  "pallet-ismp-runtime-api",
  "pallet-message-queue",
@@ -23750,6 +23799,7 @@ dependencies = [
  "pallet-staking",
  "pallet-sudo",
  "pallet-timestamp",
+ "pallet-token-claim",
  "pallet-token-gateway",
  "pallet-transaction-payment",
  "pallet-transaction-payment-rpc-runtime-api",
@@ -23791,44 +23841,13 @@ dependencies = [
  "staging-xcm-executor",
  "static_assertions",
  "substrate-wasm-builder",
- "xcm-procedural",
- "zkv-runtime-common",
-]
-
-[[package]]
-name = "zkv-runtime-common"
-version = "1.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
-dependencies = [
- "anyhow",
- "finality-grandpa",
- "frame-support",
- "frame-system",
- "log",
- "pallet-authorship",
- "pallet-balances",
- "pallet-staking",
- "parity-scale-codec",
- "polkadot-primitives",
- "scale-info",
- "sp-api",
- "sp-authority-discovery",
- "sp-consensus-babe",
- "sp-consensus-grandpa",
- "sp-core",
- "sp-inherents",
- "sp-io",
- "sp-runtime",
- "sp-staking",
- "sp-storage",
- "sp-version",
- "sp-weights",
+ "xcm-runtime-apis",
 ]
 
 [[package]]
 name = "zkv-service"
 version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?tag=1.0.0-1.0.0#e6ac3c7242f12aa04dd3b9d0704969f4ab6393a6"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v1.1.0-20251212#f267913a3dc255f6bf2d3953fcb5f5f1180f982a"
 dependencies = [
  "aggregate-rpc",
  "async-trait",
@@ -23948,7 +23967,6 @@ dependencies = [
  "thiserror 1.0.69",
  "tracing-gum",
  "vk-hash",
- "volta-runtime",
  "zkv-benchmarks",
  "zkv-runtime",
 ]
