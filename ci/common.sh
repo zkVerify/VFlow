@@ -147,3 +147,8 @@ check_signed_tag() {
     IS_A_RELEASE="false"
   fi
 }
+
+function git_tag_commit {
+  local tag="$1"
+  git rev-list -n 1 "${tag}"
+}
