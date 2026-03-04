@@ -98,4 +98,10 @@ impl<T: frame_system::Config> pallet_utility::WeightInfo for ZKVEvmWeight<T> {
             // Standard Error: 1_944
             .saturating_add(Weight::from_parts(2_411_367, 0).saturating_mul(c.into()))
     }
+    fn dispatch_as_fallible() -> Weight {
+        Weight::from_parts(5_533_000, 0)
+    }
+    fn if_else() -> Weight {
+        Weight::from_parts(5_533_000, 0)
+    }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "vflow-node"
-version = "1.0.2"
+version = "2.0.0"
 description = "VFlow Node"
 authors.workspace = true
 edition.workspace = true
@@ -24,7 +24,7 @@ serde_json = {workspace = true, features = ["std"]}
 
 # Local
 vflow-runtime-common = {workspace = true}
-vflow-runtime = {workspace = true, features = ["volta"]}
+vflow-runtime = {workspace = true, features = ["std", "volta"]}
 
 # ZKV relay
 zkv-benchmarks = {workspace = true}
@@ -82,7 +82,7 @@ cumulus-test-relay-sproof-builder = {workspace = true}
 cumulus-client-service = {workspace = true}
 cumulus-primitives-core = {workspace = true}
 cumulus-relay-chain-interface = {workspace = true}
-cumulus-primitives-storage-weight-reclaim = {workspace = true}
+cumulus-pallet-weight-reclaim = {workspace = true}
 cumulus-primitives-parachain-inherent = {workspace = true}
 
 # Frontier

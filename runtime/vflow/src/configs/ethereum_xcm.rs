@@ -17,7 +17,7 @@
 
 use crate::{
     configs::system::{ProxyType, ReservedXcmpWeight},
-    AccountId, BlockNumber, Runtime, RuntimeEvent,
+    AccountId, BlockNumber, Runtime,
 };
 use frame_support::ensure;
 use frame_system::EnsureRoot;
@@ -41,7 +41,6 @@ impl xcm_primitives::EnsureProxy<AccountId> for EthereumXcmEnsureProxy {
 }
 
 impl pallet_ethereum_xcm::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
     type InvalidEvmTransactionError = pallet_ethereum::InvalidTransactionWrapper;
     type ValidatedTransaction = pallet_ethereum::ValidatedTransaction<Self>;
     type XcmEthereumOrigin = pallet_ethereum_xcm::EnsureXcmEthereumTransaction;

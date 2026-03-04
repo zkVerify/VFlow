@@ -15,6 +15,7 @@
 
 use alloc::vec::Vec;
 use core::marker::PhantomData;
+use ethereum::AuthorizationList;
 use frame_support::{sp_runtime::DispatchError, weights::Weight};
 use pallet_evm::{
     runner::Runner as RunnerT, BalanceOf, Config, EvmConfig, FeeCalculator, RunnerError,
@@ -75,6 +76,7 @@ where
         max_priority_fee_per_gas: Option<U256>,
         nonce: Option<U256>,
         access_list: Vec<(H160, Vec<H256>)>,
+        authorization_list: Vec<(U256, H160, U256, Option<H160>)>,
         is_transactional: bool,
         weight_limit: Option<Weight>,
         proof_size_base_cost: Option<u64>,
@@ -90,6 +92,7 @@ where
             max_priority_fee_per_gas,
             nonce,
             access_list,
+            authorization_list,
             is_transactional,
             weight_limit,
             proof_size_base_cost,
@@ -111,6 +114,7 @@ where
         max_priority_fee_per_gas: Option<U256>,
         nonce: Option<U256>,
         access_list: Vec<(H160, Vec<H256>)>,
+        authorization_list: AuthorizationList,
         is_transactional: bool,
         validate: bool,
         weight_limit: Option<Weight>,
@@ -127,6 +131,7 @@ where
             max_priority_fee_per_gas,
             nonce,
             access_list,
+            authorization_list,
             is_transactional,
             validate,
             weight_limit,
@@ -148,6 +153,7 @@ where
         max_priority_fee_per_gas: Option<U256>,
         nonce: Option<U256>,
         access_list: Vec<(H160, Vec<H256>)>,
+        authorization_list: AuthorizationList,
         is_transactional: bool,
         validate: bool,
         weight_limit: Option<Weight>,
@@ -169,6 +175,7 @@ where
             max_priority_fee_per_gas,
             nonce,
             access_list,
+            authorization_list,
             is_transactional,
             validate,
             weight_limit,
@@ -191,6 +198,7 @@ where
         max_priority_fee_per_gas: Option<U256>,
         nonce: Option<U256>,
         access_list: Vec<(H160, Vec<H256>)>,
+        authorization_list: AuthorizationList,
         is_transactional: bool,
         validate: bool,
         weight_limit: Option<Weight>,
@@ -213,6 +221,7 @@ where
             max_priority_fee_per_gas,
             nonce,
             access_list,
+            authorization_list,
             is_transactional,
             validate,
             weight_limit,
@@ -234,6 +243,7 @@ where
         max_priority_fee_per_gas: Option<U256>,
         nonce: Option<U256>,
         access_list: Vec<(H160, Vec<H256>)>,
+        authorization_list: AuthorizationList,
         is_transactional: bool,
         validate: bool,
         weight_limit: Option<Weight>,
@@ -256,6 +266,7 @@ where
             max_priority_fee_per_gas,
             nonce,
             access_list,
+            authorization_list,
             is_transactional,
             validate,
             weight_limit,
@@ -352,6 +363,7 @@ mod mock {
                 max_priority_fee_per_gas: Option<U256>,
                 nonce: Option<U256>,
                 access_list: Vec<(H160, Vec<H256>)>,
+                authorization_list: Vec<(U256, H160, U256, Option<H160>)>,
                 is_transactional: bool,
                 weight_limit: Option<Weight>,
                 proof_size_base_cost: Option<u64>,
@@ -368,6 +380,7 @@ mod mock {
                 max_priority_fee_per_gas: Option<U256>,
                 nonce: Option<U256>,
                 access_list: Vec<(H160, Vec<H256>)>,
+                authorization_list: ethereum::AuthorizationList,
                 is_transactional: bool,
                 validate: bool,
                 weight_limit: Option<Weight>,
@@ -384,6 +397,7 @@ mod mock {
                 max_priority_fee_per_gas: Option<U256>,
                 nonce: Option<U256>,
                 access_list: Vec<(H160, Vec<H256>)>,
+                authorization_list: ethereum::AuthorizationList,
                 is_transactional: bool,
                 validate: bool,
                 weight_limit: Option<Weight>,
@@ -401,6 +415,7 @@ mod mock {
                 max_priority_fee_per_gas: Option<U256>,
                 nonce: Option<U256>,
                 access_list: Vec<(H160, Vec<H256>)>,
+                authorization_list: ethereum::AuthorizationList,
                 is_transactional: bool,
                 validate: bool,
                 weight_limit: Option<Weight>,
@@ -417,6 +432,7 @@ mod mock {
                 max_priority_fee_per_gas: Option<U256>,
                 nonce: Option<U256>,
                 access_list: Vec<(H160, Vec<H256>)>,
+                authorization_list: ethereum::AuthorizationList,
                 is_transactional: bool,
                 validate: bool,
                 weight_limit: Option<Weight>,
@@ -563,7 +579,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::validate_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _| Ok(()));
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(()));
 
             let ctx_deployment_permissions =
                 mock::MockDeploymentPermissions::check_create_origin_context();
@@ -583,6 +599,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.weight_limit,
                 params.proof_size_base_cost,
@@ -598,7 +615,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::validate_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _| Ok(()))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(()))
                 .once();
 
             let params = ValidateArgs::default();
@@ -613,6 +630,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.weight_limit,
                 params.proof_size_base_cost,
@@ -628,7 +646,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::validate_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
                 .once();
 
             let params = ValidateArgs::default();
@@ -643,6 +661,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.weight_limit,
                 params.proof_size_base_cost,
@@ -668,7 +687,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::call_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CALL_INFO));
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CALL_INFO));
 
             let ctx_deployment_permissions =
                 mock::MockDeploymentPermissions::check_create_origin_context();
@@ -688,6 +707,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -704,7 +724,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::call_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CALL_INFO))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CALL_INFO))
                 .once();
 
             let params = CallArgs::default();
@@ -719,6 +739,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -736,7 +757,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::call_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
                 .once();
 
             let params = CallArgs::default();
@@ -751,6 +772,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -791,6 +813,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -812,7 +835,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::create_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CREATE_INFO))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CREATE_INFO))
                 .once();
 
             let ctx_deployment_permissions =
@@ -830,6 +853,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -847,7 +871,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::create_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
                 .times(1);
 
             let ctx_deployment_permissions =
@@ -865,6 +889,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -907,6 +932,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -928,7 +954,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::create2_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CREATE_INFO))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _, _| Ok(DUMMY_CREATE_INFO))
                 .once();
 
             let ctx_deployment_permissions =
@@ -947,6 +973,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,
@@ -964,7 +991,7 @@ mod permissioned_runner {
             let ctx_runner = mock::MockRunner::create2_context();
             ctx_runner
                 .expect()
-                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
+                .returning(|_, _, _, _, _, _, _, _, _, _, _, _, _, _, _| Err(DUMMY_RUNNER_ERROR))
                 .once();
 
             let ctx_deployment_permissions =
@@ -983,6 +1010,7 @@ mod permissioned_runner {
                 params.max_priority_fee_per_gas,
                 params.nonce,
                 params.access_list,
+                Default::default(),
                 params.is_transactional,
                 params.validate,
                 params.weight_limit,

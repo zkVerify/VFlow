@@ -20,9 +20,9 @@ pub mod generic;
 use frame_support::weights::Weight;
 
 use crate::Runtime;
+use alloc::vec::Vec;
 use core::marker::PhantomData;
 use sp_runtime::BoundedVec;
-use sp_std::prelude::Vec;
 use xcm::{
     latest::prelude::*,
     latest::{AssetTransferFilter, Error},

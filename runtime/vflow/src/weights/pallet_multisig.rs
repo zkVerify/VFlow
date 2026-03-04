@@ -159,4 +159,9 @@ impl<T: frame_system::Config> pallet_multisig::WeightInfo for ZKVEvmWeight<T> {
             .saturating_add(T::DbWeight::get().reads(1_u64))
             .saturating_add(T::DbWeight::get().writes(1_u64))
     }
+    fn poke_deposit(_s: u32) -> Weight {
+        Weight::from_parts(25_000_000, 5587)
+            .saturating_add(T::DbWeight::get().reads(1_u64))
+            .saturating_add(T::DbWeight::get().writes(1_u64))
+    }
 }

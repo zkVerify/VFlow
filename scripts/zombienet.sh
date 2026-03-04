@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ZOMBIENET_V=v1.3.128
+ZOMBIENET_V=v1.3.138
 BIN_DIR=relay-bin
 CHAIN=${CHAIN:-"volta"} # mainnet NOT available for local dev
 
@@ -78,7 +78,7 @@ zombienet_build() {
 
 zombienet_devnet() {
   zombienet_init
-  cargo build --release
+  #cargo build --release
   echo "spawning local relay chain plus devnet ${CHAIN} as a parachain..."
   local dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
   ./$ZOMBIENET_BIN spawn "$dir/../zombienet-config/devnet-${CHAIN}.toml" -p native

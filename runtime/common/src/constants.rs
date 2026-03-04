@@ -85,6 +85,10 @@ pub const UNINCLUDED_SEGMENT_CAPACITY: u32 = 3;
 pub const BLOCK_PROCESSING_VELOCITY: u32 = 1;
 /// Relay chain slot duration, in milliseconds.
 pub const RELAY_CHAIN_SLOT_DURATION_MILLIS: u32 = 6000;
+/// How many relay chain blocks behind the tip the parachain should use as relay parent.
+/// A value of 0 means use the tip directly (no offset).
+// TODO: Set to 1 once the collator is updated to provide relay parent descendants.
+pub const RELAY_PARENT_OFFSET: u32 = 0;
 /// Maximum length for a block.
 pub const MAX_BLOCK_LENGTH: u32 = 5 * 1024 * 1024;
 

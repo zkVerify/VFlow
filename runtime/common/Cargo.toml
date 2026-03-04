@@ -22,9 +22,8 @@ frame-executive = {workspace = true}
 frame-metadata-hash-extension = {workspace = true}
 cumulus-primitives-core = {workspace = true}
 cumulus-pallet-aura-ext = {workspace = true}
-cumulus-primitives-storage-weight-reclaim = {workspace = true}
+cumulus-pallet-weight-reclaim = {workspace = true}
 sp-core = {workspace = true}
-sp-std = {workspace = true}
 
 # Frontier
 fp-account = {workspace = true}
@@ -49,7 +48,8 @@ default = [ "std" ]
 std = [
 	"cumulus-pallet-aura-ext/std",
 	"cumulus-primitives-core/std",
-	"cumulus-primitives-storage-weight-reclaim/std",
+	"cumulus-pallet-weight-reclaim/std",
+	"ethereum/std",
 	"fp-account/std",
 	"fp-evm/std",
 	"fp-self-contained/std",
@@ -64,7 +64,6 @@ std = [
 	"precompile-utils/std",
 	"sp-core/std",
 	"sp-runtime/std",
-	"sp-std/std",
 	"xcm/std",
 ]
 
@@ -77,6 +76,7 @@ runtime-benchmarks = [
 	"pallet-xcm/runtime-benchmarks",
 	"parachains-common/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
+	"xcm/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -88,6 +88,7 @@ try-runtime = [
 	"pallet-evm/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"pallet-xcm/try-runtime",
+	"parachains-common/try-runtime",
 	"sp-runtime/try-runtime",
 ]
 

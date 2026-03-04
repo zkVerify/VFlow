@@ -260,11 +260,12 @@ impl xcm_executor::Config for XcmConfig {
     type HrmpChannelAcceptedHandler = ();
     type HrmpChannelClosingHandler = ();
     type XcmRecorder = ZKVXcm;
+    type XcmEventEmitter = ();
 }
 
 // Convert a local Origin (i.e., a signed 20 byte account Origin)  to a Multilocation
 pub struct SignedToAccountId20<Origin, AccountId, Network>(
-    sp_std::marker::PhantomData<(Origin, AccountId, Network)>,
+    core::marker::PhantomData<(Origin, AccountId, Network)>,
 );
 impl<Origin: OriginTrait + Clone, AccountId: Into<[u8; 20]>, Network: Get<Option<NetworkId>>>
     TryConvert<Origin, Location> for SignedToAccountId20<Origin, AccountId, Network>
@@ -343,6 +344,7 @@ impl pallet_xcm::Config for Runtime {
     type RemoteLockConsumerIdentifier = ();
 
     type WeightInfo = weights::pallet_xcm::ZKVEvmWeight<Runtime>;
+    type AuthorizedAliasConsideration = ();
 }
 
 impl cumulus_pallet_xcm::Config for Runtime {

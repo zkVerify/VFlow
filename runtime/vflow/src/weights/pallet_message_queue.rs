@@ -177,4 +177,9 @@ impl<T: frame_system::Config> pallet_message_queue::WeightInfo for ZKVEvmWeight<
             .saturating_add(T::DbWeight::get().reads(2_u64))
             .saturating_add(T::DbWeight::get().writes(2_u64))
     }
+    fn set_service_head() -> Weight {
+        Weight::from_parts(9_262_000, 3517)
+            .saturating_add(T::DbWeight::get().reads(2_u64))
+            .saturating_add(T::DbWeight::get().writes(1_u64))
+    }
 }

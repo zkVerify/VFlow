@@ -116,4 +116,7 @@ impl<T: frame_system::Config> frame_system_extensions::WeightInfo for ZKVEvmWeig
         // Minimum execution time: 3_855_000 picoseconds.
         Weight::from_parts(4_014_000, 0)
     }
+    fn weight_reclaim() -> Weight {
+        Weight::from_parts(4_014_000, 0)
+    }
 }

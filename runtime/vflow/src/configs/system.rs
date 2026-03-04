@@ -20,7 +20,7 @@ use crate::{
     configs::VERSION,
     constants::{
         currency::deposit, AVERAGE_ON_INITIALIZE_RATIO, MAXIMUM_BLOCK_WEIGHT, MAX_BLOCK_LENGTH,
-        NORMAL_DISPATCH_RATIO, SLOT_DURATION,
+        NORMAL_DISPATCH_RATIO, RELAY_PARENT_OFFSET, SLOT_DURATION,
     },
     types::ConsensusHook,
     weights,
@@ -29,9 +29,7 @@ use crate::{
     Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue,
 };
 use core::fmt::Debug;
-use cumulus_pallet_parachain_system::{
-    DefaultCoreSelector, ParachainSetCode, RelayNumberMonotonicallyIncreases,
-};
+use cumulus_pallet_parachain_system::{ParachainSetCode, RelayNumberMonotonicallyIncreases};
 use cumulus_primitives_core::AggregateMessageOrigin;
 use frame_support::{
     derive_impl,
@@ -164,10 +162,14 @@ impl cumulus_pallet_parachain_system::Config for Runtime {
     type CheckAssociatedRelayNumber = RelayNumberMonotonicallyIncreases;
     type WeightInfo = weights::cumulus_pallet_parachain_system::ZKVEvmWeight<Runtime>;
     type ConsensusHook = ConsensusHook;
-    type SelectCore = DefaultCoreSelector<Self>;
+    type RelayParentOffset = frame_support::traits::ConstU32<RELAY_PARENT_OFFSET>;
 }
 
 impl parachain_info::Config for Runtime {}
+
+impl cumulus_pallet_weight_reclaim::Config for Runtime {
+    type WeightInfo = ();
+}
 
 parameter_types! {
     // One storage item; key size is 32; value is size 4+4+16+32 bytes = 56 bytes.
@@ -184,6 +186,7 @@ impl pallet_multisig::Config for Runtime {
     type DepositBase = DepositBase;
     type DepositFactor = DepositFactor;
     type MaxSignatories = MaxSignatories;
+    type BlockNumberProvider = frame_system::Pallet<Runtime>;
     type WeightInfo = weights::pallet_multisig::ZKVEvmWeight<Runtime>;
 }
 
@@ -216,6 +219,7 @@ parameter_types! {
     Copy,
     Clone,
     Decode,
+    parity_scale_codec::DecodeWithMemTracking,
     Debug,
     Default,
     Encode,
@@ -263,4 +267,5 @@ impl pallet_proxy::Config for Runtime {
     type CallHasher = BlakeTwo256;
     type AnnouncementDepositBase = AnnouncementDepositBase;
     type AnnouncementDepositFactor = AnnouncementDepositFactor;
+    type BlockNumberProvider = frame_system::Pallet<Runtime>;
 }
