@@ -18,8 +18,7 @@
 use crate::{
     constants::{MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, WEIGHT_PER_GAS},
     opaque, weights, AccountId, Aura, Balances, CollatorSelection, DeploymentPermissions,
-    EVMChainId, Precompiles, Runtime, Timestamp, TransactionPayment,
-    UncheckedExtrinsic,
+    EVMChainId, Precompiles, Runtime, Timestamp, TransactionPayment, UncheckedExtrinsic,
 };
 use core::marker::PhantomData;
 use fp_evm::FeeCalculator;

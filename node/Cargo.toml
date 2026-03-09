@@ -76,7 +76,6 @@ cumulus-client-cli = {workspace = true}
 cumulus-client-collator = {workspace = true}
 cumulus-client-consensus-aura = {workspace = true}
 cumulus-client-consensus-common = {workspace = true}
-cumulus-client-consensus-proposer = {workspace = true}
 cumulus-client-parachain-inherent = {workspace = true}
 cumulus-test-relay-sproof-builder = {workspace = true}
 cumulus-client-service = {workspace = true}
@@ -106,6 +105,7 @@ substrate-build-script-utils = {workspace = true}
 [features]
 default = [ "txpool" ]
 runtime-benchmarks = [
+	"cumulus-pallet-weight-reclaim/runtime-benchmarks",
 	"cumulus-primitives-core/runtime-benchmarks",
 	"frame-benchmarking-cli/runtime-benchmarks",
 	"frame-benchmarking/runtime-benchmarks",
@@ -119,6 +119,7 @@ runtime-benchmarks = [
 	"vflow-runtime/runtime-benchmarks",
 ]
 try-runtime = [
+	"cumulus-pallet-weight-reclaim/try-runtime",
 	"frame-system/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"polkadot-cli/try-runtime",

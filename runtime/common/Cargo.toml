@@ -47,8 +47,8 @@ hex = {workspace = true, features = ["std"]}
 default = [ "std" ]
 std = [
 	"cumulus-pallet-aura-ext/std",
-	"cumulus-primitives-core/std",
 	"cumulus-pallet-weight-reclaim/std",
+	"cumulus-primitives-core/std",
 	"ethereum/std",
 	"fp-account/std",
 	"fp-evm/std",
@@ -68,6 +68,7 @@ std = [
 ]
 
 runtime-benchmarks = [
+	"cumulus-pallet-weight-reclaim/runtime-benchmarks",
 	"cumulus-primitives-core/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
@@ -81,6 +82,7 @@ runtime-benchmarks = [
 
 try-runtime = [
 	"cumulus-pallet-aura-ext/try-runtime",
+	"cumulus-pallet-weight-reclaim/try-runtime",
 	"fp-self-contained/try-runtime",
 	"frame-executive/try-runtime",
 	"frame-support/try-runtime",

@@ -9,7 +9,6 @@ license = "GPL-3.0-only"
 members = [
     "node",
     "pallets/deployment-permissions",
-    "pallets/ethereum-xcm",
     "runtime/vflow",
     "runtime/common",
 ]
@@ -173,7 +172,7 @@ pallet-evm-precompile-balances-erc20 = {git = "https://github.com/moonbeam-found
 ethereum = {git = "https://github.com/moonbeam-foundation/ethereum", branch = "moonbeam-polkadot-stable2512", default-features = false, features = ["with-scale"]}
 
 # Moonbeam
-pallet-ethereum-xcm = {path = "pallets/ethereum-xcm", default-features = false}
+pallet-ethereum-xcm = {git = "https://github.com/moonbeam-foundation/moonbeam", branch = "artur/moonbeam-polkadot-stable2512", default-features = false}
 xcm-primitives = {git = "https://github.com/moonbeam-foundation/moonbeam/", branch = "artur/moonbeam-polkadot-stable2512", default-features = false}
 
 # Other
@@ -347,9 +346,6 @@ substrate-prometheus-endpoint = { version = "0.17.7" }
 
 # XCM
 xcm = { version = "21.0.0", package = "staging-xcm" }
-
-[patch."https://github.com/moonbeam-foundation/moonbeam/"]
-pallet-ethereum-xcm = { path = "pallets/ethereum-xcm" }
 
 [workspace.lints.clippy]
 all = { level = "allow", priority = 0 }                              # Basically, we accept the _perf_ clippy concerns
