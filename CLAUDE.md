@@ -53,7 +53,7 @@ cargo build --release --features runtime-benchmarks           # Build with bench
 All Rust source files must include:
 
 ```rust
-// Copyright 2025, Horizen Labs, Inc.
+// Copyright 2026, Horizen Labs, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -78,10 +78,10 @@ Per-chain configs live in `runtime/vflow/src/configs/` (`mainnet.rs`, `volta.rs`
 
 ## Key Dependencies
 
-- **Substrate/Polkadot SDK** (stable2412) — Blockchain framework
+- **Substrate/Polkadot SDK** (stable2512) — Blockchain framework
 - **Cumulus** — Parachain consensus and relay chain integration
-- **Frontier** (Moonbeam fork, `moonbeam-polkadot-stable2412`) — EVM compatibility layer
-- **zkVerify** — Relay chain (`v1.1.0-20251212`)
+- **Frontier** (Moonbeam fork, `moonbeam-polkadot-stable2512`) — EVM compatibility layer
+- **zkVerify** — Relay chain (branch `md/update-to-polkadot-stable-2512`)
 
 ## Testing Patterns
 
