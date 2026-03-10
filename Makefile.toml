@@ -101,5 +101,18 @@ args = ["machete"]
 [tasks.dependencies-check]
 dependencies = ["audit", "machete"]
 
+[tasks.build-try-runtime]
+command = "cargo"
+args = ["build", "-p", "vflow-runtime", "--release", "--features", "try-runtime,volta"]
+
+[tasks.try-runtime-inst]
+command = "cargo"
+args = ["install", "--git", "https://github.com/paritytech/try-runtime-cli", "--tag", "v0.10.1", "--locked"]
+
+[tasks.try-runtime]
+dependencies = ["try-runtime-inst", "build-try-runtime"]
+command = "try-runtime"
+args = ["--runtime", "./target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm", "on-runtime-upgrade", "--blocktime", "6",  "--disable-mbm-checks", "--disable-spec-version-check", "live", "--uri",  "wss://vflow-volta-rpc.zkverify.io"]
+
 [tasks.ci]
 dependencies = ["format", "zepter", "check", "build", "test", "test-bench", "clippy", "dependencies-check"]
