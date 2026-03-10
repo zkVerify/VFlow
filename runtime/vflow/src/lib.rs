@@ -28,9 +28,9 @@ mod genesis_config_presets;
 mod precompiles;
 pub use precompiles::Precompiles;
 
+mod migrations;
 #[cfg(test)]
 mod tests;
-mod migrations;
 pub mod types;
 mod weights;
 

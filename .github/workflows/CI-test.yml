@@ -21,6 +21,8 @@ jobs:
           use_cache: 'yes'
           cache_key: 'unit-test'
           skip_wasm_build: 'yes'
+          llvm: 'yes'
+          libclang-dev: 'yes'
 
       - name: Cargo unit test runtime without features (Mainnet)
         uses: ./.github/actions/cmd-in-docker
@@ -29,6 +31,8 @@ jobs:
           use_cache: 'yes'
           cache_key: 'unit-test'
           skip_wasm_build: 'yes'
+          llvm: 'yes'
+          libclang-dev: 'yes'
 
       - name: Cargo unit test runtime without features (Volta)
         uses: ./.github/actions/cmd-in-docker
@@ -37,6 +41,8 @@ jobs:
           use_cache: 'yes'
           cache_key: 'unit-test'
           skip_wasm_build: 'yes'
+          llvm: 'yes'
+          libclang-dev: 'yes'
 
       - name: Upload unit test output
         if: ${{ !cancelled() }}
