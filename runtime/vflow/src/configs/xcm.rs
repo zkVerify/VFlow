@@ -344,7 +344,7 @@ impl pallet_xcm::Config for Runtime {
     type RemoteLockConsumerIdentifier = ();
 
     type WeightInfo = weights::pallet_xcm::ZKVEvmWeight<Runtime>;
-    type AuthorizedAliasConsideration = ();
+    type AuthorizedAliasConsideration = frame_support::traits::Disabled;
 }
 
 impl cumulus_pallet_xcm::Config for Runtime {

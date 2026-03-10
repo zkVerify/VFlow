@@ -718,7 +718,7 @@ impl_runtime_apis! {
             Vec<frame_benchmarking::BenchmarkList>,
             Vec<frame_support::traits::StorageInfo>,
         ) {
-            use frame_benchmarking::{Benchmarking, BenchmarkList};
+            use frame_benchmarking::BenchmarkList;
             use frame_support::traits::StorageInfoTrait;
             use frame_system_benchmarking::Pallet as SystemBench;
             use frame_system_benchmarking::extensions::Pallet as SystemExtensionsBench;
@@ -742,14 +742,14 @@ impl_runtime_apis! {
         fn dispatch_benchmark(
             config: frame_benchmarking::BenchmarkConfig
         ) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, String> {
-            use frame_benchmarking::{Benchmarking, BenchmarkBatch};
+            use frame_benchmarking::BenchmarkBatch;
             use frame_system_benchmarking::Pallet as SystemBench;
             use frame_system_benchmarking::extensions::Pallet as SystemExtensionsBench;
             use pallet_xcm::benchmarking::Pallet as PalletXcmExtrinsicsBenchmark;
 
             pub mod xcm {
                 use super::*;
-                use crate::{configs::monetary::*, configs::xcm::*, currency::{CENTS, VFY}};
+                use crate::{configs::xcm::*, currency::{CENTS, VFY}};
                 use frame_support::parameter_types;
                 use xcm::v5::{Asset, Assets, Location, InteriorLocation, Junction, Junctions::Here, NetworkId, Response, Fungibility::Fungible, Parent, WeightLimit};
                 use frame_benchmarking::BenchmarkError;
@@ -760,7 +760,7 @@ impl_runtime_apis! {
                 parameter_types! {
                     pub ExistentialDepositAsset: Option<Asset> = Some((
                         RelayLocation::get(),
-                        configs::monetary::ExistentialDeposit::get()
+                        CENTS
                     ).into());
                     /// The base fee for the message delivery fees. Kusama is based for the reference.
                     pub const ToParentBaseDeliveryFee: u128 = CENTS.saturating_mul(3);
@@ -798,7 +798,7 @@ impl_runtime_apis! {
                     fn get_asset() -> Asset {
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         }
                     }
                 }
@@ -828,7 +828,7 @@ impl_runtime_apis! {
                         RelayLocation::get(),
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         },
                     ));
                     pub const TrustedReserve: Option<(Location, Asset)> = None;
@@ -844,7 +844,7 @@ impl_runtime_apis! {
                     fn get_asset() -> Asset {
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         }
                     }
                 }

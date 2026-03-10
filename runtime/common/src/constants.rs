@@ -33,11 +33,11 @@ pub mod currency {
     pub const EXISTENTIAL_DEPOSIT: Balance = 0;
 
     #[cfg(feature = "runtime-benchmarks")]
-    // The meaning of `EXISTENTIAL_DEPOSIT` for runtime benchmarks is just a way to
-    // fall or not in some cases that you want to benchmark. You're not testing the runtime
-    // correctness here, so you can set any value that makes the benchmarks happy without
-    // compromising the results.
-    pub const EXISTENTIAL_DEPOSIT: Balance = 100;
+    // Must be non-zero so upstream benchmarks (e.g. collator_selection) that derive
+    // CandidacyBond from Currency::minimum_balance() get a valid value. Must also be
+    // smaller than the pallet_balances benchmark's hardcoded balance (100 * ED_MULTIPLIER)
+    // to avoid unexpected account reaping when insecure_zero_ed is enabled.
+    pub const EXISTENTIAL_DEPOSIT: Balance = 1;
 
     pub const fn deposit(items: u32, bytes: u32) -> Balance {
         items as Balance * 200 * CENTS + (bytes as Balance) * 100 * MILLICENTS
