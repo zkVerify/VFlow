@@ -30,6 +30,7 @@ pub use precompiles::Precompiles;
 
 #[cfg(test)]
 mod tests;
+mod migrations;
 pub mod types;
 mod weights;
 

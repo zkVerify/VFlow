@@ -75,13 +75,15 @@ pub type SignedExtra<Runtime> = cumulus_pallet_weight_reclaim::StorageWeightRecl
 >;
 
 /// Executive: handles dispatch to the various modules.
-pub type Executive<Runtime, RuntimeCall, AllPalletsWithSystem> = frame_executive::Executive<
-    Runtime,
-    Block<Runtime, RuntimeCall>,
-    frame_system::ChainContext<Runtime>,
-    Runtime,
-    AllPalletsWithSystem,
->;
+pub type Executive<Runtime, RuntimeCall, AllPalletsWithSystem, Migrations = ()> =
+    frame_executive::Executive<
+        Runtime,
+        Block<Runtime, RuntimeCall>,
+        frame_system::ChainContext<Runtime>,
+        Runtime,
+        AllPalletsWithSystem,
+        Migrations,
+    >;
 
 /// Configures the number of blocks that can be created without submission of validity proof to the relay chain
 pub type ConsensusHook<Runtime> = cumulus_pallet_aura_ext::FixedVelocityConsensusHook<

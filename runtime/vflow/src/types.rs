@@ -34,7 +34,8 @@ pub type SignedPayload = generic::SignedPayload<RuntimeCall, SignedExtra>;
 pub type SignedExtra = ct::SignedExtra<Runtime>;
 
 /// Executive: handles dispatch to the various modules.
-pub type Executive = ct::Executive<Runtime, RuntimeCall, AllPalletsWithSystem>;
+pub type Executive =
+    ct::Executive<Runtime, RuntimeCall, AllPalletsWithSystem, crate::migrations::Unreleased>;
 
 /// Configures the number of blocks that can be created without submission of validity proof to the relay chain
 pub type ConsensusHook = ct::ConsensusHook<Runtime>;
