@@ -26,3 +26,6 @@ deps/
 
 # Any zombienet binary
 zombienet-linux-x64
+
+# Claude local config
+.claude/settings.local.json
