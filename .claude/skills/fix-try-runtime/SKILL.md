@@ -3,10 +3,11 @@ name: Fix Try-Runtime
 description: >
   This skill should be used when the user asks to "fix try-runtime",
   "fix cargo make try-runtime", "debug try-runtime", "fix runtime upgrade",
-  "fix migration", "fix on_runtime_upgrade", or mentions try-runtime failures,
-  migration errors, or runtime upgrade issues. Provides a systematic workflow
-  for diagnosing and fixing try-runtime compilation errors and execution
-  failures.
+  "fix migration", "fix on_runtime_upgrade", "check try-runtime",
+  "check that try-runtime works", "run try-runtime", or mentions
+  try-runtime failures, migration errors, or runtime upgrade issues.
+  Provides a systematic workflow for diagnosing and fixing try-runtime
+  compilation errors and execution failures.
 ---
 
 # Fix Try-Runtime
@@ -61,18 +62,22 @@ chain state. This avoids re-downloading the full state on every attempt,
 which can take several minutes.
 
 ```bash
-try-runtime create-snapshot --uri wss://vflow-volta-rpc.zkverify.io volta-snapshot.snap
+try-runtime create-snapshot --uri wss://vflow-volta-rpc.zkverify.io
 ```
 
 For mainnet:
 
 ```bash
-try-runtime create-snapshot --uri wss://vflow-rpc.zkverify.io mainnet-snapshot.snap
+try-runtime create-snapshot --uri wss://vflow-rpc.zkverify.io
 ```
 
-**CLI note:** The snapshot path is a positional argument after `--uri`.
-If omitted, the CLI auto-generates a name like
-`tvflow-runtime-<version>@latest.snap`.
+**Note:** The `--uri` flag requires a WebSocket URL (`wss://`), not
+HTTPS. Using `https://` will fail with a validation error.
+
+**Note:** If `try-runtime` is not in PATH after installation, use the
+full path `~/.cargo/bin/try-runtime`.
+
+This generates a snapshot file with a name like "<runtime_spec_name>-runtime-<runtime_version>@latest.snap".
 
 The snapshot file can be reused for all subsequent runs during the
 debugging session, making iteration much faster.
@@ -84,7 +89,7 @@ Use the snapshot instead of the live RPC endpoint:
 ```bash
 try-runtime --runtime ./target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm \
   on-runtime-upgrade --blocktime 6 --disable-mbm-checks --disable-spec-version-check \
-  snap -p volta-snapshot.snap 2>&1
+  snap -p <snapshot_file> 2>&1
 ```
 
 If the execution fails, go to Step 2b or 2c depending on the error type.
@@ -273,7 +278,7 @@ snapshot with debug logging:
 RUST_LOG=runtime=debug try-runtime \
   --runtime ./target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm \
   on-runtime-upgrade --blocktime 6 --disable-mbm-checks --disable-spec-version-check \
-  snap -p volta-snapshot.snap 2>&1
+  snap -p <snapshot_file> 2>&1
 ```
 
 The `runtime=debug` log level will show each pallet's migration hooks
@@ -288,7 +293,7 @@ After applying fixes, rebuild and re-run against the snapshot:
 cargo build -p vflow-runtime --release --features try-runtime,volta && \
 try-runtime --runtime ./target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm \
   on-runtime-upgrade --blocktime 6 --disable-mbm-checks --disable-spec-version-check \
-  snap -p volta-snapshot.snap
+  snap -p <snapshot_file>
 ```
 
 Once the fix is confirmed with the snapshot, do a final verification
@@ -304,7 +309,7 @@ To test mainnet as well (matching CI):
 cargo build -p vflow-runtime --release --features try-runtime && \
 try-runtime --runtime ./target/release/wbuild/vflow-runtime/vflow_runtime.compact.compressed.wasm \
   on-runtime-upgrade --blocktime 6 --disable-mbm-checks --disable-spec-version-check \
-  snap -p mainnet-snapshot.snap
+  snap -p <snapshot_file>
 ```
 
 ## Key File Reference
