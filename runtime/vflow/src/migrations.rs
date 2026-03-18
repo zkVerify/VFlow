@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::Runtime;
+use frame_support::{migrations::RemovePallet, parameter_types};
 
-/// Migrations to run on the next runtime upgrade.
-pub type Unreleased = (
-    pallet_session::migrations::v1::MigrateV0ToV1<
-        Runtime,
-        pallet_session::migrations::v1::InitOffenceSeverity<Runtime>,
-    >,
-    cumulus_pallet_aura_ext::migration::MigrateV0ToV1<Runtime>,
-);
+parameter_types! {
+    pub const ProxyPalletName: &'static str = "Proxy";
+}
+
+pub type RemoveProxyPallet =
+    RemovePallet<ProxyPalletName, <crate::Runtime as frame_system::Config>::DbWeight>;
+
+pub type Migrations = (RemoveProxyPallet,);

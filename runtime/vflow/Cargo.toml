@@ -25,6 +25,7 @@ cfg-if = { workspace = true }
 
 # Substrate
 frame-benchmarking = {workspace = true, optional = true}
+frame-executive = {workspace = true}
 frame-support = {workspace = true}
 frame-system = {workspace = true}
 frame-system-benchmarking = {workspace = true, optional = true}
@@ -36,7 +37,6 @@ pallet-balances = {workspace = true, features = ["insecure_zero_ed"]}
 pallet-deployment-permissions = {workspace = true}
 pallet-message-queue = {workspace = true}
 pallet-multisig = {workspace = true}
-pallet-proxy = {workspace = true}
 pallet-session = {workspace = true}
 pallet-collator-selection = {workspace = true}
 pallet-sudo = {workspace = true}
@@ -130,6 +130,7 @@ std = [
 	"fp-rpc/std",
 	"fp-self-contained/std",
 	"frame-benchmarking?/std",
+	"frame-executive/std",
 	"frame-support/std",
 	"frame-system-benchmarking?/std",
 	"frame-system-rpc-runtime-api/std",
@@ -154,7 +155,6 @@ std = [
 	"pallet-evm/std",
 	"pallet-message-queue/std",
 	"pallet-multisig/std",
-	"pallet-proxy/std",
 	"pallet-session/std",
 	"pallet-sudo/std",
 	"pallet-timestamp/std",
@@ -210,8 +210,6 @@ runtime-benchmarks = [
 	"pallet-evm/runtime-benchmarks",
 	"pallet-message-queue/runtime-benchmarks",
 	"pallet-multisig/runtime-benchmarks",
-	"pallet-proxy/runtime-benchmarks",
-	"pallet-session/runtime-benchmarks",
 	"pallet-sudo/runtime-benchmarks",
 	"pallet-timestamp/runtime-benchmarks",
 	"pallet-transaction-payment/runtime-benchmarks",
@@ -236,6 +234,7 @@ try-runtime = [
 	"cumulus-pallet-xcm/try-runtime",
 	"cumulus-pallet-xcmp-queue/try-runtime",
 	"fp-self-contained/try-runtime",
+	"frame-executive/try-runtime",
 	"frame-support/try-runtime",
 	"frame-system/try-runtime",
 	"frame-try-runtime/try-runtime",
@@ -250,7 +249,6 @@ try-runtime = [
 	"pallet-evm/try-runtime",
 	"pallet-message-queue/try-runtime",
 	"pallet-multisig/try-runtime",
-	"pallet-proxy/try-runtime",
 	"pallet-session/try-runtime",
 	"pallet-sudo/try-runtime",
 	"pallet-timestamp/try-runtime",
