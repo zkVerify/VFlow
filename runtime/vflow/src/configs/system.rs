@@ -189,4 +189,3 @@ impl pallet_timestamp::Config for Runtime {
     type MinimumPeriod = ConstU64<{ SLOT_DURATION / 2 }>;
     type WeightInfo = weights::pallet_timestamp::ZKVEvmWeight<Runtime>;
 }
-
