@@ -37,7 +37,7 @@ use frame_support::{
     dispatch::DispatchClass,
     pallet_prelude::ConstU32,
     parameter_types,
-    traits::{ConstU64, Contains},
+    traits::{ConstU64, Everything},
 };
 use frame_system::limits::{BlockLength, BlockWeights};
 use polkadot_runtime_common::BlockHashCount;
@@ -78,13 +78,6 @@ parameter_types! {
     pub const SS58Prefix: u16 = 0;
 }
 
-pub struct NormalFilter;
-impl Contains<RuntimeCall> for NormalFilter {
-    fn contains(_c: &RuntimeCall) -> bool {
-        true
-    }
-}
-
 /// The default types are being injected by [`derive_impl`](`frame_support::derive_impl`) from
 /// [`ParaChainDefaultConfig`](`struct@frame_system::config_preludes::ParaChainDefaultConfig`),
 /// but overridden as needed.
@@ -95,7 +88,7 @@ impl frame_system::Config for Runtime {
     /// The identifier used to distinguish between accounts.
     type AccountId = AccountId;
     /// The basic call filter to use in dispatchable.
-    type BaseCallFilter = NormalFilter;
+    type BaseCallFilter = Everything;
     /// The block type.
     type Block = Block;
     /// Maximum number of block number to block hash mappings to keep (oldest pruned first).
