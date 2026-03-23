@@ -29,7 +29,6 @@ pub mod pallet_deployment_permissions;
 pub mod pallet_evm;
 pub mod pallet_message_queue;
 pub mod pallet_multisig;
-pub mod pallet_proxy;
 pub mod pallet_session;
 pub mod pallet_sudo;
 pub mod pallet_timestamp;

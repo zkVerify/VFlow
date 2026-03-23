@@ -88,22 +88,6 @@ mod runtime_tests {
     }
 
     #[test]
-    fn proxy_constants() {
-        use configs::system::*;
-        assert_eq!(MaxProxies::get(), 32);
-
-        assert_eq!(MaxPending::get(), 32);
-
-        assert_eq!(ProxyDepositBase::get(), deposit(1, 40));
-
-        assert_eq!(AnnouncementDepositBase::get(), deposit(1, 48));
-
-        assert_eq!(ProxyDepositFactor::get(), deposit(0, 33));
-
-        assert_eq!(AnnouncementDepositFactor::get(), deposit(0, 66));
-    }
-
-    #[test]
     fn balances_constants() {
         use configs::monetary::*;
         assert_eq!(MaxFreezes::get(), 0);

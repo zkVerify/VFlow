@@ -28,7 +28,6 @@ use crate::{
     AccountId, Aura, Balance, Balances, Block, Hash, MessageQueue, Nonce, OriginCaller, PalletInfo,
     Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue,
 };
-use core::fmt::Debug;
 use cumulus_pallet_parachain_system::{
     DefaultCoreSelector, ParachainSetCode, RelayNumberMonotonicallyIncreases,
 };
@@ -36,13 +35,13 @@ use cumulus_primitives_core::AggregateMessageOrigin;
 use frame_support::{
     derive_impl,
     dispatch::DispatchClass,
-    pallet_prelude::{ConstU32, Decode, Encode, MaxEncodedLen, TypeInfo},
+    pallet_prelude::ConstU32,
     parameter_types,
-    traits::{ConstU64, Contains, InstanceFilter},
+    traits::{ConstU64, Everything},
 };
 use frame_system::limits::{BlockLength, BlockWeights};
 use polkadot_runtime_common::BlockHashCount;
-use sp_runtime::traits::{BlakeTwo256, IdentityLookup};
+use sp_runtime::traits::IdentityLookup;
 use sp_version::RuntimeVersion;
 use sp_weights::Weight;
 
@@ -79,23 +78,6 @@ parameter_types! {
     pub const SS58Prefix: u16 = 0;
 }
 
-pub struct NormalFilter;
-impl Contains<RuntimeCall> for NormalFilter {
-    fn contains(c: &RuntimeCall) -> bool {
-        match c {
-            // We filter anonymous proxy as they make "reserve" inconsistent
-            // See: https://github.com/paritytech/polkadot-sdk/blob/v1.9.0-rc2/substrate/frame/proxy/src/lib.rs#L260
-            RuntimeCall::Proxy(method) => !matches!(
-                method,
-                pallet_proxy::Call::create_pure { .. }
-                    | pallet_proxy::Call::kill_pure { .. }
-                    | pallet_proxy::Call::remove_proxies { .. }
-            ),
-            _ => true,
-        }
-    }
-}
-
 /// The default types are being injected by [`derive_impl`](`frame_support::derive_impl`) from
 /// [`ParaChainDefaultConfig`](`struct@frame_system::config_preludes::ParaChainDefaultConfig`),
 /// but overridden as needed.
@@ -106,7 +88,7 @@ impl frame_system::Config for Runtime {
     /// The identifier used to distinguish between accounts.
     type AccountId = AccountId;
     /// The basic call filter to use in dispatchable.
-    type BaseCallFilter = NormalFilter;
+    type BaseCallFilter = Everything;
     /// The block type.
     type Block = Block;
     /// Maximum number of block number to block hash mappings to keep (oldest pruned first).
@@ -199,68 +181,4 @@ impl pallet_timestamp::Config for Runtime {
     type OnTimestampSet = Aura;
     type MinimumPeriod = ConstU64<{ SLOT_DURATION / 2 }>;
     type WeightInfo = weights::pallet_timestamp::ZKVEvmWeight<Runtime>;
-}
-
-parameter_types! {
-    pub const MaxProxies: u32 = 32;
-    pub const MaxPending: u32 = 32;
-    pub const ProxyDepositBase: Balance = deposit(1, 40);
-    pub const AnnouncementDepositBase: Balance = deposit(1, 48);
-    pub const ProxyDepositFactor: Balance = deposit(0, 33);
-    pub const AnnouncementDepositFactor: Balance = deposit(0, 66);
-}
-
-/// The type used to represent the kinds of proxying allowed.
-/// If you are adding new pallets, consider adding new ProxyType variant
-#[derive(
-    Copy,
-    Clone,
-    Decode,
-    Debug,
-    Default,
-    Encode,
-    Eq,
-    MaxEncodedLen,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    TypeInfo,
-)]
-pub enum ProxyType {
-    /// Allows to proxy all calls
-    #[default]
-    Any,
-    /// Allows all non-transfer calls
-    NonTransfer,
-    /// Allows to finish the proxy
-    CancelProxy,
-}
-
-impl InstanceFilter<RuntimeCall> for ProxyType {
-    fn filter(&self, c: &RuntimeCall) -> bool {
-        match self {
-            ProxyType::Any => true,
-            ProxyType::NonTransfer => !matches!(c, RuntimeCall::Balances { .. }),
-            ProxyType::CancelProxy => matches!(
-                c,
-                RuntimeCall::Proxy(pallet_proxy::Call::reject_announcement { .. })
-                    | RuntimeCall::Multisig { .. }
-            ),
-        }
-    }
-}
-
-impl pallet_proxy::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
-    type RuntimeCall = RuntimeCall;
-    type Currency = Balances;
-    type ProxyType = ProxyType;
-    type ProxyDepositBase = ProxyDepositBase;
-    type ProxyDepositFactor = ProxyDepositFactor;
-    type MaxProxies = MaxProxies;
-    type WeightInfo = weights::pallet_proxy::ZKVEvmWeight<Runtime>;
-    type MaxPending = MaxPending;
-    type CallHasher = BlakeTwo256;
-    type AnnouncementDepositBase = AnnouncementDepositBase;
-    type AnnouncementDepositFactor = AnnouncementDepositFactor;
 }

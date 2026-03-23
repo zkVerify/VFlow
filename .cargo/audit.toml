@@ -3,7 +3,6 @@ ignore = [
 	# Coming from outdated libp2p and litep2p dependencies from which
 	# some Polkadot libraries are dependent on. They will be updated
 	# once we update Polkadot packages to latest version
-	"RUSTSEC-2024-0336",
 	"RUSTSEC-2024-0421",
 	"RUSTSEC-2025-0009",
 	"RUSTSEC-2024-0363", # Maybe we should fix the sqlx dependency in our frontier branch
@@ -34,6 +33,32 @@ ignore = [
 	# and in protocols/identify/src/behaviour.rs we can see that there isn't any mutable iterator used for
 	# `lru::LruCache`.
 	# We can conclude that the unsound code is never exercised.
+	"RUSTSEC-2026-0020", # wasmtime v8.0.1 via sc-executor-wasmtime (polkadot-sdk, cannot upgrade independently).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0020 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-852m-cvvp-9p4w
+	# "Wasmtime's implementations of WASIp1 and WASIp2 are affected by this vulnerability."
+	# We use wasmtime exclusively as a Wasm executor for Substrate PVF/runtime blobs via
+	# sc-executor-wasmtime. Neither wasmtime-wasi nor any WASI context is present in our
+	# dependency tree, so we are unaffected.
+	"RUSTSEC-2026-0021", # wasmtime v8.0.1 via sc-executor-wasmtime (polkadot-sdk, cannot upgrade independently).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0021 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-243v-98vx-264h
+	# "Specific to implementations using the wasi:http/types.fields resource in wasmtime-wasi-http."
+	# We do not use wasmtime-wasi-http (not present in Cargo.lock) — wasmtime is used only for
+	# Substrate PVF/runtime Wasm execution, so we are unaffected.
+	"RUSTSEC-2026-0049", # rustls-webpki v0.101.7 and v0.102.8 — transitive via libp2p-websocket/jsonrpsee (polkadot-sdk).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0049 ->
+	# https://github.com/advisories/GHSA-pwjx-qhcg-rvj4
+	# Faulty CRL distribution point matching causes revocation checks to miss non-first
+	# distribution points. Only affects code that configures CRL revocation checking.
+	# We never configure CRL checking (no CRL/revocation usage anywhere in the codebase),
+	# so revocation status is never queried and the bug cannot be triggered.
+	# Fix requires rustls-webpki >=0.103.10; we are on 0.101.x/0.102.x pinned by polkadot-sdk.
+	"RUSTSEC-2026-0037", # quinn-proto v0.10.6 — stale lockfile entry (libp2p-quic -> quinn -> quinn-proto 0.10).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0037
+	# Nothing in the workspace actually depends on this chain (`cargo tree` confirms it).
+	# It remains in Cargo.lock because Cargo resolves optional dependencies in the lockfile
+ # (libp2p's optional `quic` feature pulls it in). Cannot be updated: no patched 0.10.x exists.
 ]
 informational_warnings = ["unmaintained", "yanked"]
 
