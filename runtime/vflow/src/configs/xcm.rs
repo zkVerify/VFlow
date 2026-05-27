@@ -225,7 +225,7 @@ impl xcm_executor::Config for XcmConfig {
     // How to withdraw and deposit an asset.
     type AssetTransactor = AssetTransactors;
     type OriginConverter = XcmOriginToTransactDispatchOrigin;
-    type IsReserve = NativeAsset;
+    type IsReserve = Nothing;
     type IsTeleporter = TrustedTeleporters;
     type Aliasers = Nothing;
     type UniversalLocation = UniversalLocation;
