@@ -66,7 +66,7 @@ fi
 if [ -n "${CARGO_BINARIES_INSTALL}" ]; then
   echo -e "\nInstalling extra cargo binaries: ${CARGO_BINARIES_INSTALL}\n"
   for binary in $(tr "," " " <<< "${CARGO_BINARIES_INSTALL}"); do
-    cargo install --force "${binary}" || fn_die "ERROR: Failed to install cargo binary: ${binary}"
+    cargo install --force "${binary}" --locked || fn_die "ERROR: Failed to install cargo binary: ${binary}"
   done
   PATH=$PATH:"${CARGO_HOME}/bin"
 fi
