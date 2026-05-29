@@ -25,16 +25,6 @@ inputs:
     required: false
     type: string
     default: 'noble_rust-stable_latest'
-  llvm:
-    description: 'Whether to install llvm apt package. If not provided llvm is not being installed: yes or no'
-    required: false
-    type: string
-    default: "no"
-  libclang-dev:
-    description: 'Whether to install libclang-dev apt package. If not provided libclang-dev is not being installed: yes or no'
-    required: false
-    type: string
-    default: "no"
   cargo_binaries_install:
     description: 'Whether to install extra cargo binaries. Multiple binaries must be comma separated (e.g., "cargo-llvm-cov,cargo-clippy")'
     required: false
