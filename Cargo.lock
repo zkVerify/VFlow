@@ -102,7 +102,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "jsonrpsee",
@@ -116,7 +116,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc-runtime-api"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "binary-merkle-tree",
  "pallet-aggregate",
@@ -1209,6 +1209,12 @@ dependencies = [
  "quote",
  "syn 2.0.117",
 ]
+
+[[package]]
+name = "asn1_der"
+version = "0.7.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4858a9d740c5007a9069007c3b4e91152d0506f13c1b31dd49051fd537656156"
 
 [[package]]
 name = "assert_cmd"
@@ -2414,6 +2420,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "coset"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1eb98d5e9155e2cf7cd942c8b3033097d4563b6fb0a00b9caecb74669555c058"
+dependencies = [
+ "ciborium",
+ "ciborium-io",
+]
+
+[[package]]
 name = "cpp_demangle"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3258,7 +3274,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-inprocess-interface"
 version = "0.31.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "async-channel 1.9.0",
  "async-trait",
@@ -3307,7 +3323,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-minimal-node"
 version = "0.31.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "array-bytes 6.2.3",
  "async-channel 1.9.0",
@@ -3600,7 +3616,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ab67060fc6b8ef687992d439ca0fa36e7ed17e9a0b16b25b601e8757df720de"
 dependencies = [
  "data-encoding",
- "syn 1.0.109",
+ "syn 2.0.117",
 ]
 
 [[package]]
@@ -3619,6 +3635,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e7c1832837b905bbfb5101e07cc24c8deddf52f93225eee6ead5f4d63d53ddcb"
 dependencies = [
  "const-oid",
+ "der_derive",
+ "flagset",
  "pem-rfc7468",
  "zeroize",
 ]
@@ -3649,6 +3667,17 @@ dependencies = [
  "num-bigint 0.4.6",
  "num-traits",
  "rusticata-macros",
+]
+
+[[package]]
+name = "der_derive"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8034092389675178f570469e6c3b0465d3d30b4505c294a6550db47f3c17ad18"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
 ]
 
 [[package]]
@@ -4171,7 +4200,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -4696,6 +4725,12 @@ name = "fixedbitset"
 version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d674e81391d1e1ab681a28d99df07927c6d4aa5b027d7da16ba32d1d21ecd99"
+
+[[package]]
+name = "flagset"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7ac824320a75a52197e8f2d787f6a38b6718bb6897a35142d749af3c0e8f4fe"
 
 [[package]]
 name = "flume"
@@ -5674,6 +5709,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hash32"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47d60b12902ba28e2730cd37e95b8c9223af2808df9e902d4df49588d1470606"
+dependencies = [
+ "byteorder",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5741,6 +5785,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7382cf6263419f2d8df38c55d7da83da5c18aef87fc7a7fc1fb1e344edfe14c1"
 dependencies = [
  "hashbrown 0.15.5",
+]
+
+[[package]]
+name = "heapless"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bfb9eb618601c89945a70e254898da93b13be0388091d42117462b265bb3fad"
+dependencies = [
+ "hash32",
+ "serde",
+ "stable_deref_trait",
 ]
 
 [[package]]
@@ -5916,7 +5971,7 @@ dependencies = [
 [[package]]
 name = "hp-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-support",
  "log",
@@ -5929,7 +5984,7 @@ dependencies = [
 [[package]]
 name = "hp-groth16"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "ark-bls12-381 0.4.0",
  "ark-bn254 0.4.0",
@@ -5940,32 +5995,19 @@ dependencies = [
  "ark-relations 0.4.0",
  "ark-serialize 0.4.2",
  "ark-std 0.4.0",
- "hp-verifiers",
  "parity-scale-codec",
  "scale-info",
  "sp-runtime-interface",
+ "verifiers-traits",
 ]
 
 [[package]]
 name = "hp-on-proof-verified"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "impl-trait-for-tuples",
  "sp-core",
- "sp-weights",
-]
-
-[[package]]
-name = "hp-verifiers"
-version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
-dependencies = [
- "hex-literal",
- "parity-scale-codec",
- "scale-info",
- "sp-core",
- "sp-io",
  "sp-weights",
 ]
 
@@ -6470,7 +6512,7 @@ checksum = "3640c1c38b8e4e43584d8df18be5fc6b0aa314ce6ebf51b53313d4306cca8e46"
 dependencies = [
  "hermit-abi",
  "libc",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -7309,7 +7351,7 @@ dependencies = [
  "thiserror 1.0.69",
  "tracing",
  "yamux 0.12.1",
- "yamux 0.13.9",
+ "yamux 0.13.10",
 ]
 
 [[package]]
@@ -7472,9 +7514,9 @@ checksum = "6373607a59f0be73a39b6fe456b8192fcc3585f602af20751600e974dd455e77"
 
 [[package]]
 name = "litep2p"
-version = "0.13.2"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3fb34d4675b8eadc4a473c46b788439d34d30c247cd5f3f286162ee25e3c4f97"
+checksum = "cbf3924cf539a761465543592b34c4198d60db2cda16594769edd43451e5ab41"
 dependencies = [
  "async-trait",
  "bs58",
@@ -7515,7 +7557,7 @@ dependencies = [
  "url",
  "x25519-dalek",
  "x509-parser 0.17.0",
- "yamux 0.13.9",
+ "yamux 0.13.10",
  "yasna",
  "zeroize",
 ]
@@ -8021,18 +8063,18 @@ checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 [[package]]
 name = "native"
 version = "0.3.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "ark-bn254 0.5.0",
  "ark-bn254-ext",
  "ark-ec 0.5.0",
  "ark-scale",
  "hp-groth16",
- "hp-verifiers",
  "log",
  "parity-scale-codec",
  "risc0-verifier",
  "sp-runtime-interface",
+ "verifiers-traits",
 ]
 
 [[package]]
@@ -8555,6 +8597,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
+name = "p256"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9863ad85fa8f4460f9c48cb909d38a0d689dba1f6f6988a5e3e0d31071bcd4b"
+dependencies = [
+ "ecdsa",
+ "elliptic-curve",
+ "primeorder",
+ "sha2 0.10.9",
+]
+
+[[package]]
 name = "p3-air"
 version = "0.2.3-succinct"
 source = "git+https://github.com/zkVerify/sp1.git?tag=v5.0.5-no_std#f38233d0ed9ccb1e6835d054193b0951dccd75bd"
@@ -8764,9 +8818,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "p384"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe42f1670a52a47d448f14b6a5c61dd78fce51856e68edaa38f7ae3a46b8d6b6"
+dependencies = [
+ "ecdsa",
+ "elliptic-curve",
+ "primeorder",
+ "sha2 0.10.9",
+]
+
+[[package]]
+name = "p521"
+version = "0.13.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0fc9e2161f1f215afdfce23677034ae137bbd45016a880c2eb3ba8eb95f085b2"
+dependencies = [
+ "base16ct",
+ "ecdsa",
+ "elliptic-curve",
+ "primeorder",
+ "sha2 0.10.9",
+]
+
+[[package]]
 name = "pallet-aggregate"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "binary-merkle-tree",
  "educe",
@@ -9017,21 +9096,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-claim"
-version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "log",
- "parity-scale-codec",
- "scale-info",
- "sp-core",
- "sp-runtime",
-]
-
-[[package]]
 name = "pallet-collator-selection"
 version = "26.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9066,6 +9130,26 @@ dependencies = [
  "serde",
  "sp-io",
  "sp-runtime",
+]
+
+[[package]]
+name = "pallet-crl"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+dependencies = [
+ "chrono",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "log",
+ "pallet-babe",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-runtime",
+ "tee-verifier",
 ]
 
 [[package]]
@@ -9298,14 +9382,13 @@ dependencies = [
 [[package]]
 name = "pallet-ezkl-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "ezkl-no-std",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "native",
  "pallet-verifiers",
@@ -9337,14 +9420,13 @@ dependencies = [
 [[package]]
 name = "pallet-fflonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "fflonk_verifier",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "pallet-verifiers",
  "parity-scale-codec",
@@ -9381,13 +9463,12 @@ dependencies = [
 [[package]]
 name = "pallet-groth16-verifier"
 version = "0.2.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hp-groth16",
- "hp-verifiers",
  "native",
  "pallet-verifiers",
  "parity-scale-codec",
@@ -9494,14 +9575,13 @@ dependencies = [
 [[package]]
 name = "pallet-plonky2-verifier"
 version = "0.1.1"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "educe",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "pallet-verifiers",
  "parity-scale-codec",
@@ -9562,14 +9642,13 @@ dependencies = [
 [[package]]
 name = "pallet-risc0-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "ciborium",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "native",
  "pallet-verifiers",
@@ -9641,14 +9720,13 @@ dependencies = [
 [[package]]
 name = "pallet-sp1-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "bincode",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "pallet-verifiers",
  "parity-scale-codec",
@@ -9660,9 +9738,9 @@ dependencies = [
 
 [[package]]
 name = "pallet-staking"
-version = "45.0.0"
+version = "45.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c41b382a779e753eb29cf39e89d97c9cd920d181a9448f60e82754195ddbab48"
+checksum = "2e13e8ac070c030c2502bf36500c69d0d1d559db62573eabc81f2614e32d352c"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
@@ -9719,6 +9797,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-tee-verifier"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+dependencies = [
+ "chrono",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "hex-literal",
+ "log",
+ "pallet-babe",
+ "pallet-crl",
+ "pallet-timestamp",
+ "pallet-verifiers",
+ "parity-scale-codec",
+ "scale-info",
+ "serde-json-core",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "tee-verifier",
+]
+
+[[package]]
 name = "pallet-timestamp"
 version = "44.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9740,7 +9843,7 @@ dependencies = [
 [[package]]
 name = "pallet-token-claim"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -9825,13 +9928,12 @@ dependencies = [
 [[package]]
 name = "pallet-ultrahonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "native",
  "pallet-verifiers",
@@ -9839,19 +9941,20 @@ dependencies = [
  "scale-info",
  "sp-core",
  "sp-io",
- "ultrahonk-no-std",
+ "sp-runtime",
+ "ultrahonk-no-std 0.1.0 (git+https://github.com/zkVerify/ultrahonk_verifier.git?tag=v0.2.1)",
+ "ultrahonk-no-std 0.1.0 (git+https://github.com/zkVerify/ultrahonk_verifier.git?tag=v0.3.2)",
 ]
 
 [[package]]
 name = "pallet-ultraplonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal",
- "hp-verifiers",
  "log",
  "native",
  "pallet-verifiers",
@@ -9879,13 +9982,12 @@ dependencies = [
 [[package]]
 name = "pallet-verifiers"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hp-on-proof-verified",
- "hp-verifiers",
  "log",
  "pallet-verifiers-macros",
  "parity-scale-codec",
@@ -9893,12 +9995,14 @@ dependencies = [
  "sp-core",
  "sp-io",
  "sp-runtime",
+ "sp-weights",
+ "verifiers-traits",
 ]
 
 [[package]]
 name = "pallet-verifiers-macros"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "proc-macro-crate 3.4.0",
  "proc-macro2",
@@ -11605,6 +11709,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "primeorder"
+version = "0.13.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "353e1ca18966c16d9deb1c69278edbc5f194139612772bd9537af60ac231e1e6"
+dependencies = [
+ "elliptic-curve",
+]
+
+[[package]]
 name = "primitive-types"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -11833,7 +11946,7 @@ version = "0.13.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be769465445e8c1474e9c5dac2018218498557af32d9ed057325ec9a41ae81bf"
 dependencies = [
- "heck 0.4.1",
+ "heck 0.5.0",
  "itertools 0.12.1",
  "log",
  "multimap",
@@ -11853,7 +11966,7 @@ version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "343d3bd7056eda839b03204e68deff7d1b13aba7af2b2fd16890697274262ee7"
 dependencies = [
- "heck 0.4.1",
+ "heck 0.5.0",
  "itertools 0.12.1",
  "log",
  "multimap",
@@ -12042,7 +12155,7 @@ dependencies = [
  "once_cell",
  "socket2 0.5.10",
  "tracing",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -12553,7 +12666,7 @@ dependencies = [
 [[package]]
 name = "risc0-derive"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -12890,7 +13003,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.4.15",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -12903,7 +13016,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.12.1",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -12961,7 +13074,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs 0.26.11",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -13668,9 +13781,9 @@ dependencies = [
 
 [[package]]
 name = "sc-network"
-version = "0.55.1"
+version = "0.55.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "643f4ebc4ed818c403b3605e15c72ec53ead1429071bff43f13fc9d8a8911d21"
+checksum = "707c8c55697c40d411328cf149fefd386b8319fce64f2db110badfa65fd1f15d"
 dependencies = [
  "array-bytes 6.2.3",
  "async-channel 1.9.0",
@@ -13827,9 +13940,9 @@ dependencies = [
 
 [[package]]
 name = "sc-network-types"
-version = "0.20.1"
+version = "0.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11103f2e35999989326ed5be87f0a7d335269bef6d6a1c0ddd543a7d9aed7788"
+checksum = "7dad571c070fc5d7665b443a4b5f7c4644270159d92c19e9cc43ecb490c266fb"
 dependencies = [
  "bs58",
  "bytes",
@@ -14678,6 +14791,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde-json-core"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b81787e655bd59cecadc91f7b6b8651330b2be6c33246039a65e5cd6f4e0828"
+dependencies = [
+ "heapless",
+ "ryu",
+ "serde",
+]
+
+[[package]]
 name = "serde_bytes"
 version = "0.11.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15098,7 +15222,7 @@ version = "0.8.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1c97747dbf44bb1ca44a561ece23508e99cb592e862f22222dcf42f51d1e451"
 dependencies = [
- "heck 0.4.1",
+ "heck 0.5.0",
  "proc-macro2",
  "quote",
  "syn 2.0.117",
@@ -15716,9 +15840,9 @@ dependencies = [
 
 [[package]]
 name = "sp-staking"
-version = "42.1.0"
+version = "42.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56facdf4a950590afa2aa45d2f4d8acac77dfa486f9124e4977c55f6b8ecac90"
+checksum = "11c6b50d5b2b607d6d9d87c71ba2828143f8497be28922545a06d470fe4a4939"
 dependencies = [
  "impl-trait-for-tuples",
  "parity-scale-codec",
@@ -16430,9 +16554,9 @@ dependencies = [
 
 [[package]]
 name = "substrate-build-script-utils"
-version = "11.0.0"
+version = "11.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b285e7d183a32732fdc119f3d81b7915790191fad602b7c709ef247073c77a2e"
+checksum = "afdafcec23a36d19930fd43dd14248ec2bce560de8ac83e46a4ae39b0df1c54b"
 
 [[package]]
 name = "substrate-frame-rpc-system"
@@ -16491,7 +16615,7 @@ dependencies = [
 [[package]]
 name = "substrate-wasm-builder"
 version = "31.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "array-bytes 6.2.3",
  "build-helper",
@@ -16837,6 +16961,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "adb6935a6f5c20170eeceb1a3835a49e12e19d792f6dd344ccc76a985ca5a6ca"
 
 [[package]]
+name = "tee-verifier"
+version = "0.2.0"
+source = "git+https://github.com/zkVerify/tee-verifier.git?tag=v0.2.0#15614ce4bcc046895417c5cea5bc5a27fc979418"
+dependencies = [
+ "asn1_der",
+ "chrono",
+ "ciborium",
+ "coset",
+ "hex",
+ "hex-literal",
+ "p256",
+ "p384",
+ "pem",
+ "serde",
+ "serde-json-core",
+ "sha2 0.10.9",
+ "spki",
+ "x509-verify",
+]
+
+[[package]]
 name = "tempfile"
 version = "3.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -16846,7 +16991,7 @@ dependencies = [
  "getrandom 0.4.1",
  "once_cell",
  "rustix 1.1.4",
- "windows-sys 0.59.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -17467,6 +17612,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ultrahonk-no-std"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/ultrahonk_verifier.git?tag=v0.3.2#986b79b232d0f44c52fe50cd85ba8c3f505fc3c8"
+dependencies = [
+ "ark-bn254 0.5.0",
+ "ark-bn254-ext",
+ "ark-ec 0.5.0",
+ "ark-ff 0.5.0",
+ "ark-models-ext",
+ "ark-std 0.5.0",
+ "hex-literal",
+ "sha3",
+ "snafu 0.8.9",
+]
+
+[[package]]
 name = "ultraplonk-no-std"
 version = "0.4.0"
 source = "git+https://github.com/zkVerify/ultraplonk_verifier.git?tag=v0.4.0#cf6e604e72580e42475fc287cd158bb747022219"
@@ -17633,6 +17794,20 @@ name = "vcpkg"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
+
+[[package]]
+name = "verifiers-traits"
+version = "0.1.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+dependencies = [
+ "frame-support",
+ "hex-literal",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
+ "sp-io",
+ "sp-weights",
+]
 
 [[package]]
 name = "version_check"
@@ -17833,10 +18008,9 @@ dependencies = [
 [[package]]
 name = "vk-hash"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "hp-groth16",
- "hp-verifiers",
  "jsonrpsee",
  "pallet-ezkl-verifier",
  "pallet-fflonk-verifier",
@@ -17847,6 +18021,7 @@ dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-core",
+ "verifiers-traits",
  "zkv-runtime",
 ]
 
@@ -18533,7 +18708,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -19101,6 +19276,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "x509-cert"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1301e935010a701ae5f8655edc0ad17c44bad3ac5ce8c39185f75453b720ae94"
+dependencies = [
+ "const-oid",
+ "der",
+ "spki",
+]
+
+[[package]]
+name = "x509-ocsp"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e54e695a31f0fecb826cf59ae2093c941d7ef932a1f8508185dd23b29ce2e2e"
+dependencies = [
+ "const-oid",
+ "der",
+ "spki",
+ "x509-cert",
+]
+
+[[package]]
 name = "x509-parser"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -19132,6 +19330,27 @@ dependencies = [
  "rusticata-macros",
  "thiserror 2.0.18",
  "time",
+]
+
+[[package]]
+name = "x509-verify"
+version = "0.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c43a49bf845cd2f3aff9603a4276409dbf2b8fa4454d3e9501bf5b0028342964"
+dependencies = [
+ "const-oid",
+ "der",
+ "ecdsa",
+ "ed25519-dalek",
+ "k256",
+ "p256",
+ "p384",
+ "p521",
+ "sha2 0.10.9",
+ "signature",
+ "spki",
+ "x509-cert",
+ "x509-ocsp",
 ]
 
 [[package]]
@@ -19215,9 +19434,9 @@ dependencies = [
 
 [[package]]
 name = "yamux"
-version = "0.13.9"
+version = "0.13.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c650efd29044140aa63caaf80129996a9e2659a2ab7045a7e061807d02fc8549"
+checksum = "1991f6690292030e31b0144d73f5e8368936c58e45e7068254f7138b23b00672"
 dependencies = [
  "futures",
  "log",
@@ -19364,7 +19583,7 @@ dependencies = [
 [[package]]
 name = "zkv-benchmarks"
 version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "sc-sysinfo",
  "serde_json",
@@ -19372,8 +19591,8 @@ dependencies = [
 
 [[package]]
 name = "zkv-cli"
-version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+version = "31.0.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "clap",
  "frame-benchmarking-cli",
@@ -19403,7 +19622,7 @@ dependencies = [
 [[package]]
 name = "zkv-runtime"
 version = "2.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "anyhow",
@@ -19421,7 +19640,6 @@ dependencies = [
  "frame-try-runtime",
  "hex-literal",
  "hp-dispatch",
- "hp-verifiers",
  "log",
  "pallet-aggregate",
  "pallet-authority-discovery",
@@ -19431,8 +19649,8 @@ dependencies = [
  "pallet-balances",
  "pallet-bounties",
  "pallet-child-bounties",
- "pallet-claim",
  "pallet-conviction-voting",
+ "pallet-crl",
  "pallet-election-provider-support-benchmarking",
  "pallet-ezkl-verifier",
  "pallet-fflonk-verifier",
@@ -19454,6 +19672,7 @@ dependencies = [
  "pallet-staking",
  "pallet-staking-runtime-api",
  "pallet-sudo",
+ "pallet-tee-verifier",
  "pallet-timestamp",
  "pallet-token-claim",
  "pallet-transaction-payment",
@@ -19501,8 +19720,8 @@ dependencies = [
 
 [[package]]
 name = "zkv-service"
-version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#6871f91bf83a8cc66eca67d1e06e01780e2ff00a"
+version = "31.0.0"
+source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
 dependencies = [
  "aggregate-rpc",
  "async-trait",
