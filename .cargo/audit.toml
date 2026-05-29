@@ -143,6 +143,20 @@ ignore = [
 	# From https://rustsec.org/advisories/RUSTSEC-2026-0096
 	# CRITICAL severity but only affects aarch64 architecture.
 	# Our primary deployment targets x86-64. Pinned by polkadot-sdk; no update path available.
+	"RUSTSEC-2026-0006", # wasmtime v35.0.0 — segfault with f64.copysign on x86-64.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0006 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-vc8c-j3xm-xj73
+	# The vulnerability only triggers when signals-based-traps is DISABLED in the wasmtime Config.
+	# Substrate's sc-executor-wasmtime uses wasmtime::Config::new() which has signals_based_traps
+	# enabled by default, and never disables it. Therefore this code path is never exercised.
+	"RUSTSEC-2026-0114", # wasmtime v35.0.0 — panic when allocating oversized table (MEDIUM, DoS only).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0114 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-p8xm-42r7-89xg
+	# Arithmetic overflow panic when a Wasm module declares a table with an extremely large size,
+	# leveraging the memory64 proposal's 64-bit range. Requires the on-demand allocator and
+	# memory64 to be enabled. Substrate runtime Wasm blobs are compiled for wasm32 and are
+	# governance-controlled (not attacker-supplied). PVF validation only runs Wasm from registered
+	# parachains. This is a DoS (panic), not a sandbox escape. Unaffected in practice.
 
 	# ===== lru (unsound — IterMut not exercised) =====
 
