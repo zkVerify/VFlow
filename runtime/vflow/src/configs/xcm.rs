@@ -48,8 +48,8 @@ use xcm_builder::{
     AccountKey20Aliases, AllowKnownQueryResponses, AllowSubscriptionsFrom,
     AllowTopLevelPaidExecutionFrom, DenyReserveTransferToRelayChain, DenyThenTry,
     DescribeAllTerminal, DescribeFamily, EnsureXcmOrigin, FrameTransactionalProcessor,
-    FungibleAdapter, HashedDescription, IsConcrete, NativeAsset, ParentIsPreset,
-    RelayChainAsNative, SendXcmFeeToAccount, SiblingParachainAsNative, SignedAccountKey20AsNative,
+    FungibleAdapter, HashedDescription, IsConcrete, ParentIsPreset, RelayChainAsNative,
+    SendXcmFeeToAccount, SiblingParachainAsNative, SignedAccountKey20AsNative,
     SovereignSignedViaLocation, TakeWeightCredit, TrailingSetTopicAsId, UsingComponents,
     WeightInfoBounds, WithComputedOrigin, WithUniqueTopic, XcmFeeManagerFromComponents,
 };
@@ -225,7 +225,7 @@ impl xcm_executor::Config for XcmConfig {
     // How to withdraw and deposit an asset.
     type AssetTransactor = AssetTransactors;
     type OriginConverter = XcmOriginToTransactDispatchOrigin;
-    type IsReserve = NativeAsset;
+    type IsReserve = Nothing;
     type IsTeleporter = TrustedTeleporters;
     type Aliasers = Nothing;
     type UniversalLocation = UniversalLocation;
@@ -260,11 +260,12 @@ impl xcm_executor::Config for XcmConfig {
     type HrmpChannelAcceptedHandler = ();
     type HrmpChannelClosingHandler = ();
     type XcmRecorder = ZKVXcm;
+    type XcmEventEmitter = ();
 }
 
 // Convert a local Origin (i.e., a signed 20 byte account Origin)  to a Multilocation
 pub struct SignedToAccountId20<Origin, AccountId, Network>(
-    sp_std::marker::PhantomData<(Origin, AccountId, Network)>,
+    core::marker::PhantomData<(Origin, AccountId, Network)>,
 );
 impl<Origin: OriginTrait + Clone, AccountId: Into<[u8; 20]>, Network: Get<Option<NetworkId>>>
     TryConvert<Origin, Location> for SignedToAccountId20<Origin, AccountId, Network>
@@ -343,6 +344,7 @@ impl pallet_xcm::Config for Runtime {
     type RemoteLockConsumerIdentifier = ();
 
     type WeightInfo = weights::pallet_xcm::ZKVEvmWeight<Runtime>;
+    type AuthorizedAliasConsideration = frame_support::traits::Disabled;
 }
 
 impl cumulus_pallet_xcm::Config for Runtime {

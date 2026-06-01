@@ -240,7 +240,8 @@ pub fn run() -> Result<()> {
                     let partials = new_partial(&config, &cli.eth, cli.sealing)?;
                     let db = partials.backend.expose_db();
                     let storage = partials.backend.expose_storage();
-                    cmd.run(config, partials.client.clone(), db, storage)
+                    // TODO: Pass actual shared trie cache if available for more accurate benchmarks.
+                    cmd.run(config, partials.client.clone(), db, storage, None)
                 }),
                 BenchmarkCmd::Overhead(cmd) => runner.sync_run(|config| {
                     use crate::benchmarking::{create_inherent_data, RemarkBuilder};

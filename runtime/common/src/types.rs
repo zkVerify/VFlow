@@ -59,27 +59,31 @@ pub type Block<Runtime, RuntimeCall> =
     generic::Block<Header, UncheckedExtrinsic<Runtime, RuntimeCall>>;
 
 /// The SignedExtension to the basic transaction logic.
-pub type SignedExtra<Runtime> = (
-    frame_system::CheckNonZeroSender<Runtime>,
-    frame_system::CheckSpecVersion<Runtime>,
-    frame_system::CheckTxVersion<Runtime>,
-    frame_system::CheckGenesis<Runtime>,
-    frame_system::CheckEra<Runtime>,
-    frame_system::CheckNonce<Runtime>,
-    frame_system::CheckWeight<Runtime>,
-    pallet_transaction_payment::ChargeTransactionPayment<Runtime>,
-    frame_metadata_hash_extension::CheckMetadataHash<Runtime>,
-    cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim<Runtime>,
-);
+pub type SignedExtra<Runtime> = cumulus_pallet_weight_reclaim::StorageWeightReclaim<
+    Runtime,
+    (
+        frame_system::CheckNonZeroSender<Runtime>,
+        frame_system::CheckSpecVersion<Runtime>,
+        frame_system::CheckTxVersion<Runtime>,
+        frame_system::CheckGenesis<Runtime>,
+        frame_system::CheckEra<Runtime>,
+        frame_system::CheckNonce<Runtime>,
+        frame_system::CheckWeight<Runtime>,
+        pallet_transaction_payment::ChargeTransactionPayment<Runtime>,
+        frame_metadata_hash_extension::CheckMetadataHash<Runtime>,
+    ),
+>;
 
 /// Executive: handles dispatch to the various modules.
-pub type Executive<Runtime, RuntimeCall, AllPalletsWithSystem> = frame_executive::Executive<
-    Runtime,
-    Block<Runtime, RuntimeCall>,
-    frame_system::ChainContext<Runtime>,
-    Runtime,
-    AllPalletsWithSystem,
->;
+pub type Executive<Runtime, RuntimeCall, AllPalletsWithSystem, Migrations = ()> =
+    frame_executive::Executive<
+        Runtime,
+        Block<Runtime, RuntimeCall>,
+        frame_system::ChainContext<Runtime>,
+        Runtime,
+        AllPalletsWithSystem,
+        Migrations,
+    >;
 
 /// Configures the number of blocks that can be created without submission of validity proof to the relay chain
 pub type ConsensusHook<Runtime> = cumulus_pallet_aura_ext::FixedVelocityConsensusHook<

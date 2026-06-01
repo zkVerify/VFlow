@@ -28,6 +28,7 @@ mod genesis_config_presets;
 mod precompiles;
 pub use precompiles::Precompiles;
 
+mod migrations;
 #[cfg(test)]
 mod tests;
 pub mod types;
@@ -45,6 +46,8 @@ extern crate alloc;
 
 use alloc::string::String;
 
+use alloc::vec::Vec;
+use ethereum::AuthorizationList;
 use frame_support::{
     construct_runtime,
     genesis_builder_helper::{build_state, get_preset},
@@ -71,7 +74,6 @@ use sp_runtime::{
     ApplyExtrinsicResult,
 };
 pub use sp_runtime::{Perbill, Permill};
-use sp_std::prelude::{Vec, *};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
@@ -206,6 +208,7 @@ construct_runtime!(
         Proxy: pallet_proxy = 4,
         Utility: pallet_utility = 5,
         Multisig: pallet_multisig = 6,
+        WeightReclaim: cumulus_pallet_weight_reclaim = 7,
 
         // Monetary
         Balances: pallet_balances = 10,
@@ -257,7 +260,7 @@ impl_runtime_apis! {
             configs::VERSION
         }
 
-        fn execute_block(block: Block) {
+        fn execute_block(block: <Block as BlockT>::LazyBlock) {
             Executive::execute_block(block)
         }
 
@@ -275,7 +278,7 @@ impl_runtime_apis! {
             Runtime::metadata_at_version(version)
         }
 
-        fn metadata_versions() -> sp_std::vec::Vec<u32> {
+        fn metadata_versions() -> alloc::vec::Vec<u32> {
             Runtime::metadata_versions()
         }
     }
@@ -294,7 +297,7 @@ impl_runtime_apis! {
         }
 
         fn check_inherents(
-            block: Block,
+            block: <Block as BlockT>::LazyBlock,
             data: sp_inherents::InherentData,
         ) -> sp_inherents::CheckInherentsResult {
             data.check_extrinsics(&block)
@@ -407,10 +410,7 @@ impl_runtime_apis! {
             xcm: VersionedXcm<RuntimeCall>
         ) -> Result<XcmDryRunEffects<RuntimeEvent>, XcmDryRunApiError> {
             ZKVXcm::dry_run_xcm::<
-                Runtime,
-                <Runtime as pallet_xcm::Config>::XcmRouter,
-                RuntimeCall,
-                configs::xcm::XcmConfig
+                <Runtime as pallet_xcm::Config>::XcmRouter
             >(origin_location, xcm)
         }
     }
@@ -441,9 +441,9 @@ impl_runtime_apis! {
         }
 
         fn query_delivery_fees(
-            destination: VersionedLocation, message: VersionedXcm<()>
+            destination: VersionedLocation, message: VersionedXcm<()>, asset_id: VersionedAssetId
         ) -> Result<VersionedAssets, XcmPaymentApiError> {
-            ZKVXcm::query_delivery_fees(destination, message)
+            ZKVXcm::query_delivery_fees::<()>(destination, message, asset_id)
         }
     }
 
@@ -493,6 +493,7 @@ impl_runtime_apis! {
             nonce: Option<U256>,
             estimate: bool,
             access_list: Option<Vec<(H160, Vec<H256>)>>,
+            _authorization_list: Option<AuthorizationList>,
         ) -> Result<pallet_evm::CallInfo, sp_runtime::DispatchError> {
             let config = if estimate {
                 let mut config = <Runtime as pallet_evm::Config>::config().clone();
@@ -514,6 +515,7 @@ impl_runtime_apis! {
                 value,
                 Some(<Runtime as pallet_evm::Config>::ChainId::get()),
                 access_list.clone().unwrap_or_default(),
+                Default::default(),
             );
             let (weight_limit, proof_size_base_cost) = pallet_ethereum::Pallet::<Runtime>::transaction_weight(&transaction_data);
 
@@ -527,6 +529,7 @@ impl_runtime_apis! {
                 max_priority_fee_per_gas,
                 nonce,
                 access_list.unwrap_or_default(),
+                Default::default(),
                 false,
                 true,
                 weight_limit,
@@ -546,6 +549,7 @@ impl_runtime_apis! {
             nonce: Option<U256>,
             estimate: bool,
             access_list: Option<Vec<(H160, Vec<H256>)>>,
+            _authorization_list: Option<AuthorizationList>,
         ) -> Result<pallet_evm::CreateInfo, sp_runtime::DispatchError> {
             let config = if estimate {
                 let mut config = <Runtime as pallet_evm::Config>::config().clone();
@@ -566,6 +570,7 @@ impl_runtime_apis! {
                 value,
                 Some(<Runtime as pallet_evm::Config>::ChainId::get()),
                 access_list.clone().unwrap_or_default(),
+                Default::default(),
             );
             let (weight_limit, proof_size_base_cost) = pallet_ethereum::Pallet::<Runtime>::transaction_weight(&transaction_data);
 
@@ -578,6 +583,7 @@ impl_runtime_apis! {
                 max_priority_fee_per_gas,
                 nonce,
                 access_list.unwrap_or_default(),
+                Default::default(),
                 false,
                 true,
                 weight_limit,
@@ -671,6 +677,12 @@ impl_runtime_apis! {
         }
     }
 
+    impl cumulus_primitives_core::RelayParentOffsetApi<Block> for Runtime {
+        fn relay_parent_offset() -> u32 {
+            crate::constants::RELAY_PARENT_OFFSET
+        }
+    }
+
     impl cumulus_primitives_aura::AuraUnincludedSegmentApi<Block> for Runtime {
         fn can_build_upon(
             included_hash: <Block as BlockT>::Hash,
@@ -690,7 +702,7 @@ impl_runtime_apis! {
         }
 
         fn execute_block(
-            block: Block,
+            block: <Block as sp_runtime::traits::Block>::LazyBlock,
             state_root_check: bool,
             signature_check: bool,
             select: frame_try_runtime::TryStateSelect,
@@ -707,7 +719,7 @@ impl_runtime_apis! {
             Vec<frame_benchmarking::BenchmarkList>,
             Vec<frame_support::traits::StorageInfo>,
         ) {
-            use frame_benchmarking::{Benchmarking, BenchmarkList};
+            use frame_benchmarking::BenchmarkList;
             use frame_support::traits::StorageInfoTrait;
             use frame_system_benchmarking::Pallet as SystemBench;
             use frame_system_benchmarking::extensions::Pallet as SystemExtensionsBench;
@@ -731,16 +743,16 @@ impl_runtime_apis! {
         fn dispatch_benchmark(
             config: frame_benchmarking::BenchmarkConfig
         ) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, String> {
-            use frame_benchmarking::{Benchmarking, BenchmarkBatch};
+            use frame_benchmarking::BenchmarkBatch;
             use frame_system_benchmarking::Pallet as SystemBench;
             use frame_system_benchmarking::extensions::Pallet as SystemExtensionsBench;
             use pallet_xcm::benchmarking::Pallet as PalletXcmExtrinsicsBenchmark;
 
             pub mod xcm {
                 use super::*;
-                use crate::{configs::monetary::*, configs::xcm::*, currency::{CENTS, VFY}};
+                use crate::{configs::xcm::*, currency::{CENTS, VFY}};
                 use frame_support::parameter_types;
-                use xcm::v5::{Asset, Assets, Location, InteriorLocation, Junction, Junctions::Here, NetworkId, Response, Fungibility::Fungible, Parent};
+                use xcm::v5::{Asset, Assets, Location, InteriorLocation, Junction, Junctions::Here, NetworkId, Response, Fungibility::Fungible, Parent, WeightLimit};
                 use frame_benchmarking::BenchmarkError;
 
                 pub use pallet_xcm_benchmarks::fungible::Pallet as XcmPalletBenchFungible;
@@ -749,7 +761,7 @@ impl_runtime_apis! {
                 parameter_types! {
                     pub ExistentialDepositAsset: Option<Asset> = Some((
                         RelayLocation::get(),
-                        configs::monetary::ExistentialDeposit::get()
+                        CENTS
                     ).into());
                     /// The base fee for the message delivery fees. Kusama is based for the reference.
                     pub const ToParentBaseDeliveryFee: u128 = CENTS.saturating_mul(3);
@@ -780,14 +792,14 @@ impl_runtime_apis! {
                     }
 
                     fn set_up_complex_asset_transfer(
-                    ) -> Option<(Assets, u32, Location, Box<dyn FnOnce()>)> {
+                    ) -> Option<(Assets, u32, Location, alloc::boxed::Box<dyn FnOnce()>)> {
                         None
                     }
 
                     fn get_asset() -> Asset {
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         }
                     }
                 }
@@ -817,7 +829,7 @@ impl_runtime_apis! {
                         RelayLocation::get(),
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         },
                     ));
                     pub const TrustedReserve: Option<(Location, Asset)> = None;
@@ -833,7 +845,7 @@ impl_runtime_apis! {
                     fn get_asset() -> Asset {
                         Asset {
                             id: NativeAssetId::get(),
-                            fun: Fungible(ExistentialDeposit::get()),
+                            fun: Fungible(CENTS),
                         }
                     }
                 }
@@ -872,11 +884,14 @@ impl_runtime_apis! {
                         Ok((origin, ticket, assets))
                     }
 
-                    fn fee_asset() -> Result<Asset, BenchmarkError> {
-                        Ok(Asset {
-                            id: FeeAssetId::get(),
-                            fun: Fungible(CENTS),
-                        })
+                    fn worst_case_for_trader() -> Result<(Asset, WeightLimit), BenchmarkError> {
+                        Ok((
+                            Asset {
+                                id: FeeAssetId::get(),
+                                fun: Fungible(VFY),
+                            },
+                            WeightLimit::Unlimited,
+                        ))
                     }
 
                     fn unlockable_asset() -> Result<(Location, Location, Asset), BenchmarkError> {
@@ -931,7 +946,7 @@ mod runtime_benchmarking_extra_config {
     use frame_benchmarking::BenchmarkError;
 
     impl frame_system_benchmarking::Config for Runtime {
-        fn setup_set_code_requirements(code: &sp_std::vec::Vec<u8>) -> Result<(), BenchmarkError> {
+        fn setup_set_code_requirements(code: &alloc::vec::Vec<u8>) -> Result<(), BenchmarkError> {
             ParachainSystem::initialize_for_set_code_benchmark(code.len() as u32);
             Ok(())
         }

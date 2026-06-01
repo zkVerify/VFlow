@@ -24,6 +24,7 @@ prereqs() {
   ! command -v docker &> /dev/null && INSTALL+="docker-buildx-plugin docker-ce docker-ce-cli docker-ce-rootless-extras docker-compose-plugin "
   ! command -v sudo &> /dev/null && INSTALL+="sudo "
   ! command -v mkfs.vfat &> /dev/null && INSTALL+="dosfstools "
+  ! command -v llvm-config &> /dev/null && INSTALL+="llvm libclang-dev"
   if [ -n "$INSTALL" ]; then
     check_root " We need to install dependencies: ${INSTALL}"
     apt-get update

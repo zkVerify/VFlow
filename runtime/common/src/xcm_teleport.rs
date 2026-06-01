@@ -14,12 +14,13 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::alloc::borrow::ToOwned;
+use alloc::boxed::Box;
+use core::marker::PhantomData;
 use frame_support::dispatch::{DispatchInfo, PostDispatchInfo};
 use pallet_evm::AddressMapping;
 use precompile_utils::prelude::*;
 use sp_core::{H256, U256};
 use sp_runtime::traits::{Dispatchable, Get};
-use sp_std::{boxed::Box, marker::PhantomData, vec};
 use xcm::{
     v5::{
         Asset,
@@ -117,9 +118,10 @@ where
             fee_asset_item,
         )?;
 
-        let versioned_fees = pallet_xcm::Pallet::<R>::query_delivery_fees(
+        let versioned_fees = pallet_xcm::Pallet::<R>::query_delivery_fees::<()>(
             VersionedLocation::V5(destination),
             VersionedXcm::V5(program),
+            xcm::VersionedAssetId::V5(A::get()),
         )
         .map_err(|_| revert("cannot query delivery fees"))?;
 

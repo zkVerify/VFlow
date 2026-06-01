@@ -91,21 +91,21 @@ fn sign_call(
     acc: ecdsa::Pair,
 ) -> OpaqueExtrinsic {
     use vflow_runtime as runtime;
-    let extra: runtime::types::SignedExtra = (
-        frame_system::CheckNonZeroSender::<runtime::Runtime>::new(),
-        frame_system::CheckSpecVersion::<runtime::Runtime>::new(),
-        frame_system::CheckTxVersion::<runtime::Runtime>::new(),
-        frame_system::CheckGenesis::<runtime::Runtime>::new(),
-        frame_system::CheckMortality::<runtime::Runtime>::from(Era::mortal(
-            period,
-            current_block.saturated_into(),
-        )),
-        frame_system::CheckNonce::<runtime::Runtime>::from(nonce),
-        frame_system::CheckWeight::<runtime::Runtime>::new(),
-        pallet_transaction_payment::ChargeTransactionPayment::<runtime::Runtime>::from(0),
-        frame_metadata_hash_extension::CheckMetadataHash::<runtime::Runtime>::new(false),
-        cumulus_primitives_storage_weight_reclaim::StorageWeightReclaim::<runtime::Runtime>::new(),
-    );
+    let extra: runtime::types::SignedExtra =
+        cumulus_pallet_weight_reclaim::StorageWeightReclaim::new((
+            frame_system::CheckNonZeroSender::<runtime::Runtime>::new(),
+            frame_system::CheckSpecVersion::<runtime::Runtime>::new(),
+            frame_system::CheckTxVersion::<runtime::Runtime>::new(),
+            frame_system::CheckGenesis::<runtime::Runtime>::new(),
+            frame_system::CheckMortality::<runtime::Runtime>::from(Era::mortal(
+                period,
+                current_block.saturated_into(),
+            )),
+            frame_system::CheckNonce::<runtime::Runtime>::from(nonce),
+            frame_system::CheckWeight::<runtime::Runtime>::new(),
+            pallet_transaction_payment::ChargeTransactionPayment::<runtime::Runtime>::from(0),
+            frame_metadata_hash_extension::CheckMetadataHash::<runtime::Runtime>::new(false),
+        ));
 
     let raw_payload = runtime::types::SignedPayload::from_raw(
         call.clone(),
@@ -120,7 +120,6 @@ fn sign_call(
             (),
             (),
             None,
-            (),
         ),
     );
 

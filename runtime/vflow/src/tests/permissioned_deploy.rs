@@ -30,6 +30,7 @@ fn create_with_whitelisted_account_succeeds() {
                 None,
                 None,
                 Vec::new(),
+                Vec::new(),
             ));
         });
 }
@@ -57,6 +58,7 @@ fn create2_with_whitelisted_account_succeeds() {
                 None,
                 None,
                 Vec::new(),
+                Vec::new(),
             ));
         });
 }
@@ -83,6 +85,7 @@ fn create_with_non_whitelisted_account_fails() {
                     MICROCENTS.into(),
                     None,
                     None,
+                    Vec::new(),
                     Vec::new(),
                 ),
                 DispatchError::Other("Not allowed to deploy")
@@ -113,6 +116,7 @@ fn create2_with_non_whitelisted_account_fails() {
                     MICROCENTS.into(),
                     None,
                     None,
+                    Vec::new(),
                     Vec::new(),
                 ),
                 DispatchError::Other("Not allowed to deploy")

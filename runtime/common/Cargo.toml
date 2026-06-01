@@ -22,9 +22,8 @@ frame-executive = {workspace = true}
 frame-metadata-hash-extension = {workspace = true}
 cumulus-primitives-core = {workspace = true}
 cumulus-pallet-aura-ext = {workspace = true}
-cumulus-primitives-storage-weight-reclaim = {workspace = true}
+cumulus-pallet-weight-reclaim = {workspace = true}
 sp-core = {workspace = true}
-sp-std = {workspace = true}
 
 # Frontier
 fp-account = {workspace = true}
@@ -48,8 +47,9 @@ hex = {workspace = true, features = ["std"]}
 default = [ "std" ]
 std = [
 	"cumulus-pallet-aura-ext/std",
+	"cumulus-pallet-weight-reclaim/std",
 	"cumulus-primitives-core/std",
-	"cumulus-primitives-storage-weight-reclaim/std",
+	"ethereum/std",
 	"fp-account/std",
 	"fp-evm/std",
 	"fp-self-contained/std",
@@ -64,11 +64,11 @@ std = [
 	"precompile-utils/std",
 	"sp-core/std",
 	"sp-runtime/std",
-	"sp-std/std",
 	"xcm/std",
 ]
 
 runtime-benchmarks = [
+	"cumulus-pallet-weight-reclaim/runtime-benchmarks",
 	"cumulus-primitives-core/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
@@ -77,10 +77,12 @@ runtime-benchmarks = [
 	"pallet-xcm/runtime-benchmarks",
 	"parachains-common/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
+	"xcm/runtime-benchmarks",
 ]
 
 try-runtime = [
 	"cumulus-pallet-aura-ext/try-runtime",
+	"cumulus-pallet-weight-reclaim/try-runtime",
 	"fp-self-contained/try-runtime",
 	"frame-executive/try-runtime",
 	"frame-support/try-runtime",
@@ -88,6 +90,7 @@ try-runtime = [
 	"pallet-evm/try-runtime",
 	"pallet-transaction-payment/try-runtime",
 	"pallet-xcm/try-runtime",
+	"parachains-common/try-runtime",
 	"sp-runtime/try-runtime",
 ]
 
