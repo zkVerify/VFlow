@@ -17913,7 +17913,6 @@ dependencies = [
  "fp-rpc",
  "fp-self-contained",
  "frame-benchmarking",
- "frame-executive",
  "frame-support",
  "frame-system",
  "frame-system-benchmarking",

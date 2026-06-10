@@ -24,7 +24,7 @@ pub type RemoveProxyPallet =
     RemovePallet<ProxyPalletName, <crate::Runtime as frame_system::Config>::DbWeight>;
 
 /// Migrations to run on the next runtime upgrade.
-pub type Migrations = (
+pub type Unreleased = (
     RemoveProxyPallet,
     pallet_session::migrations::v1::MigrateV0ToV1<
         Runtime,
