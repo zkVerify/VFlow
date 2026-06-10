@@ -15,7 +15,7 @@
 
 //! In this module, we provide the configurations for the ethereum-xcm pallet.
 
-use crate::{configs::system::ReservedXcmpWeight, AccountId, Runtime, RuntimeEvent};
+use crate::{configs::system::ReservedXcmpWeight, AccountId, Runtime};
 use frame_system::EnsureRoot;
 
 pub struct EthereumXcmEnsureProxy;

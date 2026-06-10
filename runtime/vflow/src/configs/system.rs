@@ -28,9 +28,7 @@ use crate::{
     AccountId, Aura, Balance, Balances, Block, Hash, MessageQueue, Nonce, OriginCaller, PalletInfo,
     Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, RuntimeTask, XcmpQueue,
 };
-use cumulus_pallet_parachain_system::{
-    DefaultCoreSelector, ParachainSetCode, RelayNumberMonotonicallyIncreases,
-};
+use cumulus_pallet_parachain_system::{ParachainSetCode, RelayNumberMonotonicallyIncreases};
 use cumulus_primitives_core::AggregateMessageOrigin;
 use frame_support::{
     derive_impl,

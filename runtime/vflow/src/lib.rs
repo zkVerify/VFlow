@@ -24,7 +24,6 @@ include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 pub mod configs;
 
 mod genesis_config_presets;
-mod migrations;
 
 mod precompiles;
 pub use precompiles::Precompiles;
