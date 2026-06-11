@@ -20,8 +20,6 @@ jobs:
           command: "cargo build -p vflow-node --release"
           use_cache: 'yes'
           cache_key: 'build-vflow-node'
-          llvm: 'yes'
-          libclang-dev: 'yes'
 
       - name: Upload vflow-node build binaries
         uses: actions/upload-artifact@v4

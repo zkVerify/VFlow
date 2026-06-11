@@ -83,8 +83,6 @@ runs:
         NODEJS_VERSION_INSTALL: ${{ inputs.nodejs_version_install }}
         SKIP_WASM_BUILD: ${{ inputs.skip_wasm_build }}
         TRY_RUNTIME: ${{ inputs.try_runtime }}
-        LLVM_INSTALL: ${{ inputs.llvm }}
-        LIBCLANG_DEV_INSTALL: ${{ inputs.libclang-dev }}
         DOCKER_BUILD_DIR: /build
         DOCKER_CARGO_HOME: /tmp/.cargo
       run: |

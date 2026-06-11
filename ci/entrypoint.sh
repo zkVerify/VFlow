@@ -44,24 +44,6 @@ else
   echo -e "\nWARNING: Starting container processes as root. This has some security implications and goes against docker best practice.\n"
 fi
 
-# llvm and libclang-dev install if required
-if [ "${LLVM_INSTALL}" == "yes" ] || [ "${LIBCLANG_DEV_INSTALL}" == "yes" ]; then
-  export DEBIAN_FRONTEND=noninteractive
-  apt update -qq || fn_die "ERROR: Failed to run apt update. Exiting ..."
-
-  if [ "${LLVM_INSTALL}" == "yes" ]; then
-    echo -e "\n=== Installing llvm ===\n"
-    apt --no-install-recommends install -yqq llvm || fn_die "ERROR: Failed to install llvm. Exiting ..."
-    echo -e "\n=== llvm Installed\n"
-  fi
-
-  if [ "${LIBCLANG_DEV_INSTALL}" == "yes" ]; then
-    echo -e "\n=== Installing libclang-dev ===\n"
-    apt --no-install-recommends install -yqq libclang-dev || fn_die "ERROR: Failed to install libclang-dev. Exiting ..."
-    echo -e "\n=== libclang-dev Installed\n"
-  fi
-fi
-
 # Installing extra dependencies if required
 if [ -n "${CARGO_BINARIES_INSTALL}" ]; then
   echo -e "\nInstalling extra cargo binaries: ${CARGO_BINARIES_INSTALL}\n"
