@@ -66,16 +66,6 @@ fn pallet_timestamp() {
 }
 
 #[test]
-fn pallet_proxy() {
-    use pallet_proxy::WeightInfo;
-
-    assert_eq!(
-        <Runtime as pallet_proxy::Config>::WeightInfo::create_pure(1),
-        weights::pallet_proxy::ZKVEvmWeight::<Runtime>::create_pure(1)
-    );
-}
-
-#[test]
 fn pallet_utility() {
     use pallet_utility::WeightInfo;
 

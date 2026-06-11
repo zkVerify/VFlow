@@ -17939,7 +17939,6 @@ dependencies = [
  "pallet-evm-precompile-simple",
  "pallet-message-queue",
  "pallet-multisig",
- "pallet-proxy",
  "pallet-session",
  "pallet-sudo",
  "pallet-timestamp",

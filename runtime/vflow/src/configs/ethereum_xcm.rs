@@ -15,28 +15,13 @@
 
 //! In this module, we provide the configurations for the ethereum-xcm pallet.
 
-use crate::{
-    configs::system::{ProxyType, ReservedXcmpWeight},
-    AccountId, BlockNumber, Runtime,
-};
-use frame_support::ensure;
+use crate::{configs::system::ReservedXcmpWeight, AccountId, Runtime};
 use frame_system::EnsureRoot;
-use sp_runtime::traits::Zero;
 
 pub struct EthereumXcmEnsureProxy;
 impl xcm_primitives::EnsureProxy<AccountId> for EthereumXcmEnsureProxy {
-    fn ensure_ok(delegator: AccountId, delegatee: AccountId) -> Result<(), &'static str> {
-        // The EVM implicitly contains an Any proxy, so we only allow for "Any" proxies
-        let def: pallet_proxy::ProxyDefinition<AccountId, ProxyType, BlockNumber> =
-            pallet_proxy::Pallet::<Runtime>::find_proxy(
-                &delegator,
-                &delegatee,
-                Some(ProxyType::Any),
-            )
-            .map_err(|_| "proxy error: expected `ProxyType::Any`")?;
-        // We only allow to use it for delay zero proxies, as the call will immediatly be executed
-        ensure!(def.delay.is_zero(), "proxy delay is Non-zero`");
-        Ok(())
+    fn ensure_ok(_delegator: AccountId, _delegatee: AccountId) -> Result<(), &'static str> {
+        Err("proxy pallet removed")
     }
 }
 

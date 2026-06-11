@@ -14,9 +14,18 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::Runtime;
+use frame_support::{migrations::RemovePallet, parameter_types};
+
+parameter_types! {
+    pub const ProxyPalletName: &'static str = "Proxy";
+}
+
+pub type RemoveProxyPallet =
+    RemovePallet<ProxyPalletName, <crate::Runtime as frame_system::Config>::DbWeight>;
 
 /// Migrations to run on the next runtime upgrade.
 pub type Unreleased = (
+    RemoveProxyPallet,
     pallet_session::migrations::v1::MigrateV0ToV1<
         Runtime,
         pallet_session::migrations::v1::InitOffenceSeverity<Runtime>,
