@@ -38,6 +38,7 @@ jobs:
       is-a-prod-release: ${{ steps.check-requirements.outputs.PROD_RELEASE }}
       is-a-rc-release: ${{ steps.check-requirements.outputs.RC_RELEASE }}
       is-a-test-release: ${{ steps.check-requirements.outputs.TEST_RELEASE }}
+      version-str: ${{ steps.check-requirements.outputs.VERSION_STR }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -57,6 +58,7 @@ jobs:
           echo "PROD_RELEASE=${PROD_RELEASE}" >> "${GITHUB_OUTPUT}"
           echo "RC_RELEASE=${RC_RELEASE}" >> "${GITHUB_OUTPUT}"
           echo "TEST_RELEASE=${TEST_RELEASE}" >> "${GITHUB_OUTPUT}"
+          echo "VERSION_STR=${VERSION_STR}" >> "${GITHUB_OUTPUT}"
 
   build-docker:
     runs-on: warp-ubuntu-latest-x64-8x
@@ -104,6 +106,7 @@ jobs:
           PROD_RELEASE: ${{ needs.check-requirements.outputs.is-a-prod-release }}
           RC_RELEASE: ${{ needs.check-requirements.outputs.is-a-rc-release }}
           TEST_RELEASE: ${{ needs.check-requirements.outputs.is-a-test-release }}
+          VERSION_STR: ${{ needs.check-requirements.outputs.version-str }}
         shell: bash
         run: |
           "${GITHUB_WORKSPACE}/ci/publish-docker-image.sh" --image-artifact ${{ needs.build-docker.outputs.artifact_name }}
@@ -162,7 +165,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Docker Image Tag:*  <https://hub.docker.com/r/${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_IMAGE_BUILD_NAME }}/tags?page=1&name=${{ github.ref_name }}| ${{ github.ref_name }}>\n"
+                      "text": "*Docker Image Tag:*  <https://hub.docker.com/r/${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_IMAGE_BUILD_NAME }}/tags?page=1&name=${{ needs.check-requirements.outputs.version-str }}| ${{ needs.check-requirements.outputs.version-str }}>\n"
                     },
                     {
                       "type": "mrkdwn",
@@ -174,7 +177,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "```docker pull ${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_IMAGE_BUILD_NAME }}:${{ github.ref_name }}```"
+                    "text": "```docker pull ${{ env.DOCKER_HUB_ORG }}/${{ env.DOCKER_IMAGE_BUILD_NAME }}:${{ needs.check-requirements.outputs.version-str }}```"
                   }
                 }
               ]
