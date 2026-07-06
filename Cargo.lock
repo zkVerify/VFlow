@@ -102,7 +102,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "jsonrpsee",
@@ -116,7 +116,7 @@ dependencies = [
 [[package]]
 name = "aggregate-rpc-runtime-api"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "binary-merkle-tree",
  "pallet-aggregate",
@@ -3294,7 +3294,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-inprocess-interface"
 version = "0.31.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "async-channel 1.9.0",
  "async-trait",
@@ -3343,7 +3343,7 @@ dependencies = [
 [[package]]
 name = "cumulus-relay-chain-minimal-node"
 version = "0.31.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "array-bytes 6.2.3",
  "async-channel 1.9.0",
@@ -5992,7 +5992,7 @@ dependencies = [
 [[package]]
 name = "hp-dispatch"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-support",
  "log",
@@ -6005,7 +6005,7 @@ dependencies = [
 [[package]]
 name = "hp-groth16"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "ark-bls12-381 0.4.0",
  "ark-bn254 0.4.0",
@@ -6025,7 +6025,7 @@ dependencies = [
 [[package]]
 name = "hp-on-proof-verified"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "impl-trait-for-tuples",
  "sp-core",
@@ -8084,7 +8084,7 @@ checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 [[package]]
 name = "native"
 version = "0.3.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "ark-bn254 0.5.0",
  "ark-bn254-ext",
@@ -8866,7 +8866,7 @@ dependencies = [
 [[package]]
 name = "pallet-aggregate"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "binary-merkle-tree",
  "educe",
@@ -9156,7 +9156,7 @@ dependencies = [
 [[package]]
 name = "pallet-crl"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "chrono",
  "frame-benchmarking",
@@ -9403,7 +9403,7 @@ dependencies = [
 [[package]]
 name = "pallet-ezkl-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "ezkl-no-std",
  "frame-benchmarking",
@@ -9441,7 +9441,7 @@ dependencies = [
 [[package]]
 name = "pallet-fflonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "fflonk_verifier",
  "frame-benchmarking",
@@ -9484,7 +9484,7 @@ dependencies = [
 [[package]]
 name = "pallet-groth16-verifier"
 version = "0.2.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -9596,7 +9596,7 @@ dependencies = [
 [[package]]
 name = "pallet-plonky2-verifier"
 version = "0.1.1"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "educe",
  "frame-benchmarking",
@@ -9663,7 +9663,7 @@ dependencies = [
 [[package]]
 name = "pallet-risc0-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "ciborium",
  "frame-benchmarking",
@@ -9741,7 +9741,7 @@ dependencies = [
 [[package]]
 name = "pallet-sp1-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "bincode",
  "frame-benchmarking",
@@ -9820,7 +9820,7 @@ dependencies = [
 [[package]]
 name = "pallet-tee-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "chrono",
  "frame-benchmarking",
@@ -9864,7 +9864,7 @@ dependencies = [
 [[package]]
 name = "pallet-token-claim"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -9949,7 +9949,7 @@ dependencies = [
 [[package]]
 name = "pallet-ultrahonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -9970,7 +9970,7 @@ dependencies = [
 [[package]]
 name = "pallet-ultraplonk-verifier"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -10003,7 +10003,7 @@ dependencies = [
 [[package]]
 name = "pallet-verifiers"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -10023,7 +10023,7 @@ dependencies = [
 [[package]]
 name = "pallet-verifiers-macros"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "proc-macro-crate 3.4.0",
  "proc-macro2",
@@ -12714,7 +12714,7 @@ dependencies = [
 [[package]]
 name = "risc0-derive"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -16663,7 +16663,7 @@ dependencies = [
 [[package]]
 name = "substrate-wasm-builder"
 version = "31.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "array-bytes 6.2.3",
  "build-helper",
@@ -17846,7 +17846,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "verifiers-traits"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "frame-support",
  "hex-literal",
@@ -18055,7 +18055,7 @@ dependencies = [
 [[package]]
 name = "vk-hash"
 version = "0.1.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "hp-groth16",
  "jsonrpsee",
@@ -19630,7 +19630,7 @@ dependencies = [
 [[package]]
 name = "zkv-benchmarks"
 version = "11.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "sc-sysinfo",
  "serde_json",
@@ -19639,7 +19639,7 @@ dependencies = [
 [[package]]
 name = "zkv-cli"
 version = "31.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "clap",
  "frame-benchmarking-cli",
@@ -19669,7 +19669,7 @@ dependencies = [
 [[package]]
 name = "zkv-runtime"
 version = "2.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "aggregate-rpc-runtime-api",
  "anyhow",
@@ -19768,7 +19768,7 @@ dependencies = [
 [[package]]
 name = "zkv-service"
 version = "31.0.0"
-source = "git+https://github.com/zkVerify/zkVerify.git?branch=md%2Fupdate-to-polkadot-stable-2512#d2cd3db8dc113d70b7bfb38ab3662c512fb1fd24"
+source = "git+https://github.com/zkVerify/zkVerify.git?tag=v2.0.0-rc1#908669f3bad92bd78535b8409a4692382d2f3073"
 dependencies = [
  "aggregate-rpc",
  "async-trait",
