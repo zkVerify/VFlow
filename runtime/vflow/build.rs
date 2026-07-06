@@ -18,6 +18,8 @@ fn main() {
     // this crate for wasm to speed up the compilation.
     #[cfg(feature = "std")]
     {
+        std::env::remove_var("CARGO_FEATURE_STD");
+        std::env::remove_var("CARGO_FEATURE_DEFAULT");
         let builder = substrate_wasm_builder::WasmBuilder::init_with_defaults();
         // We cannot enable it as default because this option require to build the WASM runtime two
         // time, one to get the metadata and te recompile it with the metadata hash in an environment

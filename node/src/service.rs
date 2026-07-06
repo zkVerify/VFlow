@@ -24,7 +24,6 @@ use cumulus_client_cli::CollatorOptions;
 // Cumulus Imports
 use cumulus_client_collator::service::CollatorService;
 use cumulus_client_consensus_common::ParachainBlockImport as TParachainBlockImport;
-use cumulus_client_consensus_proposer::Proposer;
 use cumulus_client_parachain_inherent::{MockValidationDataInherentDataProvider, MockXcmConfig};
 use cumulus_client_service::{
     build_network, build_relay_chain_interface, prepare_node_config, start_relay_chain_tasks,
@@ -38,6 +37,7 @@ use cumulus_primitives_parachain_inherent::ParachainInherentData;
 use cumulus_relay_chain_interface::{OverseerHandle, RelayChainInterface};
 use cumulus_test_relay_sproof_builder::RelayStateSproofBuilder;
 use fc_storage::{StorageOverride, StorageOverrideHandler};
+use sc_network::PeerId;
 // Substrate Imports
 use parity_scale_codec::Encode;
 use sc_client_api::Backend;
@@ -272,16 +272,17 @@ where
     let backend = params.backend.clone();
     let mut task_manager = params.task_manager;
 
-    let (relay_chain_interface, collator_key) = build_relay_chain_interface(
-        polkadot_config,
-        &parachain_config,
-        telemetry_worker_handle,
-        &mut task_manager,
-        collator_options.clone(),
-        hwbench.clone(),
-    )
-    .await
-    .map_err(|e| sc_service::Error::Application(Box::new(e) as Box<_>))?;
+    let (relay_chain_interface, collator_key, _relay_network_service, _req_receiver) =
+        build_relay_chain_interface(
+            polkadot_config,
+            &parachain_config,
+            telemetry_worker_handle,
+            &mut task_manager,
+            collator_options.clone(),
+            hwbench.clone(),
+        )
+        .await
+        .map_err(|e| sc_service::Error::Application(Box::new(e) as Box<_>))?;
 
     let validator = parachain_config.role.is_authority();
     let prometheus_registry = parachain_config.prometheus_registry().cloned();
@@ -289,7 +290,14 @@ where
     let import_queue_service = params.import_queue.service();
     let frontier_backend = Arc::new(frontier_backend);
 
-    let (network, system_rpc_tx, tx_handler_controller, start_network, sync_service) =
+    let metrics = Network::register_notification_metrics(
+        parachain_config
+            .prometheus_config
+            .as_ref()
+            .map(|cfg| &cfg.registry),
+    );
+
+    let (network, system_rpc_tx, tx_handler_controller, sync_service) =
         build_network(BuildNetworkParams {
             parachain_config: &parachain_config,
             net_config,
@@ -300,6 +308,7 @@ where
             relay_chain_interface: relay_chain_interface.clone(),
             import_queue: params.import_queue,
             sybil_resistance_level: CollatorSybilResistance::Resistant, // because of Aura
+            metrics,
         })
         .await?;
 
@@ -354,6 +363,8 @@ where
                 relay_chain_state,
                 downward_messages: Default::default(),
                 horizontal_messages: Default::default(),
+                relay_parent_descendants: Default::default(),
+                collator_peer_id: None,
             };
             Ok((timestamp, parachain_inherent_data))
         };
@@ -379,7 +390,6 @@ where
             let eth = crate::rpc::EthDeps {
                 client: client.clone(),
                 pool: pool.clone(),
-                graph: pool.clone(),
                 converter: Some(TransactionConverter),
                 is_authority: validator,
                 enable_dev_signer,
@@ -429,6 +439,7 @@ where
         system_rpc_tx,
         tx_handler_controller,
         telemetry: telemetry.as_mut(),
+        tracing_execute_block: None,
     })?;
 
     if let Some(hwbench) = hwbench {
@@ -480,6 +491,7 @@ where
         relay_chain_slot_duration,
         recovery_handle: Box::new(overseer_handle.clone()),
         sync_service: sync_service.clone(),
+        prometheus_registry: prometheus_registry.as_ref(),
     })?;
 
     spawn_frontier_tasks(
@@ -512,10 +524,9 @@ where
             collator_key.expect("Command line arguments do not allow this. qed"),
             overseer_handle,
             announce_block,
+            network.local_peer_id(),
         )?;
     }
-
-    start_network.start_network();
 
     Ok((task_manager, client))
 }
@@ -564,21 +575,20 @@ fn start_consensus(
     collator_key: CollatorPair,
     overseer_handle: OverseerHandle,
     announce_block: Arc<dyn Fn(Hash, Option<Vec<u8>>) + Send + Sync>,
+    collator_peer_id: PeerId,
 ) -> Result<(), sc_service::Error> {
     use cumulus_client_consensus_aura::collators::lookahead::{self as aura, Params};
 
     // NOTE: because we use Aura here explicitly, we can use
     // `CollatorSybilResistance::Resistant` when starting the network.
 
-    let proposer_factory = sc_basic_authorship::ProposerFactory::with_proof_recording(
+    let proposer = sc_basic_authorship::ProposerFactory::with_proof_recording(
         task_manager.spawn_handle(),
         client.clone(),
         transaction_pool,
         prometheus_registry,
         telemetry.clone(),
     );
-
-    let proposer = Proposer::new(proposer_factory);
 
     let collator_service = CollatorService::new(
         client.clone(),
@@ -602,6 +612,7 @@ fn start_consensus(
         },
         keystore,
         collator_key,
+        collator_peer_id,
         para_id,
         overseer_handle,
         relay_chain_slot_duration,
@@ -610,6 +621,7 @@ fn start_consensus(
         // Very limited proposal time.
         authoring_duration: Duration::from_millis(1500),
         reinitialize: false,
+        max_pov_percentage: None,
     };
 
     let fut = aura::run::<Block, sp_consensus_aura::sr25519::AuthorityPair, _, _, _, _, _, _, _, _>(
@@ -679,7 +691,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
         config.prometheus_config.as_ref().map(|cfg| &cfg.registry),
     );
 
-    let (network, system_rpc_tx, tx_handler_controller, start_network, sync_service) =
+    let (network, system_rpc_tx, tx_handler_controller, sync_service) =
         sc_service::build_network(sc_service::BuildNetworkParams {
             config: &config,
             client: client.clone(),
@@ -769,6 +781,7 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
                     raw_downward_messages: vec![],
                     raw_horizontal_messages: vec![],
                     additional_key_values: None,
+                    upgrade_go_ahead: None,
                 };
 
                 Ok((MockTimestampInherentDataProvider, mocked_parachain))
@@ -815,7 +828,6 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
             let eth = crate::rpc::EthDeps {
                 client: client.clone(),
                 pool: transaction_pool.clone(),
-                graph: transaction_pool.clone(),
                 converter: Some(TransactionConverter),
                 is_authority: true,
                 enable_dev_signer,
@@ -865,8 +877,8 @@ pub fn start_manual_seal_node<N: NetworkBackend<Block, <Block as BlockT>::Hash>>
         sync_service,
         config,
         telemetry: None,
+        tracing_execute_block: None,
     })?;
 
-    start_network.start_network();
     Ok(task_manager)
 }

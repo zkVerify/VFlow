@@ -88,6 +88,13 @@ mod runtime_benchmarks {
     /// transaction with a valid `WeightToFee` configuration.
     pub struct OnChargeTransactionRuntimeBenchmarks<T>(PhantomData<T>);
 
+    impl<T: pallet_transaction_payment::TxCreditHold<Runtime>>
+        pallet_transaction_payment::TxCreditHold<Runtime>
+        for OnChargeTransactionRuntimeBenchmarks<T>
+    {
+        type Credit = T::Credit;
+    }
+
     impl<T: pallet_transaction_payment::OnChargeTransaction<Runtime>>
         pallet_transaction_payment::OnChargeTransaction<Runtime>
         for OnChargeTransactionRuntimeBenchmarks<T>

@@ -14,14 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use assert_cmd::cargo::cargo_bin;
 use std::future::Future;
 use std::{
     process::{self, Command},
     time::Duration,
 };
-
-pub const NODE: &str = "vflow-node";
 
 /// Run the given `future` and panic if the `timeout` is hit.
 pub async fn run_with_timeout(timeout: Duration, future: impl Future<Output = ()>) {
@@ -33,7 +30,7 @@ pub async fn run_with_timeout(timeout: Duration, future: impl Future<Output = ()
 #[tokio::test]
 async fn check_version() {
     run_with_timeout(Duration::from_secs(5), async move {
-        let out = Command::new(cargo_bin(NODE))
+        let out = Command::new(assert_cmd::cargo::cargo_bin!("vflow-node"))
             .stdout(process::Stdio::piped())
             .stderr(process::Stdio::piped())
             .args([
@@ -43,8 +40,8 @@ async fn check_version() {
             .unwrap();
         let stdout = String::from_utf8_lossy(&out.stdout).trim().to_owned();
         let v = std::env!("CARGO_PKG_VERSION");
-        assert!(stdout.starts_with(&format!("{NODE} {v}")),
-                "Version missmatch. Crate version = {v}, but node version string `{stdout}`. Curious: It SHOULD never happen because we're using the standard substrate cli here.");
+        assert!(stdout.starts_with(&format!("vflow-node {v}")),
+                "Version mismatch. Crate version = {v}, but node version string `{stdout}`. Curious: It SHOULD never happen because we're using the standard substrate cli here.");
     })
         .await
 }

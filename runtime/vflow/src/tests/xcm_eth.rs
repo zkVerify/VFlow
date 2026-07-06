@@ -124,7 +124,7 @@ fn can_call_eth_from_xcm() {
             assert_ok!(pallet_xcm::Pallet::<Runtime>::execute(
                 RuntimeOrigin::signed(ALICE.into()),
                 base_xcm,
-                Weight::from_parts(10000000000, 10000),
+                Weight::from_parts(10_000_000_000, 1_000_000),
             ));
             assert_eq!(
                 Balances::free_balance(AccountId::from(BOB)),
@@ -189,12 +189,12 @@ fn cannot_call_transact_remark_from_xcm() {
                 pallet_xcm::Pallet::<Runtime>::execute(
                     RuntimeOrigin::signed(ALICE.into()),
                     base_xcm,
-                    Weight::from_parts(10000000000, 10000),
+                    Weight::from_parts(10_000_000_000, 1_000_000),
                 ),
                 DispatchError::Module(ModuleError {
                     index: 31,
-                    error: [24, 0, 0, 0],
-                    message: Some("LocalExecutionIncomplete")
+                    error: [28, 2, 32, 0],
+                    message: Some("LocalExecutionIncompleteWithError")
                 }),
             );
         })

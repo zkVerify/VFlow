@@ -188,6 +188,17 @@ if [ "${DEV_MODE:-false}" != "true" ]; then
   validate_and_download "PARA_CONF_CHAIN" "PARA_SPEC_FILE_URL"
 fi
 
+# Check if the Frontier DB is still on version 2
+CHAIN_ID=$(gosu "${RUN_USER}" "${PARA_NODE_BIN}" build-spec --chain "${PARA_CONF_CHAIN}" | awk -F'"' '/"id"/ {print $4}')
+FRONTIER_DB_VER_PATH="${PARA_CONF_BASE_PATH}/chains/${CHAIN_ID}/frontier/db/db_version"
+if [ -e "${FRONTIER_DB_VER_PATH}" ]; then
+  FRONTIER_DB_VER=$(cat "${FRONTIER_DB_VER_PATH}")
+  if [ "${FRONTIER_DB_VER}" == "2" ]; then
+    log_green "INFO: old Frontier DB detected. Removing to allow correct reconstruction on the first run..."
+    rm -rf "$(dirname "${FRONTIER_DB_VER_PATH}")"
+  fi
+fi
+
 prefix="PARA_CONF_"
 conf_args=()
 while IFS='=' read -r -d '' var_name var_value; do

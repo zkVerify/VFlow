@@ -33,11 +33,11 @@ pub mod currency {
     pub const EXISTENTIAL_DEPOSIT: Balance = 0;
 
     #[cfg(feature = "runtime-benchmarks")]
-    // The meaning of `EXISTENTIAL_DEPOSIT` for runtime benchmarks is just a way to
-    // fall or not in some cases that you want to benchmark. You're not testing the runtime
-    // correctness here, so you can set any value that makes the benchmarks happy without
-    // compromising the results.
-    pub const EXISTENTIAL_DEPOSIT: Balance = 100;
+    // Must be non-zero so upstream benchmarks (e.g. collator_selection) that derive
+    // CandidacyBond from Currency::minimum_balance() get a valid value. Must also be
+    // smaller than the pallet_balances benchmark's hardcoded balance (100 * ED_MULTIPLIER)
+    // to avoid unexpected account reaping when insecure_zero_ed is enabled.
+    pub const EXISTENTIAL_DEPOSIT: Balance = 1;
 
     pub const fn deposit(items: u32, bytes: u32) -> Balance {
         items as Balance * 200 * CENTS + (bytes as Balance) * 100 * MILLICENTS
@@ -85,6 +85,10 @@ pub const UNINCLUDED_SEGMENT_CAPACITY: u32 = 3;
 pub const BLOCK_PROCESSING_VELOCITY: u32 = 1;
 /// Relay chain slot duration, in milliseconds.
 pub const RELAY_CHAIN_SLOT_DURATION_MILLIS: u32 = 6000;
+/// How many relay chain blocks behind the tip the parachain should use as relay parent.
+/// A value of 0 means use the tip directly (no offset).
+// TODO: Set to 1 once the collator is updated to provide relay parent descendants.
+pub const RELAY_PARENT_OFFSET: u32 = 0;
 /// Maximum length for a block.
 pub const MAX_BLOCK_LENGTH: u32 = 5 * 1024 * 1024;
 

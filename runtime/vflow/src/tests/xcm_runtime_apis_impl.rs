@@ -5,7 +5,7 @@ use vflow_runtime_common::currency::VFY;
 use xcm::{IntoVersion, VersionedAssetId, VersionedLocation, VersionedXcm};
 use xcm_runtime_apis::{
     conversions::runtime_decl_for_location_to_account_api::LocationToAccountApiV1,
-    fees::{runtime_decl_for_xcm_payment_api::XcmPaymentApiV1, Error as XcmPaymentApiError},
+    fees::{runtime_decl_for_xcm_payment_api::XcmPaymentApiV2, Error as XcmPaymentApiError},
 };
 
 use super::*;
@@ -126,10 +126,12 @@ mod query_delivery_fees {
     #[rstest]
     fn is_routed(xcm_program: VersionedXcm<()>) {
         ExtBuilder::default().build().execute_with(|| {
+            let native_asset_id = VersionedAssetId::V5(xcm::latest::AssetId(RelayLocation::get()));
             assert_eq!(
                 Runtime::query_delivery_fees(
                     VersionedLocation::V5(RelayLocation::get()),
                     xcm_program,
+                    native_asset_id,
                 )
                 .unwrap_err(),
                 XcmPaymentApiError::Unroutable

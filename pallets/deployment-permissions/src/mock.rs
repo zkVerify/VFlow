@@ -49,7 +49,6 @@ impl frame_system::Config for Test {
 }
 
 impl pallet_deploy_permissions::Config for Test {
-    type RuntimeEvent = RuntimeEvent;
     type WeightInfo = ();
 }
 

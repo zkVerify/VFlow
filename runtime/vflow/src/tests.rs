@@ -110,6 +110,7 @@ impl ExtBuilder {
             .collect::<Vec<_>>();
         pallet_balances::GenesisConfig::<Runtime> {
             balances: all_accounts,
+            dev_accounts: None,
         }
         .assimilate_storage(&mut t)
         .unwrap();

@@ -69,6 +69,9 @@ impl pallet_session::Config for Runtime {
     // Essentially just Aura, but let's be pedantic.
     type SessionHandler = <SessionKeys as sp_runtime::traits::OpaqueKeys>::KeyTypeIdProviders;
     type Keys = SessionKeys;
+    type DisablingStrategy = ();
+    type Currency = Balances;
+    type KeyDeposit = frame_support::traits::ConstU128<0>;
     type WeightInfo = weights::pallet_session::ZKVEvmWeight<Runtime>;
 }
 

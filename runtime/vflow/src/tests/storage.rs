@@ -30,7 +30,6 @@ fn verify_pallet_prefixes() {
     assert_pallet_prefix::<ParachainSystem>("ParachainSystem");
     assert_pallet_prefix::<Timestamp>("Timestamp");
     assert_pallet_prefix::<ParachainInfo>("ParachainInfo");
-    assert_pallet_prefix::<Proxy>("Proxy");
     assert_pallet_prefix::<Balances>("Balances");
     assert_pallet_prefix::<TransactionPayment>("TransactionPayment");
     assert_pallet_prefix::<Sudo>("Sudo");

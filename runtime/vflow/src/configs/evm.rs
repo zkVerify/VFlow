@@ -18,9 +18,9 @@
 use crate::{
     constants::{MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, WEIGHT_PER_GAS},
     opaque, weights, AccountId, Aura, Balances, CollatorSelection, DeploymentPermissions,
-    EVMChainId, Precompiles, Runtime, RuntimeEvent, Timestamp, TransactionPayment,
-    UncheckedExtrinsic,
+    EVMChainId, Precompiles, Runtime, Timestamp, TransactionPayment, UncheckedExtrinsic,
 };
+use core::marker::PhantomData;
 use fp_evm::FeeCalculator;
 use frame_support::{
     pallet_prelude::ConstU32,
@@ -34,7 +34,6 @@ use pallet_evm::{
 use parity_scale_codec::{Decode, Encode};
 use sp_core::{H160, U256};
 use sp_runtime::{ConsensusEngineId, FixedPointNumber};
-use sp_std::marker::PhantomData;
 use sp_weights::Weight;
 
 parameter_types! {
@@ -42,10 +41,10 @@ parameter_types! {
 }
 
 impl pallet_ethereum::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
     type StateRoot = pallet_ethereum::IntermediateStateRoot<Self::Version>;
     type PostLogContent = PostBlockAndTxnHashes;
     type ExtraDataLength = ConstU32<30>;
+    type AllowUnprotectedTxs = frame_support::traits::ConstBool<false>;
 }
 
 parameter_types! {
@@ -58,7 +57,6 @@ parameter_types! {
 }
 
 impl pallet_deployment_permissions::Config for Runtime {
-    type RuntimeEvent = RuntimeEvent;
     type WeightInfo = weights::pallet_deployment_permissions::ZKVEvmWeight<Self>;
 }
 
@@ -106,7 +104,6 @@ impl pallet_evm::Config for Runtime {
     type WithdrawOrigin = EnsureAccountId20;
     type AddressMapping = IdentityAddressMapping;
     type Currency = Balances;
-    type RuntimeEvent = RuntimeEvent;
     type PrecompilesType = Precompiles<Self>;
     type PrecompilesValue = PrecompilesValue;
     type ChainId = EVMChainId;
@@ -119,6 +116,8 @@ impl pallet_evm::Config for Runtime {
     type GasLimitStorageGrowthRatio = GasLimitStorageGrowthRatio;
     type Timestamp = Timestamp;
     type WeightInfo = weights::pallet_evm::ZKVEvmWeight<Self>;
+    type CreateOriginFilter = ();
+    type CreateInnerOriginFilter = ();
 }
 
 impl pallet_evm_chain_id::Config for Runtime {}

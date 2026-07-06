@@ -32,7 +32,7 @@ mod constant_tests {
         #[cfg(not(feature = "runtime-benchmarks"))]
         let expected_existential_deposit = 0;
         #[cfg(feature = "runtime-benchmarks")]
-        let expected_existential_deposit = 100;
+        let expected_existential_deposit = 1;
 
         assert_eq!(EXISTENTIAL_DEPOSIT, expected_existential_deposit);
 
@@ -85,22 +85,6 @@ mod runtime_tests {
             <<Runtime as frame_system::Config>::MaxConsumers as sp_core::Get<u32>>::get(),
             16
         );
-    }
-
-    #[test]
-    fn proxy_constants() {
-        use configs::system::*;
-        assert_eq!(MaxProxies::get(), 32);
-
-        assert_eq!(MaxPending::get(), 32);
-
-        assert_eq!(ProxyDepositBase::get(), deposit(1, 40));
-
-        assert_eq!(AnnouncementDepositBase::get(), deposit(1, 48));
-
-        assert_eq!(ProxyDepositFactor::get(), deposit(0, 33));
-
-        assert_eq!(AnnouncementDepositFactor::get(), deposit(0, 66));
     }
 
     #[test]

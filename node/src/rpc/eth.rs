@@ -46,8 +46,6 @@ pub struct EthDeps<B: BlockT, C, P, CT, CIDP> {
     pub client: Arc<C>,
     /// Transaction pool instance.
     pub pool: Arc<P>,
-    /// Graph pool instance.
-    pub graph: Arc<P>,
     /// Ethereum transaction converter.
     pub converter: Option<CT>,
     /// The Node authority flag
@@ -120,7 +118,6 @@ where
     let EthDeps {
         client,
         pool,
-        graph,
         converter,
         is_authority,
         enable_dev_signer,
@@ -148,7 +145,6 @@ where
         Eth::<B, C, P, CT, BE, CIDP, EC>::new(
             client.clone(),
             pool.clone(),
-            graph.clone(),
             converter,
             sync.clone(),
             signers,
@@ -159,6 +155,7 @@ where
             fee_history_cache,
             fee_history_cache_limit,
             execute_gas_limit_multiplier,
+            false, // rpc_allow_unprotected_txs
             forced_parent_hashes,
             pending_create_inherent_data_providers,
             Some(Box::new(AuraConsensusDataProvider::new(client.clone()))),
@@ -172,7 +169,7 @@ where
             EthFilter::new(
                 client.clone(),
                 frontier_backend.clone(),
-                graph.clone(),
+                pool.clone(),
                 filter_pool,
                 500_usize, // max stored filters
                 max_past_logs,
@@ -185,7 +182,7 @@ where
 
     io.merge(
         EthPubSub::new(
-            pool,
+            pool.clone(),
             client.clone(),
             sync,
             subscription_task_executor,
@@ -218,7 +215,7 @@ where
     )?;
 
     #[cfg(feature = "txpool")]
-    io.merge(TxPool::new(client, graph).into_rpc())?;
+    io.merge(TxPool::new(client, pool.clone()).into_rpc())?;
 
     Ok(io)
 }

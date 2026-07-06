@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ZOMBIENET_V=v1.3.128
+ZOMBIENET_V=v1.3.138
 BIN_DIR=relay-bin
 CHAIN=${CHAIN:-"volta"} # mainnet NOT available for local dev
 
