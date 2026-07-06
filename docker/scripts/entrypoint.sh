@@ -193,9 +193,9 @@ CHAIN_ID=$(gosu "${RUN_USER}" "${PARA_NODE_BIN}" build-spec --chain "${PARA_CONF
 FRONTIER_DB_VER_PATH="${PARA_CONF_BASE_PATH}/chains/${CHAIN_ID}/frontier/db/db_version"
 if [ -e "${FRONTIER_DB_VER_PATH}" ]; then
   FRONTIER_DB_VER=$(cat "${FRONTIER_DB_VER_PATH}")
-  if [ ${FRONTIER_DB_VER} == "2" ]; then
+  if [ "${FRONTIER_DB_VER}" == "2" ]; then
     log_green "INFO: old Frontier DB detected. Removing to allow correct reconstruction on the first run..."
-    rm -rf $(dirname "${FRONTIER_DB_VER_PATH}")
+    rm -rf "$(dirname "${FRONTIER_DB_VER_PATH}")"
   fi
 fi
 
