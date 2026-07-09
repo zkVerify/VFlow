@@ -46,11 +46,11 @@ if [ "${tag_runtime}" != "${runtime}" ]; then
   fn_die "ERROR: Runtime in the tag (${tag_runtime}) does not match the expected runtime (${runtime}). Exiting ..."
 fi
 
-if [[ "${runtime}" = "zkverify" && -z "${version_ext}" ]]; then
-  log_info "INFO: checking that zkverify and volta production release tags point to the same commit..."
+if [[ "${runtime}" = "mainnet" && -z "${version_ext}" ]]; then
+  log_info "INFO: checking that mainnet and volta production release tags point to the same commit..."
   volta_tag="rt-volta-${version}"
   if [ "$(git_tag_commit "${github_tag}")" != "$(git_tag_commit "${volta_tag}")" ]; then
-    fn_die "ERROR: commit pointed to by zkverify tag (${github_tag}) does not match commit of volta tag (${volta_tag}). Exiting..."
+    fn_die "ERROR: commit pointed to by mainnet tag (${github_tag}) does not match commit of volta tag (${volta_tag}). Exiting..."
   fi
 fi
 
