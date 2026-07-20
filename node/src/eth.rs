@@ -185,6 +185,7 @@ pub async fn spawn_frontier_tasks(
     overrides: Arc<dyn StorageOverride<Block>>,
     fee_history_cache: FeeHistoryCache,
     fee_history_cache_limit: FeeHistoryCacheLimit,
+    state_pruning_blocks: Option<u64>,
     sync: Arc<SyncingService<Block>>,
     pubsub_notification_sinks: Arc<
         fc_mapping_sync::EthereumBlockNotificationSinks<
@@ -207,6 +208,7 @@ pub async fn spawn_frontier_tasks(
                     b.clone(),
                     3,
                     0,
+                    state_pruning_blocks,
                     fc_mapping_sync::SyncStrategy::Normal,
                     sync,
                     pubsub_notification_sinks,
