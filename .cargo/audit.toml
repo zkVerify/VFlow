@@ -2,208 +2,234 @@
 ignore = [
 	# ===== libp2p / litep2p transitive dependencies =====
 
-	"RUSTSEC-2024-0421", # idna v0.4.0 — from libp2p v0.52.4 and litep2p v0.9.5.
-	# Punycode label acceptance issue. No compatible update; pinned by polkadot-sdk.
+	"RUSTSEC-2026-0258", # h2 v0.3.27 — unbounded empty DATA frames (DoS).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0258 ->
+	# https://github.com/hyperium/hyper/security/advisories/GHSA-q83h-524g-xf6h
+	# Fixed in h2 >= 0.4.16; there is no fix on the 0.3.x line. The h2 0.4.x copy that is
+	# actually built was updated to 0.4.17 and is not affected.
+	# The 0.3.27 copy is a stale lockfile entry: h2 0.3 is an optional dependency of
+	# hyper v0.14.32 <- igd-next v0.14.3 <- libp2p-upnp v0.3.0, reached only through libp2p's
+	# optional `upnp` feature, which nothing in the workspace enables. `cargo tree -i h2@0.3.27`
+	# (also with `--target all --edges all`) prints nothing, and neither does
+	# `cargo tree -i libp2p-upnp`; the entry stays in Cargo.lock only because Cargo always
+	# resolves optional dependencies.
 
-	"RUSTSEC-2025-0009", # ring v0.16.20 — stale lockfile entry (libp2p-quic -> libp2p-tls -> rcgen -> ring 0.16).
-	# Nothing in the workspace actually depends on this chain (`cargo tree` confirms it).
-	# It remains in Cargo.lock because Cargo always resolves optional dependencies.
-
-	"RUSTSEC-2026-0037", # quinn-proto v0.10.6 — stale lockfile entry from libp2p-quic v0.10.3 optional feature.
-	# `cargo tree` shows nothing; only present in Cargo.lock via optional dependency resolution.
+	"RUSTSEC-2025-0009", # ring v0.16.20 — stale lockfile entry (libp2p-quic -> libp2p-tls -> rcgen v0.11.3 -> ring 0.16).
+	# Nothing in the workspace actually depends on this chain (`cargo tree -i rcgen@0.11.3` and
+	# `cargo tree -i ring@0.16.20` both print nothing). It remains in Cargo.lock because Cargo
+	# always resolves optional dependencies (libp2p's optional `quic`/`tls` features).
 
 	"RUSTSEC-2026-0118", # hickory-proto v0.25.2 — NSEC3 closest-encloser proof unbounded loop.
-	# From https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-3v94-mw7p-v465
-	# Transitive via litep2p v0.9.5 -> hickory-resolver v0.25.2. No fix available;
-	# even the latest litep2p still depends on hickory-proto 0.25.2.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0118 ->
+	# https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-3v94-mw7p-v465
+	# Transitive via litep2p v0.13.3 -> hickory-resolver v0.25.2 (litep2p comes from
+	# sc-network v0.55.2 / sc-network-types v0.20.3). No fixed release is available at all
+	# ("No fixed upgrade is available!"), and litep2p is pinned to 0.13.x by polkadot-sdk
+	# stable2512.
 
-	"RUSTSEC-2026-0119", # hickory-proto v0.24.4 & v0.25.2 — O(n²) CPU exhaustion in name compression.
-	# From https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-q2qq-hmj6-3wpp
-	# v0.24.4 from libp2p v0.54.1 -> libp2p-dns v0.42.0; v0.25.2 from litep2p v0.9.5.
-	# Fix requires hickory-proto >= 0.26.1; no compatible update in libp2p/litep2p yet.
+	"RUSTSEC-2026-0119", # hickory-proto v0.24.4 & v0.25.2 — O(n^2) CPU exhaustion in name compression.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0119 ->
+	# https://github.com/hickory-dns/hickory-dns/security/advisories/GHSA-q2qq-hmj6-3wpp
+	# v0.24.4 via libp2p v0.54.1 -> libp2p-dns v0.42.0 -> hickory-resolver v0.24.4;
+	# v0.25.2 via litep2p v0.13.3 -> hickory-resolver v0.25.2.
+	# The fix requires hickory-proto >= 0.26.1, which neither libp2p 0.54.x nor litep2p 0.13.x
+	# can use; both are pinned by polkadot-sdk stable2512.
 
-	# ===== rustls-webpki (pinned by major version boundaries) =====
-	# rustls-webpki 0.101.7 (via rustls 0.21.12 -> libp2p-websocket/hyper-rustls/jsonrpsee)
-	# and 0.102.8 (via rustls 0.22.4 -> jsonrpsee-client-transport) cannot be updated to
-	# the fixed 0.103.12+ without upgrading rustls across a major version boundary.
-	# The primary path (rustls 0.23.x -> webpki 0.103.13) is already fixed.
+	# ===== rustls-webpki v0.101.7 (stale lockfile entry) =====
+	# All three advisories below concern the rustls-webpki 0.101.7 copy, an optional dependency
+	# of libp2p-tls v0.5.0 (libp2p's optional `tls`/`quic` features, which we do not enable).
+	# `cargo tree -i rustls-webpki@0.101.7` and `cargo tree -i libp2p-tls@0.5.0` print nothing:
+	# the crate is never built, it only survives in Cargo.lock through optional-dependency
+	# resolution. The rustls-webpki copy that *is* built was updated to 0.103.14 (which fixed
+	# RUSTSEC-2026-0049 as well, so that entry is gone).
 
-	"RUSTSEC-2026-0049", # rustls-webpki v0.102.8 — CRL Distribution Point faulty matching logic.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0049
-	# Fix requires >= 0.103.10 which needs rustls >= 0.23.x. Pinned by jsonrpsee 0.22.5.
+	"RUSTSEC-2026-0098", # rustls-webpki v0.101.7 — URI name constraints incorrectly accepted.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0098
 
-	"RUSTSEC-2026-0098", # rustls-webpki v0.101.7 & v0.102.8 — URI name constraints incorrectly accepted.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0098
-	# Requires certificate misissuance with URI name constraints; low risk for P2P TLS.
+	"RUSTSEC-2026-0099", # rustls-webpki v0.101.7 — wildcard name constraint bypass.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0099
 
-	"RUSTSEC-2026-0099", # rustls-webpki v0.101.7 & v0.102.8 — wildcard name constraint bypass.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0099
-	# Requires certificate misissuance; low risk for P2P TLS.
+	"RUSTSEC-2026-0104", # rustls-webpki v0.101.7 — reachable panic in CRL parsing.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0104
 
-	"RUSTSEC-2026-0104", # rustls-webpki v0.101.7 & v0.102.8 — reachable panic in CRL parsing.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0104
-	# Panic reachable before signature verification via malformed CRL. DoS risk in adversarial P2P,
-	# but update is blocked by major version boundary. Primary path (0.103.13) is already fixed.
+	# ===== tracing-subscriber =====
 
-	# ===== sqlx (frontier dependency) =====
+	"RUSTSEC-2025-0055", # tracing-subscriber v0.2.25 & v0.3.19 — ANSI escape sequence log poisoning.
+	# https://rustsec.org/advisories/RUSTSEC-2025-0055
+	# v0.2.25 comes from ark-relations v0.4.0, whose `std` feature unconditionally enables
+	# tracing-subscriber 0.2.x (v0.5.1 still does); this is an upstream arkworks issue and no
+	# patched ark-relations avoids it.
+	# v0.3.19 comes from sc-tracing v44.0.0. The fix (>= 0.3.20) escapes control characters in
+	# every formatted field value, including `message`. sc-tracing builds its subscriber with
+	# `format::DefaultFields` and calls `ctx.format_fields(..)` (logging/event_format.rs:97),
+	# while Substrate embeds ANSI colours *inside* log messages (e.g. sc-informant uses
+	# `console::style(..)`), so bumping the 0.3 line turns the node's console output into
+	# literal "\x1b[..m" noise — see https://github.com/tokio-rs/tracing/issues/3369.
+	# tracing-subscriber 0.3.23 added `with_ansi_sanitization(false)` to opt out, but sc-tracing
+	# does not call it, so the escaping is on by default. Keeping 0.3.19 until polkadot-sdk
+	# handles this upstream. Impact is limited to log-injection into an operator's terminal.
 
-	"RUSTSEC-2024-0363", # sqlx v0.7.4 — binary protocol misinterpretation via truncating casts.
-	# From frontier's fc-db. Should be fixed when updating the frontier fork.
+	# ===== wasmtime v35.0.0 (polkadot-sdk via sc-executor-wasmtime v0.43.0) =====
+	# Every wasmtime advisory below concerns wasmtime v35.0.0, pulled in by
+	# sc-executor-wasmtime v0.43.0 which requires wasmtime "35.0.0" exactly; updating needs an
+	# upstream polkadot-sdk release. The resolved feature set (see
+	# `cargo tree -e features -i wasmtime@35.0.0`) is: addr2line, cache, cranelift, demangle,
+	# gc, gc-null, once_cell, parallel-compilation, pooling-allocator, profiling, runtime,
+	# rustix, std, threads, wasmtime-jit-icache-coherence, wasmtime-unwinder — with
+	# `default-features = false`. Notably `winch`, `component-model` and the WASI features are
+	# NOT enabled, so that code is not even compiled in.
 
-	# ===== tracing-subscriber (arkworks dependency) =====
+	# -- Winch backend not compiled in (Cranelift only) --
 
-	"RUSTSEC-2025-0055", # tracing-subscriber v0.2.25 — ANSI escape sequence log poisoning.
-	# Via ark-relations v0.4.0 which unconditionally enables tracing-subscriber 0.2.x.
-	# This is an upstream arkworks issue; no patched version of ark-relations avoids it.
+	"RUSTSEC-2026-0086", # wasmtime v35.0.0 — host data leakage with 64-bit tables and Winch.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0086
+	# Requires the Winch compiler backend; the `winch` feature is not enabled and
+	# sc-executor-wasmtime configures Cranelift explicitly (`config.cranelift_opt_level(..)`).
 
-	# ===== wasmtime v8.0.1 (polkadot-sdk via sc-executor-wasmtime v0.36.0) =====
-	# All wasmtime advisories below are from the outdated wasmtime v8.0.1 dependency
-	# pulled in by polkadot-sdk. Updating requires an upstream polkadot-sdk release.
+	"RUSTSEC-2026-0089", # wasmtime v35.0.0 — host panic when Winch executes table.fill.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0089
+	# Requires the Winch backend, which is not compiled in.
 
-	# -- Already existing ignores (refreshed) --
+	"RUSTSEC-2026-0094", # wasmtime v35.0.0 — improperly masked table.grow return value with Winch.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0094
+	# Requires the Winch backend, which is not compiled in.
 
-	"RUSTSEC-2023-0091", # wasmtime v8.0.1 — i64x2.shr_s miscompilation with constant input.
-	# LOW severity. Constant input requirement limits practical exploitation.
+	"RUSTSEC-2026-0095", # wasmtime v35.0.0 — Winch sandbox-escaping memory access.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0095
+	# Requires the Winch backend, which is not compiled in.
 
-	"RUSTSEC-2024-0438", # wasmtime v8.0.1 — Windows device filenames not fully sandboxed.
-	# Only affects Windows; our deployment targets Linux.
+	# -- Component Model not compiled in --
+	# The `component-model` feature is not enabled, and Substrate only ever instantiates plain
+	# core Wasm modules (`Module` / `InstancePre`), never components.
 
-	"RUSTSEC-2024-0442", # wasmtime-jit-debug v8.0.1 — JitDumpFile undefined memory dump.
-	# From https://rustsec.org/advisories/RUSTSEC-2024-0442
-	# Internal-only wasmtime crate not intended for external use. We don't use it directly.
+	"RUSTSEC-2026-0085", # wasmtime v35.0.0 — panic lifting a `flags` component value.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0085
 
-	"RUSTSEC-2025-0118", # wasmtime v8.0.1 — unsound API access to shared linear memory.
-	# From https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-hc7m-r6v8-hg9q
-	# Only affects embeddings using the wasm threads proposal with shared memories across threads.
-	# Substrate explicitly sets config.wasm_threads(false) in sc-executor-wasmtime.
+	"RUSTSEC-2026-0091", # wasmtime v35.0.0 — OOB write transcoding component model strings.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0091
 
-	# -- Wasmtime: Component Model not used by Substrate --
-	# wasmtime 8.0.1 predates stable Component Model support.
-	# Substrate does not enable the Component Model.
+	"RUSTSEC-2026-0092", # wasmtime v35.0.0 — panic with misaligned component model UTF-16 strings.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0092
 
-	"RUSTSEC-2026-0085", # wasmtime v8.0.1 — panic lifting flags component value.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0085
-	# Requires Component Model which Substrate does not use.
+	"RUSTSEC-2026-0093", # wasmtime v35.0.0 — heap OOB read in component model UTF-16 transcoding.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0093
 
-	"RUSTSEC-2026-0091", # wasmtime v8.0.1 — OOB write transcoding component model strings.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0091
-	# Requires Component Model which Substrate does not use.
+	# -- WASI not compiled in --
+	# No WASI feature is enabled and sc-executor-wasmtime never loads WASI modules; its linker
+	# only exposes Substrate host functions (`imports::prepare_imports`).
 
-	"RUSTSEC-2026-0092", # wasmtime v8.0.1 — panic with misaligned component model UTF-16 strings.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0092
-	# Requires Component Model which Substrate does not use.
+	"RUSTSEC-2026-0020", # wasmtime v35.0.0 — guest-controlled resource exhaustion in WASI.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0020
 
-	"RUSTSEC-2026-0093", # wasmtime v8.0.1 — heap OOB read in component model UTF-16 transcoding.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0093
-	# Requires Component Model which Substrate does not use.
+	"RUSTSEC-2026-0021", # wasmtime v35.0.0 — panic in wasi:http/types.fields.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0021
 
-	# -- Wasmtime: WASI not used by Substrate --
-	# sc-executor-wasmtime does not load WASI modules.
+	# -- Wasm proposals disabled / non-default configuration required --
 
-	"RUSTSEC-2026-0020", # wasmtime v8.0.1 — guest-controlled resource exhaustion in WASI.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0020
-	# Requires WASI which Substrate does not use.
+	"RUSTSEC-2025-0118", # wasmtime v35.0.0 — unsound API access to shared linear memory.
+	# https://rustsec.org/advisories/RUSTSEC-2025-0118 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-hc7m-r6v8-hg9q
+	# "Embeddings which do not use the wasm threads proposal nor created shared memories nor
+	# actually share shared memories across threads are unaffected."
+	# sc-executor-wasmtime sets `config.wasm_threads(false)` (runtime.rs:261).
 
-	"RUSTSEC-2026-0021", # wasmtime v8.0.1 — panic in wasi:http/types.fields.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0021
-	# Requires WASI HTTP which Substrate does not use.
-
-	# -- Wasmtime: Winch compiler not used (Substrate uses Cranelift) --
-
-	"RUSTSEC-2026-0086", # wasmtime v8.0.1 — host data leakage with 64-bit tables and Winch.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0086
-	# Requires Winch compiler; Substrate uses Cranelift.
-
-	"RUSTSEC-2026-0089", # wasmtime v8.0.1 — host panic when Winch executes table.fill.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0089
-	# Requires Winch compiler; Substrate uses Cranelift.
-
-	"RUSTSEC-2026-0094", # wasmtime v8.0.1 — improperly masked table.grow return value with Winch.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0094
-	# Requires Winch compiler; Substrate uses Cranelift.
-
-	"RUSTSEC-2026-0095", # wasmtime v8.0.1 — Winch sandbox-escaping memory access.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0095
-	# Requires Winch compiler; Substrate uses Cranelift.
-
-	# -- Wasmtime: Requires non-default configuration --
-
-	"RUSTSEC-2026-0087", # wasmtime v8.0.1 — f64x2.splat segfault/OOB load on Cranelift x86-64.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0087
-	# Only triggers when signals_based_traps is DISABLED (non-default).
-	# Substrate uses wasmtime::Config::new() which has signals_based_traps enabled by default
-	# and never disables it. Therefore this code path is never exercised.
-
-    "RUSTSEC-2026-0222", # LOW — Stores can mix up type indices between engines.
-    # https://rustsec.org/advisories/RUSTSEC-2026-0222 ->
-    # https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-hgjw-h833-99q9
-    # Per the advisory: "Embedders using a single Engine for the lifetime of the process are not
-    # affected. Embedders not directly calling one of the affected methods are not affected."
-    # Guest Wasm cannot trigger this — it requires embedder code that hands an object created by
-    # one Engine to a Store created by another. Nothing in the workspace uses wasmtime directly;
-    # the only consumer is sc-executor-wasmtime v0.43.0, where each `WasmtimeRuntime` owns a single
-    # `Engine` and its `Module`/`InstancePre` are built from that same `Engine`; `InstanceWrapper`
-    # then does `Store::new(engine, ..)` + `instance_pre.instantiate(&mut store)` with that same
-    # cloned `Engine` (runtime.rs:82,146 / instance_wrapper.rs:131). Engines are never mixed. The
-    # other affected APIs (`Tag::new`, `StructRefPre`/`ArrayRefPre`/`ExnRefPre::new`,
-    # `Store::debug_register_module`/`_component`, breakpoint edits) are never called. Unaffected.
-    # No patched 35.x release exists (fixes are in 24.0.12/36.0.13/46.0.2/47.0.3) and
-    # sc-executor-wasmtime 0.43.0 requires wasmtime "35.0.0", pinned by polkadot-sdk stable2512.
-	"RUSTSEC-2026-0088", # wasmtime v8.0.1 — data leakage between pooling allocator instances.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0088
-	# Requires pooling allocator with specific non-default config.
-	# Substrate uses on-demand (not pooling) instance allocation.
-
-	"RUSTSEC-2026-0096", # wasmtime v8.0.1 — miscompiled guest heap access on aarch64 Cranelift.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0096
-	# CRITICAL severity but only affects aarch64 architecture.
-	# Our primary deployment targets x86-64. Pinned by polkadot-sdk; no update path available.
-	"RUSTSEC-2026-0006", # wasmtime v35.0.0 — segfault with f64.copysign on x86-64.
+	"RUSTSEC-2026-0006", # wasmtime v35.0.0 — segfault / out-of-sandbox load with f64.copysign on x86-64.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0006 ->
 	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-vc8c-j3xm-xj73
-	# The vulnerability only triggers when signals-based-traps is DISABLED in the wasmtime Config.
-	# Substrate's sc-executor-wasmtime uses wasmtime::Config::new() which has signals_based_traps
-	# enabled by default, and never disables it. Therefore this code path is never exercised.
-	"RUSTSEC-2026-0114", # wasmtime v35.0.0 — panic when allocating oversized table (MEDIUM, DoS only).
+	# Only triggers when signals-based traps are DISABLED. sc-executor-wasmtime builds its
+	# config with `wasmtime::Config::new()` (runtime.rs:219), where signals-based traps are
+	# enabled by default, and never disables them.
+
+	"RUSTSEC-2026-0087", # wasmtime v35.0.0 — f64x2.splat segfault / OOB load on Cranelift x86-64.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0087
+	# Same precondition as RUSTSEC-2026-0006: requires signals-based traps to be disabled,
+	# which sc-executor-wasmtime never does.
+
+	"RUSTSEC-2026-0114", # wasmtime v35.0.0 — panic allocating a table larger than the host address space.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0114 ->
 	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-p8xm-42r7-89xg
-	# Arithmetic overflow panic when a Wasm module declares a table with an extremely large size,
-	# leveraging the memory64 proposal's 64-bit range. Requires the on-demand allocator and
-	# memory64 to be enabled. Substrate runtime Wasm blobs are compiled for wasm32 and are
-	# governance-controlled (not attacker-supplied). PVF validation only runs Wasm from registered
-	# parachains. This is a DoS (panic), not a sandbox escape. Unaffected in practice.
+	# Per the advisory the bug "requires the `memory64` WebAssembly feature to be enabled".
+	# sc-executor-wasmtime sets `config.wasm_memory64(false)` (runtime.rs:262), so 64-bit table
+	# sizes are rejected at validation time and the overflow is unreachable. Impact would be a
+	# panic (DoS), not a sandbox escape.
 
-	# ===== lru (unsound — IterMut not exercised) =====
+	"RUSTSEC-2026-0088", # wasmtime v35.0.0 — data leakage between pooling allocator instances.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0088 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-6wgr-89rj-399p
+	# Substrate *does* use the pooling allocator (PoolingCopyOnWrite is the default
+	# instantiation strategy), but the advisory requires ALL of four conditions, and the two
+	# below are not met: "The `Config::memory_guard_size` configuration option must be 0" and
+	# "The `Config::memory_reservation` configuration must be less than 4GiB".
+	# sc-executor-wasmtime never calls `memory_guard_size` nor `memory_reservation` (verified by
+	# grepping v0.43.0), so both keep their 64-bit defaults of 32 MiB and 4 GiB respectively.
+	# Unaffected.
 
-	"RUSTSEC-2026-0002", # lru v0.12.5 — unsound IterMut via Stacked Borrows violation.
-	# Used by libp2p-identify v0.43.1 and smoldot-light v0.9.0 (polkadot-sdk transitive).
-	# We checked the source code: no mutable iterator (IterMut) is used on lru::LruCache
-	# in either crate. The unsound code path is never exercised.
+	# -- Architecture not targeted --
 
-	# ===== keccak (unsound — asm feature not enabled) =====
+	"RUSTSEC-2026-0096", # wasmtime v35.0.0 — miscompiled guest heap access, sandbox escape on aarch64 Cranelift.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0096
+	# CRITICAL, but only affects aarch64. Every CI job and every released binary/Docker image is
+	# built on x86-64 runners (`runs-on: warp-ubuntu-latest-x64-*`, no cross/multi-arch build),
+	# so no aarch64 artifact is published. Pinned by polkadot-sdk; no update path available.
 
-	"RUSTSEC-2026-0012", # keccak v0.1.5 — unsound ARMv8 assembly backend.
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0012
-	# The ARMv8 assembly backend is opt-in via the `asm` feature flag.
-	# This feature is not enabled in any dependency in the workspace.
-	# The default pure-Rust implementation is not affected.
+	# -- Embedder API misuse not performed --
 
-	# ===== rand (unsound — custom logger not used) =====
+	"RUSTSEC-2026-0222", # wasmtime v35.0.0 — LOW — stores can mix up type indices between engines.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0222 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-hgjw-h833-99q9
+	# Per the advisory: "Embedders using a single Engine for the lifetime of the process are not
+	# affected. Embedders not directly calling one of the affected methods are not affected."
+	# Guest Wasm cannot trigger this — it requires embedder code that hands an object created by
+	# one Engine to a Store created by another. Nothing in the workspace uses wasmtime directly;
+	# the only consumer is sc-executor-wasmtime v0.43.0, where each `WasmtimeRuntime` owns a
+	# single `Engine` and its `Module`/`InstancePre` are built from that same `Engine`;
+	# `InstanceWrapper` then does `Store::new(engine, ..)` + `instance_pre.instantiate(&mut
+	# store)` with that same cloned `Engine` (runtime.rs:82,146 / instance_wrapper.rs:131).
+	# Engines are never mixed. The other affected APIs (`Tag::new`,
+	# `StructRefPre`/`ArrayRefPre`/`ExnRefPre::new`, `Store::debug_register_module`/`_component`,
+	# breakpoint edits) are never called. No patched 35.x release exists (fixes are in
+	# 24.0.12/36.0.13/46.0.2/47.0.3).
 
-	"RUSTSEC-2026-0097", # rand v0.8.5 & v0.9.2 — unsound with custom logger using rand::rng().
-	# From https://rustsec.org/advisories/RUSTSEC-2026-0097
-	# Only triggers when a custom logger implementation calls rand::rng() during ThreadRng
-	# reseeding. This project uses Substrate's standard sc-tracing logging infrastructure
-	# which does not call rand::rng(). The trigger conditions are not met.
+	# ===== lru (unsound — vulnerable code paths not exercised) =====
+	# Both advisories are fixed only in lru >= 0.18.x, unreachable from the two copies we have:
+	# lru 0.12.5 is required as "0.12" by libp2p 0.54.1 (libp2p-swarm v0.45.1, libp2p-identify
+	# v0.45.0) and lru 0.7.8 as "0.7" by tracing-log v0.2.0 (`interest-cache` feature, enabled
+	# by sc-tracing v44.0.0). Both parents are pinned by polkadot-sdk stable2512.
+	# (smoldot-light v0.17.2 also lists lru 0.12.5 but is not in the build graph.)
+
+	"RUSTSEC-2026-0002", # lru v0.12.5 — unsound `IterMut` via Stacked Borrows violation.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0002
+	# We checked the sources of every consumer: libp2p-swarm v0.45.1 (the only crate that
+	# actually uses the cache, in `behaviour/peer_addresses.rs`), libp2p-identify v0.45.0 (it
+	# declares lru but never uses it) and tracing-log v0.2.0. None of them create a mutable
+	# iterator over an `LruCache`, so the unsound code path is never exercised.
+
+	"RUSTSEC-2026-0253", # lru v0.7.8 & v0.12.5 — use-after-free from `LruCache::pop()` not being panic-safe.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0253 -> https://github.com/jeromefroe/lru-rs/pull/238
+	# Per the advisory the UB is reachable "only if unwinding panics are enabled and
+	# `std::panic::catch_unwind` is used with key types that have potentially-panicking `Drop`
+	# implementations": `pop()` skips `detach()` when the key's `Drop` unwinds, leaving a
+	# dangling node in the linked list.
+	# None of the caches in the build graph use such a key type:
+	#  - libp2p-swarm v0.45.1 `PeerAddresses` is `LruCache<PeerId, LruCache<Multiaddr, ()>>` and
+	#    the single `pop()` call (peer_addresses.rs:81) is on the inner cache, i.e. key
+	#    `Multiaddr` — both `PeerId` and `Multiaddr` are plain byte containers whose drop glue
+	#    cannot panic, and the call is not wrapped in `catch_unwind`.
+	#  - tracing-log v0.2.0's interest cache is `LruCache<Key, u64, ahash::RandomState>` where
+	#    `Key` is `#[derive(Copy)] { target_address: usize, level_and_length: usize }`, so it has
+	#    no `Drop` at all — and the crate never calls `pop()`.
+	# The trigger conditions are not met.
+
+	# ===== memmap2 (unsound — affected functions not reached with OOB arguments) =====
 
 	"RUSTSEC-2026-0186", # memmap2 v0.5.10 — unchecked pointer offset in advise/flush range functions.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0186
 	# Unsoundness: out-of-bounds offset/len passed to advise_range/flush_range/flush_async_range/
-	# unchecked_advise_range reach pointer arithmetic handed to syscalls (pointer is not
+	# unchecked_advise_range reach pointer arithmetic handed to syscalls (the pointer is not
 	# dereferenced). Fixed in memmap2 0.9.11. The 0.5.10 copy comes from parity-db v0.4.13
 	# (polkadot-sdk transitive via sc-client-db -> parity-db), which requires memmap2 ^0.5 and
-	# has no 0.4.x release on the patched line; parity-db 0.4.13 is pinned by polkadot-sdk
-	# stable2512. (The other memmap2 copy, 0.9.x, was updated to 0.9.11.)
+	# has no release on the patched line; parity-db 0.4.13 is pinned by polkadot-sdk stable2512.
+	# (The other memmap2 copy was updated to the fixed 0.9.11.)
 	# Verified against the parity-db 0.4.13 source: the ONLY affected function it calls is
 	# MmapMut::flush_range, once, in Index::flush() (src/index.rs:605):
 	#   map.flush_range(META_SIZE, map.len() - META_SIZE)
@@ -213,9 +239,17 @@ ignore = [
 	# file_size = total_entries(index_bits) * 8 + META_SIZE (META_SIZE is a 16 KiB constant),
 	# so [META_SIZE, map.len()) is exactly the map minus its header. Both arguments are pure
 	# functions of the local index geometry, never of transaction/proof/block/network data, so a
-	# remote attacker has no path to the out-of-bounds trigger. (The only theoretical trigger is a
-	# locally truncated index file making map.len() < META_SIZE underflow the len — this needs
+	# remote attacker has no path to the out-of-bounds trigger. (The only theoretical trigger is
+	# a locally truncated index file making map.len() < META_SIZE underflow the len — this needs
 	# local DB write access, which is outside the remote threat model.)
+
+	# ===== rand (unsound — custom logger not used) =====
+
+	"RUSTSEC-2026-0097", # rand v0.8.5 & v0.9.2 — unsound with a custom logger using rand::rng().
+	# https://rustsec.org/advisories/RUSTSEC-2026-0097
+	# Only triggers when a custom logger implementation calls rand::rng() during ThreadRng
+	# reseeding. This project uses Substrate's standard sc-tracing logging infrastructure, which
+	# does not call rand::rng(). The trigger conditions are not met.
 ]
 informational_warnings = ["unmaintained", "yanked"]
 
