@@ -124,6 +124,20 @@ ignore = [
 	"RUSTSEC-2026-0021", # wasmtime v35.0.0 — panic in wasi:http/types.fields.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0021
 
+	"RUSTSEC-2026-0269", # wasmtime v35.0.0 — HIGH — WASI filesystem sandbox escape with trailing slashes.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0269 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-vqjp-4c8c-hfgg
+	# Per the advisory: "Wasmtime's filesystem implementation provided in the `wasmtime-wasi` crate
+	# contained a bug which allowed guests to escape their filesystem sandbox". The root cause is
+	# the cap-std advisory GHSA-hp8f-xmx4-4qrg. Neither `wasmtime-wasi` nor `cap-std` (nor
+	# `wasi-common`) is present in Cargo.lock: sc-executor-wasmtime v0.43.0 pulls wasmtime with
+	# `default-features = false` and only the addr2line/cache/cranelift/demangle/gc/gc-null/
+	# parallel-compilation/pooling-allocator/profiling/threads features — no WASI at all. wasmtime
+	# is used exclusively to execute Substrate PVF/runtime Wasm blobs, which get no filesystem
+	# access whatsoever. Unaffected.
+	# No patched 35.x release exists (fixes are in 24.0.13/36.0.14/46.0.3/47.0.4) and
+	# sc-executor-wasmtime 0.43.0 requires wasmtime "35.0.0", pinned by polkadot-sdk stable2512.
+
 	# -- Wasm proposals disabled / non-default configuration required --
 
 	"RUSTSEC-2025-0118", # wasmtime v35.0.0 — unsound API access to shared linear memory.
