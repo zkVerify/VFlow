@@ -35,13 +35,23 @@ ignore = [
 	# The fix requires hickory-proto >= 0.26.1, which neither libp2p 0.54.x nor litep2p 0.13.x
 	# can use; both are pinned by polkadot-sdk stable2512.
 
+	"RUSTSEC-2026-0381", # webpki-roots v0.25.4 — bundled roots trust distrusted emSign intermediates.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0381
+	# Transitive via libp2p v0.54.1 -> libp2p-websocket v0.44.0, which requires webpki-roots
+	# "^0.25" (fix is 1.0.10+, no 0.25.x release); libp2p is pinned by polkadot-sdk stable2512.
+	# libp2p-websocket only uses these roots as the client trust store for outbound `/wss`
+	# dials (tls.rs:104). TLS there is just a transport wrapper: sc-network always runs Noise on
+	# top (transport.rs:76), which authenticates the remote PeerId and encrypts the stream. A
+	# certificate forged via an emSign intermediate therefore lets an on-path attacker neither
+	# impersonate a peer nor read traffic — no more than on plain TCP.
+
 	# ===== rustls-webpki v0.101.7 (stale lockfile entry) =====
 	# All three advisories below concern the rustls-webpki 0.101.7 copy, an optional dependency
 	# of libp2p-tls v0.5.0 (libp2p's optional `tls`/`quic` features, which we do not enable).
 	# `cargo tree -i rustls-webpki@0.101.7` and `cargo tree -i libp2p-tls@0.5.0` print nothing:
 	# the crate is never built, it only survives in Cargo.lock through optional-dependency
-	# resolution. The rustls-webpki copy that *is* built was updated to 0.103.14 (which fixed
-	# RUSTSEC-2026-0049 as well, so that entry is gone).
+	# resolution. The rustls-webpki copy that *is* built was updated to 0.103.16 (which fixes
+	# RUSTSEC-2026-0049 and RUSTSEC-2026-0382 for that copy).
 
 	"RUSTSEC-2026-0098", # rustls-webpki v0.101.7 — URI name constraints incorrectly accepted.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0098
@@ -51,6 +61,18 @@ ignore = [
 
 	"RUSTSEC-2026-0104", # rustls-webpki v0.101.7 — reachable panic in CRL parsing.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0104
+
+	"RUSTSEC-2026-0382", # rustls-webpki v0.101.7 — may accept distrusted emSign intermediates.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0382
+
+	# ===== ruzstd v0.8.3 (stale lockfile entry) =====
+
+	"RUSTSEC-2026-0344", # ruzstd v0.8.3 — decompression bomb (OOM DoS).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0344
+	# Fixed only in ruzstd >= 0.9.1. Its only dependent is smoldot v0.19.4 <- smoldot-light
+	# v0.17.2 <- subxt-lightclient v0.43.0, reached only through subxt's optional light-client
+	# feature, which nothing enables. `cargo tree -i ruzstd` and `cargo tree -i smoldot-light`
+	# (also with `--target all --edges all`) print nothing: it is never built.
 
 	# ===== tracing-subscriber =====
 
@@ -113,6 +135,16 @@ ignore = [
 
 	"RUSTSEC-2026-0093", # wasmtime v35.0.0 — heap OOB read in component model UTF-16 transcoding.
 	# https://rustsec.org/advisories/RUSTSEC-2026-0093
+
+	"RUSTSEC-2026-0316", # wasmtime v35.0.0 — dynamic record lifting allocates beyond hostcall fuel limit.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0316 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-jqpg-j7w6-42pr
+	# Only affects hosts using the component-model dynamic `Val` API.
+
+	"RUSTSEC-2026-0363", # wasmtime v35.0.0 — component-model handle tables charged to no limit.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0363 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-q554-3cjc-rx7p
+	# Requires component-model resource handles.
 
 	# -- WASI not compiled in --
 	# No WASI feature is enabled and sc-executor-wasmtime never loads WASI modules; its linker
@@ -186,6 +218,32 @@ ignore = [
 	# built on x86-64 runners (`runs-on: warp-ubuntu-latest-x64-*`, no cross/multi-arch build),
 	# so no aarch64 artifact is published. Pinned by polkadot-sdk; no update path available.
 
+	"RUSTSEC-2026-0379", # wasmtime v35.0.0 — aarch64 Cranelift jumps to wrong target on huge `br_table`.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0379 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-mghf-wjfp-p5xm
+	# CRITICAL, aarch64 only — same reasoning as RUSTSEC-2026-0096 above.
+
+	# -- Only governance-controlled Wasm is compiled --
+
+	"RUSTSEC-2026-0380", # wasmtime v35.0.0 — CRITICAL — Cranelift SSA index overflow, miscompilation.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0380 ->
+	# https://github.com/bytecodealliance/wasmtime/security/advisories/GHSA-897f-g5gm-fmxm
+	# Affects default Cranelift on every architecture: "A very large Wasm function body, or one
+	# that is specially crafted to use many SSA values, can use this to force type-confusion
+	# [...] and escape the sandbox." Exploiting it needs an attacker-supplied Wasm module.
+	# The node only compiles:
+	#  - the VFlow runtime from `:code`, which only Root can change (`system.set_code`, or
+	#    `authorize_upgrade` + a hash-matched `apply_authorized_upgrade`) — there is no
+	#    pallet-contracts/pallet-revive, and EVM bytecode is interpreted inside the runtime,
+	#    never compiled by Cranelift;
+	#  - the zkVerify relay runtime in the in-process relay node, controlled by zkVerify
+	#    governance;
+	#  - PVFs only when running as a relay validator, which VFlow nodes never do (and PVF
+	#    workers run in a separate, sandboxed process).
+	# A Root origin able to install a malicious runtime already controls the whole chain.
+	# No patched 35.x exists (fixes in 36.0.19 / 43+); sc-executor-wasmtime 0.43.0 pins wasmtime
+	# 35.0.0. Revisit with the next polkadot-sdk bump.
+
 	# -- Embedder API misuse not performed --
 
 	"RUSTSEC-2026-0222", # wasmtime v35.0.0 — LOW — stores can mix up type indices between engines.
@@ -256,6 +314,78 @@ ignore = [
 	# remote attacker has no path to the out-of-bounds trigger. (The only theoretical trigger is
 	# a locally truncated index file making map.len() < META_SIZE underflow the len — this needs
 	# local DB write access, which is outside the remote threat model.)
+
+	# ===== zstd / zstd-safe (only plain streaming / one-shot APIs used) =====
+	# zstd v0.12.4 (zstd-safe v6.0.6) comes from sp-maybe-compressed-blob v11.1.0 and
+	# polkadot-node-primitives v23.0.0; zstd v0.13.3 (zstd-safe v7.2.4) from
+	# wasmtime-internal-cache v35.0.0. All three are polkadot-sdk stable2512 / wasmtime 35 pins
+	# that require the 0.12 / 0.13 lines; fixes are only in zstd >= 0.14.3 / zstd-safe >= 8.2.0.
+	# Every consumer uses `default-features = false`, and the only zstd feature resolved in the
+	# whole graph is `std` (`cargo tree -e features | grep zstd`): `legacy`, `experimental`,
+	# `zstdmt`, `seekable` and `zdict_builder` are all OFF. The only calls are
+	# `zstd::Decoder::new` / `zstd::Encoder::new` (sp-maybe-compressed-blob lib.rs:68,124) and
+	# `zstd::decode_all` / `zstd::encode_all` (wasmtime-internal-cache lib.rs:267,276), each on
+	# a fresh, private context. (zstd-sys was updated to 2.1.2, fixing RUSTSEC-2026-0410.)
+
+	"RUSTSEC-2026-0391", # zstd v0.13.3 — abandoned stream data leaks into the next stream on a reused context.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0391
+	# Only `stream::raw::{Encoder,Decoder}::with_context` are affected; nobody calls them and
+	# contexts are never reused.
+
+	"RUSTSEC-2026-0403", # zstd-safe v6.0.6 & v7.2.4 — uninit memory on failed legacy-frame streaming decompression.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0403
+	# Needs the `legacy` feature (off) and `zstd::stream::write::Decoder`; the advisory states
+	# `stream::read::Decoder`, `decode_all` and the bulk API — the ones used — are not affected.
+
+	"RUSTSEC-2026-0398", # zstd-safe v7.2.4 — `Seekable::decompress` sets Vec length past capacity.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0398
+	"RUSTSEC-2026-0396", # zstd-safe v7.2.4 — `Seekable` reads NULL / OOB seek table.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0396
+	"RUSTSEC-2026-0405", # zstd-safe v7.2.4 — OOB read with out-of-range `InBuffer::pos` (seekable compress).
+	# https://rustsec.org/advisories/RUSTSEC-2026-0405
+	# All three are in the `seekable` API, which is not compiled in.
+
+	"RUSTSEC-2026-0395", # zstd-safe v6.0.6 & v7.2.4 — use-after-free with `CParameter::StableInBuffer`.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0395
+	"RUSTSEC-2026-0399", # zstd-safe v6.0.6 & v7.2.4 — UAF through `init_using_cdict` / `init_using_ddict`.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0399
+	"RUSTSEC-2026-0404", # zstd-safe v6.0.6 & v7.2.4 — double free in `DCtx::try_clone`.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0404
+	"RUSTSEC-2026-0402", # zstd-safe v6.0.6 & v7.2.4 — heap overflow in `CCtx::try_clone` on a multithreaded context.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0402
+	# All four need the `experimental` feature (0402 also `zstdmt`), which is not enabled.
+
+	"RUSTSEC-2026-0406", # zstd-safe v6.0.6 & v7.2.4 — UAF changing a multithreaded context with an unfinished frame.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0406
+	# Requires a multithreaded frame (`zstdmt` feature + `NbWorkers`); `zstdmt` is off.
+
+	"RUSTSEC-2026-0400", # zstd-safe v6.0.6 & v7.2.4 — dictionary UAF after one-shot call on a context with an open stream.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0400
+	# Requires mixing streaming and one-shot calls on the same context. Each consumer creates
+	# a fresh context per call and only ever streams on it; no dictionaries are used.
+
+	"RUSTSEC-2026-0397", # zstd-safe v6.0.6 & v7.2.4 — `OutBuffer::around_pos` exposes uninit memory.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0397
+	# Needs a caller to pass a position past the Vec's length; neither zstd 0.12.4 nor 0.13.3
+	# nor any consumer calls `around_pos`.
+
+	"RUSTSEC-2026-0401", # zstd-safe v6.0.6 & v7.2.4 — OOB read in `train_from_buffer` on sample-size overflow.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0401
+	# Dictionary training (`zdict_builder` feature) is not compiled in and never called.
+
+	# ===== crypto-bigint (timing side channels — no secret-key arithmetic) =====
+
+	"RUSTSEC-2026-0387", # crypto-bigint v0.5.5 — timing variability in "constant-time" operations.
+	# https://rustsec.org/advisories/RUSTSEC-2026-0387
+	# Fixed only in 0.7.6; v0.5.5 is required by elliptic-curve v0.13.8 (k256/p256/p384/p521
+	# 0.13), pulled by sp-core, frame-support, ethereum (Frontier), tee-verifier/x509-verify
+	# and bip32 — no update path on the 0.5 line.
+	# The leak matters only for arithmetic on SECRET values. Here, these curves only verify
+	# signatures / recover public keys over public data (Ethereum tx recovery, TEE quote and
+	# X.509 verification, no_std sp-core ECDSA verification in the runtime). Node-side
+	# keystore ECDSA signing in sp-core uses the `secp256k1` C library under `std`
+	# (ecdsa.rs:33), not k256; collator session keys are sr25519. bip32 comes only via
+	# frame-benchmarking-cli -> subxt-signer for dev/benchmark keys.
 
 	# ===== rand (unsound — custom logger not used) =====
 
